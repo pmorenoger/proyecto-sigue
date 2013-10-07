@@ -1,0 +1,32 @@
+/* 
+    Document   : estilos
+    Created on : 05-oct-2013, 20:00:39
+    Author     : Diego Santos
+    Description:
+        Estilos generales de la aplicación.
+*/
+
+root { 
+    display: block;
+}
+
+#top{
+    
+    color:red;
+    margin-left:45%;
+    margin-top:10px;
+    float:left;
+    width:100%;
+}
+
+#content {
+    margin-left:15px;        
+}
+
+#footer {
+    margin-left:45%;
+    margin-top:10px;
+    float:left;
+    width:100%;
+    
+}
