@@ -61,7 +61,7 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
       <intent-filter>
-        <action android:name="com.example.prueba.SCAN"/>
+        <action android:name="com.example.sigue.SCAN"/>
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
       <!-- Allow web apps to launch Barcode Scanner by linking to http://zxing.appspot.com/scan. -->
