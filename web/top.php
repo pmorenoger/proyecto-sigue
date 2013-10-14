@@ -1,10 +1,15 @@
 <?php
 //Aquí debe ir todo lo referente a librerías, includes, etc...
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
 
-include ('/phpqrcode/phpqrcode.php');
-include ('/FPDF/fpdf.php');
+require_once 'ClsOptions.php';
+require_once 'Excel/Classes/PHPExcel.php';
+include ('PHPqrcode/phpqrcode.php');
+include ('FPDF/fpdf.php');
 
-//require_once 'Excel/reader.php';
+$options = new ClsOptions();
 ?>
 
 <html>
