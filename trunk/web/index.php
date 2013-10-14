@@ -1,5 +1,4 @@
 <?php
-
 include 'top.php';
 ?>
 <div id="content">
