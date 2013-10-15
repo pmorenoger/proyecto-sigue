@@ -1,24 +1,42 @@
 <?php
-include 'top.php';
+require 'top.php';
 ?>
 <div id="content">
-    <p> Este es el servidor del (mejor) proyecto de SI de la Facultad de Informática de la Universidad Complutense de Madrid.</p>
-    <p> Este servidor servirá de modelo de pruebas durante la fase de desarrollo de la aplicación SIGUE.</p>
+    <div id="left">
+        <img src="img/profe_der.jpg" alt="Profesora en la pizarra" title="Profesionales de la enseñanza"/>             
+    </div>                                
+    <div id="form_login">
+        <div class="form_login"
+            <form id="" name="" method="POST" action="login_do.php">
+                <fieldset>
+                    <legend>Datos de registro</legend>
+                    <span>
+                        <label for="user">Usuario: </label>
+                    </span>
+                    <input type="text" id="user" name="user" value="" title="nombre usuario" /> 
+                    <br/>
+                    <span>
+                        <label for="pass">Contraseña: </label>
+                    </span>
+                    <input type="password" id="pass" name="pass" value="" title="password" />
 
-    <p>¿Qué es SIGUE?
-        <ul>
-            <li>Es un sistema de "Seguimiento de participación y asistencia a clase."</li>
-            <li>Es un gestor de Tokens para el profesor.</li>
-            <li>Es la manera más cómoda para un alumno de hacer efectivos sus Tokens.</li>
-            <li>Es la herramienta definitiva de gestión de las notas de asistencia.</li>
-        </ul>
-    </p>
-    <div>
-      Pincha <a href="test.php" title="comenzar"> aquí</a> para comenzar.
+                    <br/>
+                    <input type="submit" id="entrar" name="entrar" value="Iniciar sesión" />
+                    <div class="opciones">                        
+                        <a href="contrasenya_olvidad.php" title="Recordar contraseña">¿Ha olvidado su contraseña?</a>
+                        <br/>                       
+                        <a href="registro.php" title="Regístrese">¿No tiene cuenta? Regístrese</a>                                               
+                    </div>                    
+                </fieldset>
+            </form>    
+        </div>  
+    </div>
+    <div id="right">
+        <a href="http://www.ucm.es" title="UCM" >
+            <img src="img/ucm_logo.gif" alt="Logo de la UCM" title="UCM" width="300px" />
+        </a>
     </div>
 </div>
-
-
 <?php
 include 'bottom.php';
 ?>
