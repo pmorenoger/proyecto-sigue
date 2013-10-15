@@ -13,20 +13,53 @@ root {
 #top{
     
     color:red;
-    margin-left:45%;
+    margin-left:39%;
     margin-top:10px;
     float:left;
     width:100%;
 }
+/*Principales estilos de body, content y formulario inicial*/
+body {
+       background-color:gainsboro;    
+    
+}
 
 #content {
-    margin-left:15px;        
+    margin-left:15px;  
+    width:100%;
 }
+
+#content #left {
+    width:20%;
+    float: left;    
+}
+#content #rigth {
+    width:20%;
+    float: right;    
+}
+
+#content #form_login {
+    width:50%;
+    float: left;
+    padding-left: 7%;
+}
+#content #form_login span{
+    width:100px;
+    float:left;
+}
+#content #form_login .form_login {
+   
+   width:80%;
+    
+    
+}
+
+
 
 #footer {
     margin-left:45%;
     margin-top:10px;
     float:left;
-    width:100%;
+    width:75%;
     
 }
