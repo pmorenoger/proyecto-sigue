@@ -3,18 +3,27 @@ package com.example.sigue;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
-
+	protected TextView customFont;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		customFont = (TextView)findViewById(R.id.textView1);
+		Typeface font = Typeface.createFromAsset(getAssets(), "ROADMOVIE TRIAL___.ttf");
+		customFont.setTypeface(font);
+		customFont = (Button)findViewById(R.id.button1);
+		customFont.setTypeface(font);
+		customFont = (TextView)findViewById(R.id.textView2);
+		customFont.setTypeface(font);
 		final Button btnScan = (Button)findViewById(R.id.button1); 
 		
 			btnScan.setOnClickListener(new View.OnClickListener(){
