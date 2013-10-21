@@ -5,10 +5,8 @@
 
 <div id="footer">
       <ul class="about">
-          <li>Acerca de la aplicación</li>
-              <ul>
-                <li>Pincha <a href="test.php" title="comenzar"> aquí</a> para ver una demo.</li>            
-              </ul>
+          <span>Acerca de la aplicación</span>              
+             <li>Pincha <a href="test.php" title="comenzar"> aquí</a> para ver una demo.</li>            
           </ul>
     
 </div>

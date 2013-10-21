@@ -16,7 +16,17 @@ $options = new ClsOptions();
 
 <head>
     <meta HTTP-EQUIV="Content-Type" content="text/html;charset=utf-8" />
-<link rel="stylesheet" href="/css/estilos.css">
+    <link rel="stylesheet" href="/css/estilos.css">     
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  
+    <!-- 
+        Este creo que no hace falta, pues la version mas reciente lo engloba
+    <script src="/scripts/jquery-1.8.2.min.js" type="text/javascript"></script>   -->
+    <script src="/scripts/jquery.validationEngine-es.js" type="text/javascript"></script>
+    <script src="/scripts/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="/scripts/jquery-ui-1.10.3.custom.js" type="text/javascript"></script>
+   
+    <script src="/scripts/jquery-ui-1.10.3.custom.min.js" type="text/javascript">
+    </script>
 </head>
 <body>
     <div id="top">
