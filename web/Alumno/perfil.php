@@ -19,7 +19,7 @@
 </head>
 <body class="perfil">
     <div class="titles">
-                <p><img src="imagenes/logo.png" ALIGN="middle"><text class="encabezado">IGUE</text> <text class="encabezado2">Alumno</text></p>
+                <p><img src="../img/logo.png" ALIGN="middle"><text class="encabezado">IGUE</text> <text class="encabezado2">Alumno</text></p>
     </div>
     <div>
         <div class="encabezado3">

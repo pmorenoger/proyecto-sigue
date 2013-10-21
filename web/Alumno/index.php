@@ -15,7 +15,7 @@
     </head>
     <body class="login">
         <div class="titles">
-                <p><text class="encabezado">SIGUE</text> <text class="encabezado2">Alumno</text></p>
+                <p><img src="../img/logo.png" ALIGN="middle"><text class="encabezado">IGUE</text> <text class="encabezado2">Alumno</text></p>
 	</div>
 	<form method="post" id="main" action="perfil.php">
             <label class="labelCorreo">Correo Electrónico:</label>
