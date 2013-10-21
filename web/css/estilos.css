@@ -33,13 +33,13 @@ body {
     width:20%;
     float: left;    
 }
-#content #rigth {
+#content #right {
     width:20%;
-    float: right;    
+    float: left;    
 }
 
 #content #form_login {
-    width:50%;
+    width:45%;
     float: left;
     padding-left: 7%;
 }
