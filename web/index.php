@@ -3,40 +3,43 @@ require 'top.php';
 ?>
 <div id="content">
     <div id="left">
-        <img src="img/profe_der.jpg" alt="Profesora en la pizarra" title="Profesionales de la enseñanza"/>             
-    </div>                                
-    <div id="form_login">
-        <div class="form_login"
-            <form id="" name="" method="POST" action="login_do.php">
-                <fieldset>
-                    <legend>Datos de registro</legend>
-                    <span>
-                        <label for="user">Usuario: </label>
-                    </span>
-                    <input type="text" id="user" name="user" value="" title="nombre usuario" /> 
-                    <br/>
-                    <span>
-                        <label for="pass">Contraseña: </label>
-                    </span>
-                    <input type="password" id="pass" name="pass" value="" title="password" />
-
-                    <br/>
-                    <input type="submit" id="entrar" name="entrar" value="Iniciar sesión" />
-                    <div class="opciones">                        
-                        <a href="contrasenya_olvidad.php" title="Recordar contraseña">¿Ha olvidado su contraseña?</a>
-                        <br/>                       
-                        <a href="registro.php" title="Regístrese">¿No tiene cuenta? Regístrese</a>                                               
-                    </div>                    
-                </fieldset>
-            </form>    
-        </div>  
+        <img src="img/profe_der.jpg" alt="Profesora en la pizarra" title="Profesionales de la enseñanza"/>
     </div>
+    <div class="login">
+        <div id="form_login">
+           <div class="form_login">
+                <form method="post" id="main" action="perfil.php">
+                    <label for="user" class="labelCorreo">Correo Electrónico:</label>
+                    <input type="text" name="user" placeholder="Correo Electrónico" class='validate[required,custom[emailUCM]]'/>
+                    <p class="ejemplo">Ej: xxxx@ucm.es</p>
+                    <label for="password" class="labelContraseña">Contraseña:</label>
+                    <input type="password" name="password" placeholder="Contraseña" class="validate[required]"/>
+                    <input type="submit" value="Entrar" id="bEntrar" />
+                    <p class="perder"><a href="#">¿Has olvidado tu contraseña?</a> </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="right">
         <a href="http://www.ucm.es" title="UCM" >
             <img src="img/ucm_logo.gif" alt="Logo de la UCM" title="UCM" width="300px" />
         </a>
     </div>
 </div>
+
+
+
 <?php
 include 'bottom.php';
 ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#bEntrar").submit(fnOnSubmit);
+        $("#main").validationEngine('attach',{relative: true,promptPosition: "bottomRight"});
+        function fnOnSubmit(){
+                if (!$("#bEntrar").validationEngine('validate')) return false;
+                return true;
+            }
+    });
+</script>

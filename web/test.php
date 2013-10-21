@@ -2,7 +2,7 @@
         include "top.php";
 ?>
 <div id="content">
-    <h1>Primeros pasos</h1>
+    <h2>Primeros pasos</h2>
     <p>
         A continuación mostramos una serie de funcionalidades básicas de la aplicación web.        
     </p>
