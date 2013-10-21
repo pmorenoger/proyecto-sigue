@@ -3,13 +3,13 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <link rel="stylesheet" type="text/css" href="cssAlumno/alumnoCSS.css">
-        <link rel="stylesheet" type="text/css" href="cssAlumno/validationEngine.jquery.css">
-        <script src="scripts/jquery-1.8.2.min.js" type="text/javascript">
+        <link rel="stylesheet" type="text/css" href="../css/alumnoCSS.css">
+        <link rel="stylesheet" type="text/css" href="../css/validationEngine.jquery.css">
+        <script src="../scripts/jquery-1.8.2.min.js" type="text/javascript">
 	</script>
-        <script src="scripts/jquery.validationEngine-es.js" type="text/javascript">
+        <script src="../scripts/jquery.validationEngine-es.js" type="text/javascript">
 	</script>
-        <script src="scripts/jquery.validationEngine.js" type="text/javascript">
+        <script src="../scripts/jquery.validationEngine.js" type="text/javascript">
 	</script>
         <title>SIGUE Alumno</title>
     </head>
