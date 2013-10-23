@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     tools:context=".MainActivity" >
+    
 
     <Button
         android:id="@+id/button1"
@@ -37,4 +38,5 @@
         android:text="Escanea tu codigo QR personal para registrarte."
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    
 </RelativeLayout>
