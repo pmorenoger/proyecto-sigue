@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:layout_weight="1"
+        android:background="@drawable/botonredondo"
+        android:layout_centerVertical="true"
+        android:layout_margin="7dp"
+        android:text="REGISTRAR NUEVO TOKEN" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:layout_centerVertical="true"
+         android:layout_margin="7dp"
+         android:layout_weight="1"
+        android:background="@drawable/botonredondo"
+        android:text="MIS TOKENS" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:layout_centerVertical="true"
+         android:layout_margin="7dp"
+         android:layout_weight="1"
+        android:background="@drawable/botonredondo"
+        android:text="MIS ESTADISTICAS" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:layout_centerVertical="true"
+         android:layout_margin="7dp"
+         android:layout_weight="1"
+        android:background="@drawable/botonredondo"
+        android:text="DESVINCULAR APLICACION" />
+
+</LinearLayout>
