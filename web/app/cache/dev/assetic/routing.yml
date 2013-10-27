@@ -1,0 +1,5 @@
+_assetic:
+    resource: .
+    type: assetic
+_app:
+    resource: 'K:/Users/loko64z/Desktop/Sistemas-Informaticos/proyecto-sigue/web/app/config/routing_dev.yml'

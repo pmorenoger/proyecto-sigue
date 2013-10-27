@@ -1,0 +1,4 @@
+si_sigue:
+    resource: "@SISigueBundle/Resources/config/routing.yml"
+    prefix:   /
+
