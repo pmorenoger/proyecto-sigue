@@ -1,3 +1,6 @@
 si_sigue_homepage:
     pattern:  /inicio
     defaults: { _controller: SISigueBundle:Default:index }
+si_sigue_homepage2:
+    pattern:  /inicio2
+    defaults: { _controller: SISigueBundle:Default:create }
