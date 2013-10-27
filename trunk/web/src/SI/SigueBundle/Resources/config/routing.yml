@@ -1,0 +1,3 @@
+si_sigue_homepage:
+    pattern:  /inicio
+    defaults: { _controller: SISigueBundle:Default:index }
