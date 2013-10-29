@@ -14,6 +14,16 @@ class DefaultController extends Controller
         return $this->render('SISigueBundle:Default:index.html.php');
     }
     
+    //TODO verificacion de los datos con los datos del servidor
+    public function perfilAction()
+    {
+        //TODO: código para verificar la identidad del usuario
+        //si la identidad es la correcta:
+        return $this->render('SISigueBundle:Default:perfil.html.php');
+        //si no
+        //  return $this->render('SISigueBundle:Default:index.html.php';
+    }
+    
     public function createAction()
 {
     $alumno = new Alumno();

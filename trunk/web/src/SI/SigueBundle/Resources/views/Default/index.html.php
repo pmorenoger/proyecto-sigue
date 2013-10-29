@@ -20,7 +20,7 @@
 <div class="login">
     <div id="form_login">
         <div class="form_login">
-            <form method="post" id="main" action="perfil.php">
+            <form method="post" id="main" action="perfil">
                 <label for="user" class="labelCorreo">Correo Electrónico:</label>
                 <input type="text" name="user" placeholder="Correo Electrónico" class='validate[required,custom[emailUCM]]'/>
                 <p class="ejemplo">Ej: xxxx@ucm.es</p>

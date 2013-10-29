@@ -4,3 +4,6 @@ si_sigue_homepage:
 si_sigue_homepage2:
     pattern:  /inicio2
     defaults: { _controller: SISigueBundle:Default:create }
+si_sigue_perfil:
+    pattern:  /perfil
+    defaults:   {_controller: SISigueBundle:Default:perfil}
