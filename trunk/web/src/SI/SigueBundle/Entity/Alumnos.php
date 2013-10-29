@@ -1,63 +1,68 @@
 <?php
 
-// src/Acme/StoreBundle/Entity/Product.php
 namespace SI\SigueBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * Alumnos
+ *
  * @ORM\Table(name="alumnos")
+ * @ORM\Entity
  */
-class Alumno
+class Alumnos
 {
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $idalumno;
-
-    /**
-     * @ORM\Column(type="string",nullable=true)
-     */
-    protected $nombre;
-    
-    /**
-     * @ORM\Column(type="string",nullable=true)
-     */
-    protected $apellidos;
-
-    /**
-     * @ORM\Column(type="string", length=10,nullable=true)
-     */
-    protected $dni;
-
-     /**
-     * @ORM\Column(type="string",nullable=true)
-     */
-    protected $correo;
-    
-     /**
-     * @ORM\Column(type="string", length=45,nullable=true)
-     */
-    protected $password;
-
-    /**
-     * Get idalumno
+     * @var string
      *
-     * @return integer 
+     * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
-    public function getIdalumno()
-    {
-        return $this->idalumno;
-    }
+    private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="apellidos", type="string", length=255, nullable=true)
+     */
+    private $apellidos;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="dni", type="string", length=10, nullable=true)
+     */
+    private $dni;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="correo", type="string", length=255, nullable=true)
+     */
+    private $correo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=45, nullable=true)
+     */
+    private $password;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="idalumno", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idalumno;
+
+
 
     /**
      * Set nombre
      *
      * @param string $nombre
-     * @return Alumno
+     * @return Alumnos
      */
     public function setNombre($nombre)
     {
@@ -80,7 +85,7 @@ class Alumno
      * Set apellidos
      *
      * @param string $apellidos
-     * @return Alumno
+     * @return Alumnos
      */
     public function setApellidos($apellidos)
     {
@@ -103,7 +108,7 @@ class Alumno
      * Set dni
      *
      * @param string $dni
-     * @return Alumno
+     * @return Alumnos
      */
     public function setDni($dni)
     {
@@ -126,7 +131,7 @@ class Alumno
      * Set correo
      *
      * @param string $correo
-     * @return Alumno
+     * @return Alumnos
      */
     public function setCorreo($correo)
     {
@@ -149,7 +154,7 @@ class Alumno
      * Set password
      *
      * @param string $password
-     * @return Alumno
+     * @return Alumnos
      */
     public function setPassword($password)
     {
@@ -166,5 +171,15 @@ class Alumno
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * Get idalumno
+     *
+     * @return integer 
+     */
+    public function getIdalumno()
+    {
+        return $this->idalumno;
     }
 }
