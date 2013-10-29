@@ -11,11 +11,11 @@
         <script src="<?php echo $view['assets']->getUrl('scripts/jquery.validationEngine.js') ?>"  type="text/javascript" ></script>
         <script src="<?php echo $view['assets']->getUrl('scripts/jquery.validationEngine-es.js') ?>" type="text/javascript"> </script>
         
-            <link href="<?php echo $view['assets']->getUrl('css/estilos.css') ?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $view['assets']->getUrl('css/estilos.css') ?>" rel="stylesheet" type="text/css" />
         <link href="<?php echo $view['assets']->getUrl('css/alumnoCSS.css') ?>" rel="stylesheet" type="text/css" />
         <link href="<?php echo $view['assets']->getUrl('css/validationEngine.jquery.css') ?>" rel="stylesheet" type="text/css" />
-       
-       
+        <link href="<?php echo $view['assets']->getUrl('css/jquery-ui-1.10.3.custom.css') ?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $view['assets']->getUrl('css/jquery-ui-1.10.3.custom.min.css') ?>" rel="stylesheet" type="text/css" />
         
         <link rel="shortcut icon" href="<?php echo $view['assets']->getUrl('favicon.ico') ?>" />
     </head>
