@@ -1,12 +1,10 @@
 <?php $view->extend('::base.html.php') ?>
 
 <div id="top">    
-   <div class="titles">
-        <p>
+   <div class="titles">        
             <img src="../img/logo.png" ALIGN="middle">
             <text class="encabezado">IGUE</text> 
-            <text class="encabezado2"> <?php $view['slots']->output('rol') ?></text>
-        </p>
+            <text class="encabezado2"> <?php $view['slots']->output('rol') ?></text>       
     </div>
 </div>
 

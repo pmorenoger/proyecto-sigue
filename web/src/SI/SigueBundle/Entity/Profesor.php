@@ -57,6 +57,29 @@ class Profesor
     private $idprofesor;
 
 
+   public function findOneByCorreoAndPass($correo, $pass)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT count dni FROM SISigueBundle:Profesor p WHERE p.correo = :correo AND p.password = :pass '
+            )
+                ->setParameters(array(
+                    'correo' => $correo,
+                    'pass'  => $pass,
+                      ))
+                ->getResult() > 0;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Set nombre
