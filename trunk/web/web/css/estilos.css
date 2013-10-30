@@ -52,7 +52,7 @@ body {
     float: left;    
 }
 
-#content #center{
+#content #center.profesor{
     
     float: left;
     width: 40%;

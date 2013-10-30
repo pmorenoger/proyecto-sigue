@@ -12,7 +12,7 @@
     <div id="left">
          <?php $view['slots']->output('menu_left') ?>
     </div>
-    <div id="center">
+    <div id="center" class="<?php $view['slots']->output('tipo_clase') ?>">
          <?php $view['slots']->output('center') ?>
     </div>
     <div id="right">

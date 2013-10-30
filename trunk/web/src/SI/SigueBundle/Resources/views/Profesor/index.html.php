@@ -1,5 +1,7 @@
 <?php $view->extend('::layout.html.php') ?>
 <?php $view['slots']->set('rol', 'Profesor'); ?>
+<?php $view['slots']->set('tipo_clase', 'profesor'); ?>
+
 
 <?php $view['slots']->start("menu_left"); ?>
     <div >
@@ -38,7 +40,7 @@
         <!--</div>-->
         <br>
         <br>
-        <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
+        <input class="bActivar" type="button" value="Generar Codigos QR" id="bActivar" onclick="qr();">
     </div>
 <?php $view['slots']->stop(); ?>
 
@@ -48,12 +50,16 @@
         <h4>OPCIONES DEL PROFESOR</h4>
         <ul>           
             <li> <label for="add_group">OPCION 1: </label> <input id="add_group" type="button" value="AÑADIR GRUPO" /> </li>
-            <li> <label for="add_group">OPCION 2: </label> <input id="add_group" type="button" value="AÑADIR GRUPO" /></li>
-            <li> <label for="add_group">OPCION 3: </label> <input id="add_group" type="button" value="AÑADIR GRUPO" /></li>
-            <li> <label for="add_group">OPCION 4: </label> <input id="add_group" type="button" value="AÑADIR GRUPO" /> </li>
+            <li> <label for="add_group">OPCION 2: </label> <input id="add_group" type="button" value="VER ESTADISTICAS" /></li>
+            <li> <label for="add_group">OPCION 3: </label> <input id="add_group" type="button" value="OPCION3" /></li>
+            <li> <label for="add_group">OPCION 4: </label> <input id="add_group" type="button" value="OPCION4" /> </li>
         </ul>
      </div>
+     <div id="codQR">
 
+
+     </div>
+    
 
 
 <?php $view["slots"]->stop(); ?>
@@ -78,13 +84,13 @@
     function qr(){
         $.ajax({
             type:"GET",
-            url: "../../vendor/generadorQR.php",
+            url: "http://localhost/web/vendor/generadorQR.php",
             async: true,
             dataType:"text",
             success: function(data) {
                 if (data==='ok'){
                     alert("CODIGO GENERADO");
-                    $("#codQR").append("<img src='../img/ejemplo.png'>");
+                    $("#codQR").append("<img src='<?php echo $view['assets']->getUrl('img/ejemplo.png') ?>'>");
                     $("#bActivar").attr("disabled", "disabled");
                 }
              }
