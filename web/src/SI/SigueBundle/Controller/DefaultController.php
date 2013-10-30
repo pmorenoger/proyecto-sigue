@@ -22,16 +22,19 @@ class DefaultController extends Controller
             
             
             $correo = $request->request->get("user");
-            $pass = $request->request->get("pass");
+            $pass = $request->request->get("password");
             
             $em = $this->getDoctrine()->getManager();
            
             
             
             var_dump($correo);    
+            var_dump($pass);
             $profesor = $em
                         ->getRepository('SISigueBundle:Profesor')
-                        ->findOneByCorreoAndPass($correo,$pass);
+                        ->findOneByCorreo(array('correo' => $correo, 'password' => $pass));
+            
+            
             var_dump($profesor);
             $alumno = $this->getDoctrine()
                         ->getRepository('SISigueBundle:Alumnos')
@@ -41,14 +44,13 @@ class DefaultController extends Controller
             
             if($profesor) {
             /*SI ES UN PROFESOR*/
-                return $this->render('SISigueBundle:Profesor:index.html.php');
+                return $this->redirect('Profesor/perfil');
             }elseif($alumno){
                 /*SI ES UN ALUMNO*/
-                 return $this->render('SISigueBundle:Alumno:index.html.php');                
+                 return $this->redirect('Alumno/perfil');                
             }else{
             /*SI NO ES UN ALUMNO TAMPOCO: REDIRECT A INICIO*/
-            // return $this->redirect('inicio');
-                echo"CAGADA";
+                 return $this->render('SISigueBundle:Default:error.html.php');               
             }
         
     }
