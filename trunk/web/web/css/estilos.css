@@ -27,8 +27,7 @@ root {
 
 #top{
     
-    color:red;
-    margin-left:39%;
+    color:red;   
     margin-top:10px;
     float:left;
     width:100%;
@@ -36,8 +35,7 @@ root {
 /*Principales estilos de body, content y formulario inicial*/
 body {
        background-color:#F0F8FF;    
-       width:100%;
-    
+       width:1200px;
 }
 
 #content {
@@ -51,7 +49,7 @@ body {
 }
 #content #right {
     width:20%;
-    float: right;    
+    float: left;    
 }
 
 #content #form_login {
