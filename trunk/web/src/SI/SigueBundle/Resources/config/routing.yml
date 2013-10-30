@@ -1,9 +1,12 @@
 si_sigue_homepage:
     pattern:  /inicio
     defaults: { _controller: SISigueBundle:Default:index }
-si_sigue_homepage2:
+si_sigue_login:
     pattern:  /login
     defaults: { _controller: SISigueBundle:Default:login }
-si_sigue_perfil:
-    pattern:  /perfil
-    defaults:   {_controller: SISigueBundle:Default:perfil}
+si_sigue_perfil_alumno:
+    pattern:  /Alumno/perfil
+    defaults:   {_controller: SISigueBundle:Alumno:perfil}
+si_sigue_perfil_profesor:
+    pattern:  /Profesor/perfil
+    defaults:   {_controller: SISigueBundle:Profesor:perfil}

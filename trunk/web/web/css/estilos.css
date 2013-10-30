@@ -52,6 +52,16 @@ body {
     float: left;    
 }
 
+#content #center{
+    
+    float: left;
+    width: 40%;
+    margin-left: 20%;
+    margin-top: 10%;
+    background: beige;
+    
+}
+
 #content #form_login {
     width:45%;
     float: left;
@@ -80,6 +90,8 @@ body {
       cursor:pointer;
 }
 
+
+
 #content .content_center{
     
     float:left;
@@ -93,6 +105,11 @@ body {
     margin-left:45%;
     margin-top:10px;
     float:left;
-    width:75%;
-    
+    width:75%;    
+}
+
+
+
+#accordion.profesor {
+    width:auto;
 }
