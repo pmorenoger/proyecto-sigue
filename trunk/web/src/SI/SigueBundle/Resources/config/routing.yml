@@ -5,8 +5,13 @@ si_sigue_login:
     pattern:  /login
     defaults: { _controller: SISigueBundle:Default:login }
 si_sigue_perfil_alumno:
-    pattern:  /Alumno/perfil
-    defaults:   {_controller: SISigueBundle:Alumno:perfil}
+    pattern:  /Alumno/inicio
+    defaults:   {_controller: SISigueBundle:Alumno:index}
 si_sigue_perfil_profesor:
-    pattern:  /Profesor/perfil
-    defaults:   {_controller: SISigueBundle:Profesor:perfil}
+    pattern:  /Profesor/inicio/{exito}
+    defaults:   {_controller: SISigueBundle:Profesor:index, exito:true}
+    requirements:
+        culture:  true|false
+si_sigue_subir_profesor:
+    pattern:  /Profesor/subir_alumno
+    defaults:   {_controller: SISigueBundle:Profesor:subir_alumno}

@@ -55,19 +55,5 @@ class DefaultController extends Controller
         
     }
     
-    public function createAction()
-{
-    $alumno = new Alumno();
-    $alumno->setNombre("Diego");
-    $alumno->setDni("70820622B");
-    $alumno->setApellidos(' es el puto amo');
-    $alumno->setCorreo("diego.santos.garcia@ucm.es");
-    $alumno->setPassword("diego");
     
-    $em = $this->getDoctrine()->getManager();
-    $em->persist($alumno);
-    $em->flush();
-
-    return $this->render('SISigueBundle:Default:prueba.html.php', array("idalumno"=>$alumno->getIdalumno()));
-}
 }
