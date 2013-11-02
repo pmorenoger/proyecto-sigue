@@ -4,8 +4,8 @@
 <?php $view['slots']->start("center"); ?>
     <div class="perfil">
         <div class="encabezado3">
-            <h3>BIENVENIDO A TU PERFIL</h3>
-        </div>
+            <h3>Bienvenido  <?php echo htmlentities($alumno->getNombre()); ?></h3> 
+        </div> 
         <!--<div class="accordionCentro">-->
         <table>
             <tr>

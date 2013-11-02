@@ -56,8 +56,13 @@ class Alumnos
      */
     private $idalumno;
 
-
-
+    /**
+     * @var string
+     * 
+     * @ORM\Column(name="codigo_id", type="string", nullable=true)
+     */
+    private $codigo_id;
+    
     /**
      * Set nombre
      *
@@ -181,5 +186,28 @@ class Alumnos
     public function getIdalumno()
     {
         return $this->idalumno;
+    }
+    
+    /**
+     * Get codigo_id
+     * 
+     * @return string
+     */
+    public function getCodigo_id()
+    {
+        return $this->codigo_id;
+    }
+    
+    /**
+     * Set codigo_id
+     *
+     * @param string $codigo_id
+     * @return Alumnos
+     */
+    public function setCodigo_id($codigo_id)
+    {
+        $this->codigo_id = $codigo_id;
+        
+        return $this;
     }
 }
