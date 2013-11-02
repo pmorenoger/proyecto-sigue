@@ -10,7 +10,7 @@ class AlumnoController extends Controller
 {
     public function perfilAction()
     {
-        return $this->render('SISigueBundle:Alumno:index.html.php');
+        return $this->render('SISigueBundle:Alumno:perfil.html.php');
     }
 
 }
