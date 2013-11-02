@@ -65,13 +65,13 @@
     function qr(){
         $.ajax({
             type:"GET",
-            url: "../../vendor/generadorQR.php",
+            url: "../../../vendor/generadorQR.php",
             async: true,
             dataType:"text",
             success: function(data) {
                 if (data==='ok'){
                     alert("CODIGO GENERADO");
-                    $("#codQR").append("<img src='../img/ejemplo.png'>");
+                    $("#codQR").append("<img src='../../img/ejemplo.png'>");
                     $("#bActivar").attr("disabled", "disabled");
                 }
              }

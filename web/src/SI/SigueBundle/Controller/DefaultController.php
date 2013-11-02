@@ -44,10 +44,10 @@ class DefaultController extends Controller
             
             if($profesor) {
             /*SI ES UN PROFESOR*/
-                return $this->redirect('Profesor/perfil');
+                return $this->redirect('Profesor/inicio');
             }elseif($alumno){
                 /*SI ES UN ALUMNO*/
-                 return $this->redirect('Alumno/perfil');                
+                 return $this->redirect('Alumno/inicio');                
             }else{
             /*SI NO ES UN ALUMNO TAMPOCO: REDIRECT A INICIO*/
                  return $this->render('SISigueBundle:Default:error.html.php');               
