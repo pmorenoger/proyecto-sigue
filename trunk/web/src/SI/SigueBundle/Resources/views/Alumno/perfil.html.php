@@ -69,9 +69,11 @@
             async: true,
             dataType:"text",
             success: function(data) {
-                if (data==='ok'){
+                if (data === 'ok'){
                     alert("CODIGO GENERADO");
                     $("#codQR").append("<img src='../../img/ejemplo.png'>");
+                    $("#bActivar").attr("disabled", "disabled");
+                }else{
                     $("#bActivar").attr("disabled", "disabled");
                 }
              }
