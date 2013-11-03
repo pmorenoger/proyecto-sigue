@@ -12,7 +12,7 @@
                 <td>
                     <div id="accordion-resizer" class="ui-widget-content">
                         <div id="accordion">
-                            <h3>Curso 2012/2013</h3>
+                            <h3>Curso 2013/2014</h3>
                                  <div>
                                     <ul>           
                                         <li> <a href=""> PLg </a> </li>
@@ -63,15 +63,18 @@
     });
     
     function qr(){
+        cod = '<?php echo htmlentities($alumno->getCodigo_id()); ?>';
         $.ajax({
             type:"GET",
             url: "../../../vendor/generadorQR.php",
             async: true,
-            dataType:"text",
+            data: {
+               codigo: cod 
+            },
+            dataType:"json",
             success: function(data) {
-                if (data === 'ok'){
-                    alert("CODIGO GENERADO");
-                    $("#codQR").append("<img src='../../img/ejemplo.png'>");
+                if (data.status){
+                    $("#codQR").append("<img src='../.." + data.dir + "'>");
                     $("#bActivar").attr("disabled", "disabled");
                 }else{
                     $("#bActivar").attr("disabled", "disabled");
