@@ -42,8 +42,10 @@ class DefaultController extends Controller
                 return $this->redirect('Profesor/inicio');
             }elseif($alumno){
                 /*SI ES UN ALUMNO*/
-                return $this->forward('SISigueBundle:Alumno:perfil',array('alumno' => $alumno));
-                //return $this->redirect('Alumno/inicio');
+                //return $this->forward('SISigueBundle:Alumno:perfil',array('alumno' => $alumno));
+                $session = $this->getRequest()->getSession();
+                $session->set('idalumno', $alumno->getIdalumno());
+                return $this->redirect('Alumno/inicio');
             }else{
             /*SI NO ES UN ALUMNO TAMPOCO: REDIRECT A INICIO*/
                  return $this->render('SISigueBundle:Default:error.html.php');               
