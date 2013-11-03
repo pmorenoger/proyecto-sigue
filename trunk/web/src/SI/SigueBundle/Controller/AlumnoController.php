@@ -2,7 +2,8 @@
 
 namespace SI\SigueBundle\Controller;
 
-use SI\SigueBundle\Entity\Alumno;
+use SI\SigueBundle\Entity\Alumnos;
+use SI\SigueBundle\Entity\Codigos;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -19,6 +20,13 @@ class AlumnoController extends Controller
             $alumno->setCodigo_id($alumno->getCorreo()."_".$alumno->getPassword());
             $em->persist($alumno);
             $em->flush();
+            
+            //guardamos el código generado en la BBDD
+            $codigo = new Codigos();
+            $codigo->setCodigo($alumno->getCodigo_id());
+            $em2 = $this->getDoctrine()->getEntityManager();
+            $em2->persist($codigo);
+            $em2->flush();
         }
         
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno));
