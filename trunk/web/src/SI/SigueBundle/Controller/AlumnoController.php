@@ -4,6 +4,7 @@ namespace SI\SigueBundle\Controller;
 
 use SI\SigueBundle\Entity\Alumnos;
 use SI\SigueBundle\Entity\Codigos;
+use SI\SigueBundle\Entity\AsignaturaAlumno;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -29,7 +30,13 @@ class AlumnoController extends Controller
             $em2->flush();
         }
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno));
+        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
+        $asig = array();
+        foreach ($asignaturas as $a){
+            array_push($asig, $a->getIdAsignatura());
+        }
+        
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' =>$asig));
     }
            
     /*public function qrAction()
