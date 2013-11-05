@@ -30,7 +30,7 @@ root {
     color:red;
     margin-left:39%;
     margin-top:10px;
-    float:left;
+    /*float:left;*/
     width:100%;
 }
 /*Principales estilos de body, content y formulario inicial*/

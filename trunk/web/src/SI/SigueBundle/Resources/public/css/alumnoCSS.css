@@ -14,6 +14,7 @@ a {text-decoration:none; color:#3e9c8f;}
 
 .titles {
 	margin-top:20px;
+        width: auto;
 }
 
 .encabezado {
@@ -29,7 +30,7 @@ a {text-decoration:none; color:#3e9c8f;}
         background:#D5E4E8 none repeat scroll 0 0; 
         border:3px solid #B5CAD0; 
         margin:20px 0px; 
-        padding:auto;     
+        width:auto;     
 }
 
 .encabezado3 h3{ 
@@ -120,7 +121,7 @@ input[type="submit"]{
 
 #accordion-resizer {
     padding: auto;
-    width: 600px;
+    width: 400px;
     height: auto;
     margin-left: 50px;
     margin-right: 325px;
@@ -128,7 +129,7 @@ input[type="submit"]{
 
 #accordion {
     font-size: 1.2em;
-    width: 600px;
+    width: 400px;
     height: 300px;
     margin-left: auto;
     margin-right: auto;
