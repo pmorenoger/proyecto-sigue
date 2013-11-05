@@ -14,21 +14,17 @@
                         <div id="accordion">
                             <h3>Curso 2013/2014 .</h3>
                                  <div>
-                                    <ul>           
-                                        <li> <a href=""> PLg </a> </li>
-                                        <li> <a href=""> EE </a> </li>
-                                        <li> <a href=""> IS </a> </li>
-                                        <li> <a href=""> IAIC </a> </li>
+                                    <ul>
+                                        <?php foreach ($asignaturas as $as): ?>
+                                        <li> <a href=""><?php echo $as->getNombre();?> </a> </li>
+                                        <?php endforeach; ?>
                                     </ul>
                                  </div>
-                            <h3>Curso 2013/2014 .</h3>
+                            <h3>Otras Opciones</h3>
                                 <div>
                                     <ul>           
-                                        <li> <a href=""> ISBC </a> </li>
-                                        <li> <a href=""> IGr </a> </li>
-                                        <li> <a href=""> SI </a> </li>
-                                        <li> <a href=""> PDA </a> </li>
-                                    </ul>
+                                        <li> <a href=""> Perfil </a> </li>
+                                        <li> <a href=""> Otros </a> </li>
                                  </div>
                           </div>
                         </div>
