@@ -6,70 +6,48 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Users
- *
- * @ORM\Table(name="users")
- * @ORM\Entity
  */
 class Users
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="unique_id", type="string", length=23, nullable=false)
      */
     private $uniqueId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=50, nullable=false)
      */
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=100, nullable=false)
      */
     private $email;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="encrypted_password", type="string", length=80, nullable=false)
      */
     private $encryptedPassword;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="salt", type="string", length=10, nullable=false)
      */
     private $salt;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="uid", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $uid;
-
 
 
     /**

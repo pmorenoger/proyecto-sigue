@@ -6,42 +6,28 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Asignaturas
- *
- * @ORM\Table(name="asignaturas")
- * @ORM\Entity
  */
 class Asignaturas
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="curso", type="string", length=45, nullable=true)
      */
     private $curso;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="grupo", type="string", length=45, nullable=true)
      */
     private $grupo;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
     private $nombre;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
 
 
     /**

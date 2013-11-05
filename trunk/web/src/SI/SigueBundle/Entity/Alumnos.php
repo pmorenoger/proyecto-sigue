@@ -6,61 +6,44 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Alumnos
- *
- * @ORM\Table(name="alumnos")
- * @ORM\Entity
  */
 class Alumnos
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
     private $nombre;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="apellidos", type="string", length=255, nullable=true)
      */
     private $apellidos;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="dni", type="string", length=10, nullable=true)
      */
     private $dni;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="correo", type="string", length=255, nullable=true)
      */
     private $correo;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=45, nullable=true)
      */
     private $password;
+    
+    /**
+     * @var string
+     */
+    private $codigo_id;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="idalumno", type="integer")
-     * @ORM\Id     
      */
     private $idalumno;
 
-    /**
-     * @var string
-     * 
-     * @ORM\Column(name="codigo_id", type="string", nullable=true)
-     */
-    private $codigo_id;
     
     /**
      * Set nombre
@@ -186,17 +169,30 @@ class Alumnos
     {
         return $this->idalumno;
     }
-     /**
-     * Set idalumno
+
+    /**
+     * Set codigo_id
      *
-     * @return integer 
+     * @param string $codigoId
+     * @return Alumnos
      */
-    public function setIdalumno($idalumno)
+    public function setCodigoId($codigoId)
     {
-       $this->idalumno = $idalumno;
+        $this->codigo_id = $codigoId;
     
         return $this;
     }
+
+    /**
+     * Get codigo_id
+     *
+     * @return string 
+     */
+    public function getCodigoId()
+    {
+        return $this->codigo_id;
+    }
+
     /**
      * Get codigo_id
      * 
@@ -217,6 +213,18 @@ class Alumnos
     {
         $this->codigo_id = $codigo_id;
         
+        return $this;
+    }
+    /**
+     * Set idalumno
+     *
+     * @param integer $idalumno
+     * @return Alumnos
+     */
+    public function setIdalumno($idalumno)
+    {
+        $this->idalumno = $idalumno;
+    
         return $this;
     }
 }

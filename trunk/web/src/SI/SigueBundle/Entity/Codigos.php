@@ -6,28 +6,18 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Codigos
- *
- * @ORM\Table(name="codigos")
- * @ORM\Entity
  */
 class Codigos
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="codigo", type="text", nullable=true)
      */
     private $codigo;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="idcodigos", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idcodigos;
-
+    private $idcodigo;
 
 
     /**
@@ -54,12 +44,12 @@ class Codigos
     }
 
     /**
-     * Get idcodigos
+     * Get idcodigo
      *
      * @return integer 
      */
-    public function getIdcodigos()
+    public function getIdcodigo()
     {
-        return $this->idcodigos;
+        return $this->idcodigo;
     }
 }
