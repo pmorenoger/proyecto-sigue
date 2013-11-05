@@ -36,6 +36,19 @@
 <?php $view['slots']->start("center"); ?>
 <!-- AQUI IRAN LAS OPCIONES QUE TENGA EL PROFESOR -->
 
+ <?php if($exito==="true"): ?>
+    <div id="tooltip_exito"> 
+        <p>¡La lista se ha cargado con éxito!</p>
+        <p>En breve tendrá acceso a todos los datos del curso introducido.</p>
+    </div>
+<?php endif; ?>
+
+<?php if($exito ==="false"): ?>
+     <div id="tooltip_exito"> 
+        <p>¡Lo sentimos!</p>
+        <p>No se ha podido procesar la solicitud. Inténtelo de nuevo más tarde.</p>
+    </div>
+<?php endif;?>
 <div style="margin-left:750px;">
     <form enctype="multipart/form-data" action="subir_alumno" method="POST">
         <!-- MAX_FILE_SIZE debe preceder el campo de entrada de archivo -->
@@ -67,6 +80,19 @@
                    $( "#accordion" ).accordion( "refresh" );
                }
            });
+           
+           $( "#tooltip_exito" ).dialog({                
+                buttons: [
+                  {
+                    text: "OK",
+                    click: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+                ]
+              });
+          
        });
+       
 </script>
 <?php $view['slots']->stop(); ?>

@@ -9,9 +9,8 @@ si_sigue_perfil_alumno:
     defaults:   {_controller: SISigueBundle:Alumno:perfil }
 si_sigue_perfil_profesor:
     pattern:  /Profesor/inicio/{exito}
-    defaults:   {_controller: SISigueBundle:Profesor:index, exito:true}
-    requirements:
-        culture:  true|false
+    defaults:   {_controller: SISigueBundle:Profesor:index, exito:none}
+    requirements:       
 si_sigue_subir_profesor:
     pattern:  /Profesor/subir_alumno
     defaults:   {_controller: SISigueBundle:Profesor:subir_alumno}
