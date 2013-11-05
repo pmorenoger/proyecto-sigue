@@ -51,8 +51,7 @@ class Alumnos
      * @var integer
      *
      * @ORM\Column(name="idalumno", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Id     
      */
     private $idalumno;
 
@@ -187,7 +186,17 @@ class Alumnos
     {
         return $this->idalumno;
     }
+     /**
+     * Set idalumno
+     *
+     * @return integer 
+     */
+    public function setIdalumno($idalumno)
+    {
+       $this->idalumno = $idalumno;
     
+        return $this;
+    }
     /**
      * Get codigo_id
      * 
