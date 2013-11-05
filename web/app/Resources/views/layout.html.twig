@@ -1,0 +1,24 @@
+{% extends '::base.html.twig' %}
+
+{% block _content %}
+<div id="top">    
+   <div class="titles">        
+            <img src="{{asset('img/logo.png')}}" ALIGN="middle">
+            <text class="encabezado">IGUE</text> 
+            <text class="encabezado2"> {% block rol %}{% endblock %}</text>       
+    </div>
+</div>
+
+<div id="content">
+    <div id="left">
+         {% block menu_left %}{% endblock %}
+    </div>
+    <div id="center">
+         {% block center %}{% endblock %}
+    </div>
+    <div id="right">
+         {% block menu_right %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+

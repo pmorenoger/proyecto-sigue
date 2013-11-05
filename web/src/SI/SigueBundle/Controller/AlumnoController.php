@@ -17,7 +17,7 @@ class AlumnoController extends Controller
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         
         if ($alumno->getCodigo_id() === NULL){
-            $alumno->setCodigo_id($alumno->getCorreo()."_".$alumno->getPassword());
+            $alumno->setCodigo_id($alumno->getCorreo()."#&".$alumno->getPassword());
             $em->persist($alumno);
             $em->flush();
             

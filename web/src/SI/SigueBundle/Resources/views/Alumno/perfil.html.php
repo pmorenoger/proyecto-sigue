@@ -4,15 +4,15 @@
 <?php $view['slots']->start("center"); ?>
     <div class="perfil">
         <div class="encabezado3">
-            <h3>Bienvenido  <?php echo htmlentities($alumno->getNombre()); ?></h3> 
+            <h3>Bienvenido  <?php echo $alumno->getNombre(); ?></h3> 
         </div> 
         <!--<div class="accordionCentro">-->
-        <table>
+        <table >
             <tr>
                 <td>
                     <div id="accordion-resizer" class="ui-widget-content">
                         <div id="accordion">
-                            <h3>Curso 2013/2014</h3>
+                            <h3>Curso 2013/2014 .</h3>
                                  <div>
                                     <ul>           
                                         <li> <a href=""> PLg </a> </li>
@@ -21,7 +21,7 @@
                                         <li> <a href=""> IAIC </a> </li>
                                     </ul>
                                  </div>
-                            <h3>Curso 2013/2014</h3>
+                            <h3>Curso 2013/2014 .</h3>
                                 <div>
                                     <ul>           
                                         <li> <a href=""> ISBC </a> </li>
@@ -63,7 +63,7 @@
     });
     
     function qr(){
-        cod = '<?php echo htmlentities($alumno->getCodigo_id()); ?>';
+        cod = '<?php echo $alumno->getCodigo_id(); ?>';
         $.ajax({
             type:"GET",
             url: "../../../vendor/generadorQR.php",
