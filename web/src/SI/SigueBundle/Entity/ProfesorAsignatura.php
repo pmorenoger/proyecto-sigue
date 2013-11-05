@@ -6,38 +6,23 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ProfesorAsignatura
- *
- * @ORM\Table(name="profesor_asignatura")
- * @ORM\Entity
  */
 class ProfesorAsignatura
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id_asignatura", type="integer", nullable=true)
      */
     private $idAsignatura;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var \SI\SigueBundle\Entity\Profesor
-     *
-     * @ORM\ManyToOne(targetEntity="SI\SigueBundle\Entity\Profesor")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_profesor", referencedColumnName="idprofesor")
-     * })
      */
     private $idProfesor;
-
 
 
     /**

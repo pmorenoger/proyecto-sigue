@@ -6,79 +6,38 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Profesor
- *
- * @ORM\Table(name="profesor")
- * @ORM\Entity
  */
 class Profesor
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
      */
     private $nombre;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="apellidos", type="string", length=255, nullable=true)
      */
     private $apellidos;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="dni", type="string", length=255, nullable=true)
      */
     private $dni;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="correo", type="string", length=255, nullable=true)
      */
     private $correo;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=45, nullable=true)
      */
     private $password;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="idprofesor", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $idprofesor;
-
-
-   public function findOneByCorreoAndPass($correo, $pass)
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                'SELECT count dni FROM SISigueBundle:Profesor p WHERE p.correo = :correo AND p.password = :pass '
-            )
-                ->setParameters(array(
-                    'correo' => $correo,
-                    'pass'  => $pass,
-                      ))
-                ->getResult() > 0;
-    }
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -204,5 +163,18 @@ class Profesor
     public function getIdprofesor()
     {
         return $this->idprofesor;
+    }
+
+    /**
+     * Set idprofesor
+     *
+     * @param integer $idprofesor
+     * @return Profesor
+     */
+    public function setIdprofesor($idprofesor)
+    {
+        $this->idprofesor = $idprofesor;
+    
+        return $this;
     }
 }

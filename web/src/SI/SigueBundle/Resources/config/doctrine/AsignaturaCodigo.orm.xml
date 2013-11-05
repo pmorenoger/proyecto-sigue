@@ -6,7 +6,7 @@
     </id>
     <many-to-one field="idCodigo" target-entity="Codigos">
       <join-columns>
-        <join-column name="id_codigo" referenced-column-name="idcodigos"/>
+        <join-column name="id_codigo" referenced-column-name="idcodigo"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="idAsignaturaAlumno" target-entity="AsignaturaAlumno">
