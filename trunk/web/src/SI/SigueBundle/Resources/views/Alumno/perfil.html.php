@@ -12,14 +12,16 @@
                 <td>
                     <div id="accordion-resizer" class="ui-widget-content">
                         <div id="accordion">
+                            <?php if (count($asignaturas)>0) :?>
                             <h3>Curso 2013/2014 .</h3>
                                  <div>
                                     <ul>
                                         <?php foreach ($asignaturas as $as): ?>
-                                        <li> <a href=""><?php echo $as->getNombre();?> </a> </li>
+                                        <li> <a href="#"><?php echo $as->getNombre();?> </a> </li>
                                         <?php endforeach; ?>
                                     </ul>
                                  </div>
+                            <?php endif; ?>
                             <h3>Otras Opciones</h3>
                                 <div>
                                     <ul>           
