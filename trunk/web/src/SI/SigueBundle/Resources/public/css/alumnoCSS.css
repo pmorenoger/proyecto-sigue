@@ -63,6 +63,12 @@ a {text-decoration:none; color:#3e9c8f;}
 	font-size:1.4em;
 }
 
+.labelToken {
+	color:#20B2AA;
+	font-weight:bold;
+	font-size:1.1em;
+}
+
 .labelContraseña {
 	color:#000080;
 	font-weight:bold;

@@ -5,8 +5,7 @@
     <div class="perfil">
         <div class="encabezado3">
             <h3>Bienvenido  <?php echo $alumno->getNombre(); ?></h3> 
-        </div> 
-        <!--<div class="accordionCentro">-->
+        </div>
         <table >
             <tr>
                 <td>
@@ -17,7 +16,7 @@
                                  <div>
                                     <ul>
                                         <?php foreach ($asignaturas as $as): ?>
-                                        <li> <a href="#"><?php echo $as->getNombre();?> </a> </li>
+                                        <li> <a href="<?php echo $view['router']->generate('si_sigue_alumno_registrar', array('id' => $alumno->getIdalumno(),'asig'=>$as->getId()),true); ?>"> <?php echo $as->getNombre();?> </a> </li>
                                         <?php endforeach; ?>
                                     </ul>
                                  </div>

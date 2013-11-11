@@ -38,23 +38,33 @@ class AlumnoController extends Controller
         
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' =>$asig));
     }
-           
-    /*public function qrAction()
-    {
-        $peticion = $this->getRequest()->getSession();
-        $alumno = $peticion->get('alumno');
-        var_dump($alumno);
-        if ($alumno->getCodigo_id() === NULL){
-            $em = $this->getDoctrine()->getEntityManager();
-            $alumno->setCodigo_id($alumno->getCorreo()."_".$alumno->getPassword());
-            $em->persist($alumno);
-            $em->flush();
-            QRcode::png($alumno->getCodigo_id(), '../web/img/ejemplo.png',QR_ECLEVEL_H,8);
-            $response = array('url' => "<img src='../../img/ejemplo.png'>", 'ok' => true);
-            return new Response(json_encode($response));
-        }
+    
+    public function registrarAction($id,$asig){
+        //obtenenos el alumno y la asignatura con que realziaremos las diferentes opciones
+        $em = $this->getDoctrine()->getEntityManager();
+        $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
+        $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
         
-        return new Response(json_encode(array('ok' => false)));
-    }*/
+        /*$session = $this->getRequest()->getSession();
+        $array = array('al'=>$alumno,'asig'=>$asignatura);
+        $session->set('datos', $array);*/
+        
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>false));
+    }
+    
+    public function tokenAction($id,$asig){
+        $res = true;
+        
+        $request = Request::createFromGlobals();
+        $token = $request->request->get("codigo");
+        $em = $this->getDoctrine()->getEntityManager();
+        $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
+        $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
+        /*$peticion = $this->getRequest();
+        $alumno = $peticion->get('alumno');
+        $asignatura = $peticion->get('alumno');*/
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>$res));
+        //operaciones
+    }
 }
 ?>
