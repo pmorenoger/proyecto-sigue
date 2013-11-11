@@ -39,6 +39,9 @@ class DefaultController extends Controller
             
             if($profesor) {
             /*SI ES UN PROFESOR*/
+              
+                $session = $this->getRequest()->getSession();
+                $session->set('idprofesor', $profesor->getIdprofesor());
                 return $this->redirect('Profesor/inicio');
             }elseif($alumno){
                 /*SI ES UN ALUMNO*/
