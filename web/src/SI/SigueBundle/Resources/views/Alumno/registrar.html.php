@@ -16,13 +16,18 @@
                         <input type="text" name="codigo" placeholder='Código' class='validate[required]'/>
                         <input type="submit" value="Registrar" id="bRegistrar" />
                     </form>
-                    <div id="mensaje">
-                        <?php if($res == 2): ?>
-                            <p>TOKEN REGISTRADO CORRECTAMENTE !!! </p>
-                        <?php elseif ($res == 1): ?>
-                            <p>EL TOKEN ES INVÁLIDO !!!</p>
-                        <?php endif;?>
-                    </div>
+                    
+                    <?php if($res == 2): ?>
+                        <div id="tooltip_exito">
+                            <p>TOKEN REGISTRADO CORRECTAMENTE</p>
+                        </div>
+                    <?php elseif ($res == 1): ?>
+                        <div id="tooltip_exito">
+                            <p>EL TOKEN ES INVÁLIDO</p>
+                            <p>Debes de ingresas un código registrado por el profesor y que no sea repetido. </p>
+                        </div>
+                    <?php endif;?>
+                    
                 </div>
             <h3>Ver estadísticas</h3>
                 <div>
@@ -46,6 +51,17 @@
                 $( "#accordion" ).accordion( "refresh" );
             }
         });
+        
+        $( "#tooltip_exito" ).dialog({                
+                buttons: [
+                  {
+                    text: "OK",
+                    click: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+                ]
+              });
         
         $("#bRegistrar").submit(fnOnSubmit);
         $("#registrar_token").validationEngine('attach',{relative: true,promptPosition: "bottomRight"});
