@@ -10,9 +10,11 @@ si_sigue_perfil_alumno:
 si_sigue_alumno_registrar:
     pattern:  /Alumno/registrar/{id}/{asig}
     defaults:   {_controller: SISigueBundle:Alumno:registrar }
+    methods:  [GET]
 si_sigue_alumno_token:
     pattern:  /Alumno/registrar/{id}/{asig}
     defaults:   {_controller: SISigueBundle:Alumno:token }
+    methods:  [POST]
 si_sigue_perfil_profesor:
     pattern:  /Profesor/inicio/{exito}
     defaults:   {_controller: SISigueBundle:Profesor:index, exito:none}
