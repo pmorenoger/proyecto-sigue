@@ -38,5 +38,13 @@
         android:text="Escanea tu codigo QR personal para registrarte."
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp"
+        android:text="" />
     
 </RelativeLayout>

@@ -38,7 +38,8 @@ public class MainActivity extends Activity {
 	TextView registerErrorMsg;
 	JSONObject json;
 	UserFunctions userFunction;
-
+	String email;
+	String contrasena;
 
     // JSON Response node names
 
@@ -66,6 +67,9 @@ public class MainActivity extends Activity {
 		customFont.setTypeface(font);
 		customFont = (TextView)findViewById(R.id.textView2);
 		customFont.setTypeface(font);
+		customFont = (TextView)findViewById(R.id.textView3);
+		customFont.setTypeface(font);
+		loginErrorMsg =(TextView) findViewById(R.id.textView3);
 		final Button btnScan = (Button)findViewById(R.id.button1); 
 		
 			btnScan.setOnClickListener(new View.OnClickListener(){
@@ -74,24 +78,16 @@ public class MainActivity extends Activity {
 				
 				
 
-					/*Intent intent = new Intent("com.example.sigue.SCAN");
+					Intent intent = new Intent("com.example.sigue.SCAN");
 					intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); 
-					startActivityForResult(intent, 0);*/
-					userFunction = new UserFunctions();
-					new Asincrono1().execute(userFunction);
+					startActivityForResult(intent, 0);
+					
 
 
 				}
 	                
 
 	        });
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -104,10 +100,17 @@ public class MainActivity extends Activity {
 	            String formato = intent.getStringExtra("SCAN_RESULT_FORMAT");
 
 	            // Hacer algo con los datos obtenidos.
-	            Toast toast = Toast.makeText(this, contenido, Toast.LENGTH_SHORT);
-	            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-	            toast.show();        
-
+	            try{
+	            String [] parametros = contenido.split("#&");
+	            	email = parametros[0];
+	            	contrasena = parametros[1];
+	            }catch(NullPointerException e){
+	            	Toast toast = Toast.makeText(this, "Codigo QR no válido", Toast.LENGTH_SHORT);
+	                toast.show();
+	            }
+	            userFunction = new UserFunctions();
+				new Asincrono1().execute(userFunction);
+	  
 
 	        } else if (resultCode == RESULT_CANCELED) {
 
@@ -133,7 +136,7 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
         }
         @Override
     	protected JSONObject doInBackground(UserFunctions... userfunction) {
-        	JSONObject json = userFunction.loginUser("ramonnuche@ucm.es", "probando");
+        	JSONObject json = userFunction.loginUser(email, contrasena);
     		return json;
     	}
         
@@ -141,12 +144,15 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
 	@Override
         protected void onPostExecute(JSONObject json) {
 		 // check for login response
+		if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
+        }
 
         try {
 
             if (json.getString(KEY_SUCCESS) != null) {
 
-                //loginErrorMsg.setText("");
+                loginErrorMsg.setText("");
 
                 String res = json.getString(KEY_SUCCESS);
 
@@ -192,7 +198,7 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
 
                     // Error in login
 
-                   // loginErrorMsg.setText("Incorrect username/password");
+                    loginErrorMsg.setText("Incorrect QR code");
 
                 }
 
