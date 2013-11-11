@@ -5,44 +5,47 @@
     android:background="@drawable/background"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:layout_weight="1"
-        android:background="@drawable/botonredondo"
-        android:layout_centerVertical="true"
-        android:layout_margin="7dp"
-        android:text="REGISTRAR NUEVO TOKEN" />
+  <TabHost android:id="@android:id/tabhost"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent">
+ 
+     <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+ 
+         <TabWidget android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@android:id/tabs" />
+ 
+         <FrameLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:id="@android:id/tabcontent" >
+ 
+            <LinearLayout android:id="@+id/tab1"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" >
+ 
+                <TextView android:id="@+id/textView1"
+                      android:text="Contenido Tab 1"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" />
+        </LinearLayout>
+ 
+            <LinearLayout android:id="@+id/tab2"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" >
+ 
+                <TextView android:id="@+id/textView2"
+                      android:text="Contenido Tab 2"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" />
+        </LinearLayout>
+         </FrameLayout>
+    </LinearLayout>
+</TabHost>
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:layout_centerVertical="true"
-         android:layout_margin="7dp"
-         android:layout_weight="1"
-        android:background="@drawable/botonredondo"
-        android:text="MIS TOKENS" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:layout_centerVertical="true"
-         android:layout_margin="7dp"
-         android:layout_weight="1"
-        android:background="@drawable/botonredondo"
-        android:text="MIS ESTADISTICAS" />
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:layout_centerVertical="true"
-         android:layout_margin="7dp"
-         android:layout_weight="1"
-        android:background="@drawable/botonredondo"
-        android:text="DESVINCULAR APLICACION" />
 
 </LinearLayout>
