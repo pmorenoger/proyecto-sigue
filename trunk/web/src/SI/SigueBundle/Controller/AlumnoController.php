@@ -5,6 +5,7 @@ namespace SI\SigueBundle\Controller;
 use SI\SigueBundle\Entity\Alumnos;
 use SI\SigueBundle\Entity\Codigos;
 use SI\SigueBundle\Entity\AsignaturaAlumno;
+use SI\SigueBundle\Entity\AsignaturaCodigo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -45,26 +46,51 @@ class AlumnoController extends Controller
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
         
-        /*$session = $this->getRequest()->getSession();
-        $array = array('al'=>$alumno,'asig'=>$asignatura);
-        $session->set('datos', $array);*/
-        
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>false));
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0));
     }
     
     public function tokenAction($id,$asig){
-        $res = true;
+        $res = 0;
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        
+        $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
+        $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
         
         $request = Request::createFromGlobals();
         $token = $request->request->get("codigo");
-        $em = $this->getDoctrine()->getEntityManager();
-        $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
-        $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
-        /*$peticion = $this->getRequest();
-        $alumno = $peticion->get('alumno');
-        $asignatura = $peticion->get('alumno');*/
+        $codigo = self::tokenValido($em , $token, $asignatura); 
+        if ( $codigo !== NULL ){
+            //registramos el código para el alumno y la asignatura
+            $a = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
+            if (!is_null($a)){
+                $asig_cod = new AsignaturaCodigo();
+                $asig_cod->setIdAsignaturaAlumno($a);
+                $asig_cod->setIdCodigo($codigo);
+                $em->persist($asig_cod);
+                $em->flush();
+                $res = 2;
+            }else{
+                $res = 1;
+            }   
+        }else{
+            $res = 1;
+        }
+        
         return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>$res));
-        //operaciones
+    }
+    
+    private function tokenValido($em,$token,$asignatura){
+        if ($token !== ""){
+            $codigo = $em->getRepository('SISigueBundle:Codigos')->findOneByCodigo($token);
+            if ($codigo !== NULL){
+                $asig_cod = $em->getRepository('SISigueBundle:AsignaturaCodigo')->findOneByIdCodigo($codigo);
+                if ($asig_cod === NULL and $codigo->getId()->getId() == $asignatura->getId()){
+                    return $codigo;
+                }else return NULL;
+            }else return NULL;
+        }
+        return NULL;
     }
 }
 ?>

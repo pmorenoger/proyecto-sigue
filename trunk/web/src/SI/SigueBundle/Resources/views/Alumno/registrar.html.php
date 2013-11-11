@@ -16,11 +16,18 @@
                         <input type="text" name="codigo" placeholder='Código' class='validate[required]'/>
                         <input type="submit" value="Registrar" id="bRegistrar" />
                     </form>
-                    <?php if($res == true): ?>
-                        <p>TOKEN REGISTRADO CORRECTAMENTE !!! </p>
-                    <?php endif;?>
+                    <div id="mensaje">
+                        <?php if($res == 2): ?>
+                            <p>TOKEN REGISTRADO CORRECTAMENTE !!! </p>
+                        <?php elseif ($res == 1): ?>
+                            <p>EL TOKEN ES INVÁLIDO !!!</p>
+                        <?php endif;?>
+                    </div>
                 </div>
             <h3>Ver estadísticas</h3>
+                <div>
+                    
+                </div>
         </div>
     </div>
 </div> 
