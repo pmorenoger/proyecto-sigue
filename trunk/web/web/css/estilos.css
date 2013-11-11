@@ -24,7 +24,9 @@ h2{
 root { 
     display: block;
 }
-
+.hiddenStructure{    
+    display:none;
+}
 #top{
     
     color:red;   
@@ -113,3 +115,4 @@ body {
 #accordion.profesor {
     width:auto;
 }
+

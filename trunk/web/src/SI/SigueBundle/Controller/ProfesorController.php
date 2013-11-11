@@ -6,18 +6,32 @@ namespace SI\SigueBundle\Controller;
 
 use SI\SigueBundle\Entity\Alumnos;
 use SI\SigueBundle\Entity\Profesor;
-
+use SI\SigueBundle\Entity\Asignaturas;
+use SI\SigueBundle\Entity\ProfesorAsignatura;
+use SI\SigueBundle\Entity\AsignaturaAlumno;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\HttpFoundation\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ProfesorController extends Controller
     {
         public function indexAction($exito)
         {     
-           if(!is_array($exito)){
-               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito));
+            $peticion = $this->getRequest()->getSession();
+            $id = $peticion->get('idprofesor');
+            $em = $this->getDoctrine()->getManager();
+            $asignaturas = $em->getRepository('SISigueBundle:ProfesorAsignatura')->findBy(array('idProfesor' => $id));
+            //var_dump($asignaturas);
+            $asig = array();
+            foreach ($asignaturas as $a){
+                    $as = $em->getRepository('SISigueBundle:Asignaturas')->findBy(array('id' => $a->getIdAsignatura()));
+                array_push($asig, $as);             
+            }
+           if(!is_array($exito)){                           
+               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig));
            }else{
+               array_push($exito,$asig);
+               var_dump($exito);
                return $this->render('SISigueBundle:Profesor:index.html.php',$exito);
            }              
         }
@@ -40,14 +54,15 @@ class ProfesorController extends Controller
              */
             
              $exito = "none";  
-             if( $kernel->isDebug() ){
+             if( $kernel->getEnvironment() === "dev" ){
+                 /*Si quereis que funcione en vuestro desarrollo localhost cambiad esta ruta.*/
                 $uploaddir = 'K:/Users/loko64z/Desktop/Sistemas-Informaticos/proyecto-sigue/web/web/archivos/';
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
-                //echo $uploadfile;
+               
              }else{
-                $uploaddir = '/home/administrador/web/web/archivos/';
+                $uploaddir = '/home/administrador/web/Symfony/web/archivos/';
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
-                //echo $uploadfile;
+               
                 }               
                 if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
                    $exito ="true";
@@ -66,20 +81,54 @@ class ProfesorController extends Controller
                     $objPHPExcel = $objReader->load($inputFileName);
 
                     $objWorksheet = $objPHPExcel->getActiveSheet();
+                    /*Recogemos todos los datos del formulario de creación de asignaturas.*/
+                    $nombre_asignatura = $request->request->get('nombre_asignatura', 'default');
+
+
+                    $curso = $request->request->get('curso', '1');
+                    $grupo = $request->request->get('grupo', 'A');
+
+                    $session = $this->get("session");
+                    $idprofesor =$session->get('idprofesor');
+                    /*Generamos la asignatura donde deben ser insertados los alumnos*/
+                    $em = $this->getDoctrine()->getManager();
+                    $asignatura = new Asignaturas();
+                    $asignatura->setCurso($curso);
+                    $asignatura->setGrupo($grupo);
+                    $asignatura->setNombre($nombre_asignatura);
+                    $em->persist($asignatura);
+                    $em->flush();
                     
                     foreach ($objWorksheet->getRowIterator() as $row) {                        
 
                         $cellIterator = $row->getCellIterator();
                         $cellIterator->setIterateOnlyExistingCells(true); // This loops all cells iterated.                       
-                        self::subir_alumno($cellIterator);                    
+                        self::subir_alumno($cellIterator, $asignatura);                    
                     }
-
-            
-            return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => "true"));
+                    
+                 
+                   
+                   
+                   
+                  
+                   
+                   $profesor = $em->getRepository('SISigueBundle:Profesor')->find($idprofesor);
+                   $profesor_asignatura = new ProfesorAsignatura();
+                   $profesor_asignatura->setIdAsignatura($asignatura->getId());
+                   $profesor_asignatura->setIdProfesor($profesor);
+                   $em->persist($profesor_asignatura);
+                   
+                   $em->flush();
+                   
+                   
+                   
+                    
+                    return $this->indexAction("true");
+                
         }
         
         
-        public function subir_alumno($fila)
+        public function subir_alumno($fila, $asignatura)
             {
             $alumno = new Alumnos();
             foreach($fila as $celda){               
@@ -115,10 +164,19 @@ class ProfesorController extends Controller
                 $alumno->setPassword($pass_provisional[0]);
                 
             }
-            var_dump($alumno);
-                  //  $em = $this->getDoctrine()->getManager();
-                  //  $em->persist($alumno);
-                  //  $em->flush();
+                //var_dump($alumno);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($alumno);
+                    $asignatura_alumno = new AsignaturaAlumno();
+                    $asignatura_alumno->setIdAlumno($alumno);
+                    $asignatura_alumno->setIdAsignatura($asignatura);
+                    $em->persist($asignatura_alumno);
+            }
+            
+            
+            public function generar_qrAction(){
+                
+                  return $this->indexAction("true2");
                 
             }
     }

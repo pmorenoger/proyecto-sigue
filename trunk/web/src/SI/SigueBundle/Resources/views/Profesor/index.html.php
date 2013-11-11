@@ -1,31 +1,33 @@
 <?php $view->extend('::layout.html.php') ?>
 
-<?php $view['slots']->set('rol', 'Inicio'); ?>
+<?php $view['slots']->set('rol', 'Profesor'); ?>
 
 <?php $view['slots']->start("menu_left"); ?>  
    <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
     <div id="accordion-resizer" class="ui-widget-content">
-        <div id="accordion">
-            <!--AQUI IREMOS RECORRIENDO LAS ASIGNATUAS REALES DEL PROFESOR -->
-            <h3>Curso 2012/2013</h3>
+         <div id="accordion">
+           <?php if (count($asignaturas)>0) :?>
+           <?php /*FALTARIA HACER DINAMICOS LOS AÑOS EN LA PARTE PROFESOR*/ ?>
+            <h3>Curso 2013/2014 .</h3>
                  <div>
-                    <ul>           
-                        <li> <a href="#"> PLg </a> </li>
-                        <li> <a href="#"> EE </a> </li>
-                        <li> <a href="#"> IS </a> </li>
-                        <li> <a href="#"> IAIC </a> </li>
+                    <ul>
+                        <?php foreach ($asignaturas as $as): ?>
+                        <li>
+                             <?php foreach ($as as $asignatura):?>
+                                <a href="#" onclick="generar_qr_pop_up(<?php echo $asignatura->getId();?>);"><?php echo $asignatura->getNombre();?> </a> 
+                             <?php endforeach; ?>                            
+                        </li>
+                        <?php endforeach; ?>
                     </ul>
                  </div>
-            <h3>Curso 2013/2014</h3>
+            <?php endif; ?>
+            <h3>Otras Opciones</h3>
                 <div>
                     <ul>           
-                        <li> <a href="#"> ISBC </a> </li>
-                        <li> <a href="#"> IGr </a> </li>
-                        <li> <a href="#"> SI </a> </li>
-                        <li> <a href="#"> PDA </a> </li>
-                    </ul>
-                 </div>          
-        </div> 
+                        <li> <a href=""> Perfil </a> </li>
+                        <li> <a href=""> Otros </a> </li>
+                 </div>
+          </div>
     </div>
    
 
@@ -43,24 +45,78 @@
     </div>
 <?php endif; ?>
 
+<?php if($exito==="true2"): ?>
+    <div id="tooltip_exito"> 
+        <p>¡La lista de TOKENS ha sido creada!</p>
+        <p>En breve podrá imprimir dichos TOKENS.</p>
+    </div>
+<?php endif; ?>
+
 <?php if($exito ==="false"): ?>
      <div id="tooltip_exito"> 
         <p>¡Lo sentimos!</p>
         <p>No se ha podido procesar la solicitud. Inténtelo de nuevo más tarde.</p>
     </div>
 <?php endif;?>
-<div style="margin-left:750px;">
+<div id="nueva_asignatura" style="margin-left:750px;">
     <form enctype="multipart/form-data" action="subir_alumno" method="POST">
         <!-- MAX_FILE_SIZE debe preceder el campo de entrada de archivo -->
         <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
         <!-- El nombre del elemento de entrada determina el nombre en el array $_FILES -->
         Enviar este archivo: <input name="userfile" type="file" />
         <br />
-        <input type="submit" value="Enviar Fichero" />
+        <br />
+        <label for="nombre_asignatura" >Nombre de la asignatura: </label>
+        <input id="nombre_asignatura" type="text" name="nombre_asignatura" />
+        <label for="curso" > Curso: </label>
+            <select id="curso" name="curso" >
+                <option value="1" >1º</option>
+                <option value="2" >2º</option>
+                <option value="3" >3º</option>
+                <option value="4" >4º</option>
+                <option value="5" >5º</option>
+                <option value="6" >6º</option>            
+            </select>
+        <label for="grupo" > Grupo: </label>
+        <select id="grupo" name="grupo" >
+            <option value="A" >A</option>
+            <option value="B" >B</option>
+            <option value="C" >C</option>
+            <option value="D" >D</option>
+            <option value="E" >E</option>
+            <option value="F" >F</option>
+            
+        </select>
+       
+        <input type="submit" value="Enviar" />
     </form>
-<h3>Envíe un archivo Excel para que sea subido y procesado al servidor</h3>
+<h3>Envíe un archivo Excel con la información de los alumnos y complete el formulario.</h3>
 
 </div>
+
+<?php if (count($asignaturas)>0) :?>
+    <?php /*FALTARIA HACER DINAMICOS LOS AÑOS EN LA PARTE PROFESOR*/ ?>             
+    <?php foreach ($asignaturas as $as): ?>        
+         <?php foreach ($as as $asignatura):?>
+            <div id="asignatura_<?php echo $asignatura->getId();?>" class="hiddenStructure">
+                <form id="form_<?php echo $asignatura->getId();?>" method="POST" action="generar_qr">
+                    <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
+                    <label for="cantidad">Cantidad:</label>
+                    <select id="cantidad" name="cantidad">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>                    
+                </form>
+            </div>            
+         <?php endforeach; ?>                                   
+    <?php endforeach; ?>
+<?php endif; ?>
+
+
+
+
 <?php $view['slots']->stop(); ?>
 
 <?php $view['slots']->start("menu_right"); ?> 
@@ -91,8 +147,24 @@
                   }
                 ]
               });
+              
+             
           
        });
+       
+        function generar_qr_pop_up(id_asignatura){               
+                $("#asignatura_"+id_asignatura).dialog({
+                    buttons: [
+                        {
+                            text: "OK",
+                            click: function() {
+                              $("#form_"+id_asignatura).submit();  
+                              $( this ).dialog( "close" );
+                            }
+                          }
+                        ]                    
+                });
+              }
        
 </script>
 <?php $view['slots']->stop(); ?>
