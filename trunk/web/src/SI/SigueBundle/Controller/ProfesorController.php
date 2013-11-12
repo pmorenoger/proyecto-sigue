@@ -5,7 +5,7 @@ namespace SI\SigueBundle\Controller;
 
 
 use SI\SigueBundle\Entity\Alumnos;
-use SI\SigueBundle\Entity\Profesor;
+use SI\SigueBundle\Entity\Codigos;
 use SI\SigueBundle\Entity\Asignaturas;
 use SI\SigueBundle\Entity\ProfesorAsignatura;
 use SI\SigueBundle\Entity\AsignaturaAlumno;
@@ -130,6 +130,7 @@ class ProfesorController extends Controller
         
         public function subir_alumno($fila, $asignatura)
             {
+            $em = $this->getDoctrine()->getManager();
             $alumno = new Alumnos();
             foreach($fila as $celda){               
                 //echo "FILAS " . var_dump($celda->getRow());
@@ -148,25 +149,34 @@ class ProfesorController extends Controller
                         case "E":
                                 $alumno->setCorreo($celda->getValue());
                                 break;
-                        /*
-                          case 4:                        
-                                $alumno->setPassword($celda->getValue());
-                                break;
-                         
-                         */
-
+                        
                     }
                 }else{
                     
                     return;
                 }
-                $pass_provisional = explode("@",$alumno->getCorreo());
-                $alumno->setPassword($pass_provisional[0]);
+                
+                $existe_alumno = $em->getRepository('SISigueBundle:Alumnos')->findByCorreo($alumno->getCorreo());
+                if(!$existe_alumno){
+                    $pass_provisional = explode("@",$alumno->getCorreo());
+                    $pass_provisional[0] = $pass_provisional[0].rand(0,99);
+                    $alumno->setPassword($pass_provisional[0]);
+                }
                 
             }
+                    
                 //var_dump($alumno);
-                    $em = $this->getDoctrine()->getManager();
+                  
+                    
+                    
+                    //var_dump($existe_alumno);
+                    /*Solo lo añado a la tabla alumnos si no existe en esa tabla*/
+                    if($existe_alumno){
+                                         
+                        $alumno = $existe_alumno[0];
+                    }
                     $em->persist($alumno);
+                    /*A la asignatura nueva se añade siempre*/
                     $asignatura_alumno = new AsignaturaAlumno();
                     $asignatura_alumno->setIdAlumno($alumno);
                     $asignatura_alumno->setIdAsignatura($asignatura);
@@ -176,7 +186,38 @@ class ProfesorController extends Controller
             
             public function generar_qrAction(){
                 
-                  return $this->indexAction("true2");
+                $request = Request::createFromGlobals();
+                $cantidad = $request->request->get('cantidad');
+                $id_asignatura = $request->request->get('id_asignatura');
+                // var_dump($id_asignatura);
+                $codigo = new Codigos();
+                $em = $this->getDoctrine()->getManager();
+                $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
+                // var_dump($asignatura);
+                for($i = 0;$i < $cantidad; $i++){
+                    
+                    $cuerpo_codigo = $unique_key = substr(md5(rand(0, 1000000)), 0, 15 );
+                    // var_dump($cuerpo_codigo);                  
+                    $codigo = $em->getRepository('SISigueBundle:Codigos')->findByCodigo( $cuerpo_codigo);
+                    if(!$codigo){
+                        $codigo = new Codigos();
+                        $codigo->setCodigo($cuerpo_codigo);
+                        $codigo->setId($asignatura);
+                        $date_time = new \DateTime();
+                        $codigo->setFechaCreacion($date_time);
+                        $em->persist($codigo);
+                        
+                    }else{
+                        /*Ese codigo queda descartado*/
+                        $i--;
+                    }
+                    
+                }
+                $em->flush();
+                
+                                               
+                
+                return $this->indexAction("true2");
                 
             }
     }
