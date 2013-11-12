@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * AsignaturaAlumno
+ * @ManyToOne(targetEntity="Alumnos", mappedBy="idalumno", cascade={"persist"})
  */
 class AsignaturaAlumno
 {

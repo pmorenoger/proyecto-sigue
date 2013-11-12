@@ -70,12 +70,9 @@
         <input id="nombre_asignatura" type="text" name="nombre_asignatura" />
         <label for="curso" > Curso: </label>
             <select id="curso" name="curso" >
-                <option value="1" >1º</option>
-                <option value="2" >2º</option>
-                <option value="3" >3º</option>
-                <option value="4" >4º</option>
-                <option value="5" >5º</option>
-                <option value="6" >6º</option>            
+                <option value="2012/2013" >2012/2013</option>
+                <option value="2013/2014" >2013/2014</option>
+                <option value="2014/2015" >2014/2015</option>                       
             </select>
         <label for="grupo" > Grupo: </label>
         <select id="grupo" name="grupo" >
@@ -90,7 +87,7 @@
        
         <input type="submit" value="Enviar" />
     </form>
-<h3>Envíe un archivo Excel con la información de los alumnos y complete el formulario.</h3>
+<h3>Envíe un archivo Excel con la información de los alumnos y complete el formulario para añadir una asignatura.</h3>
 
 </div>
 
@@ -100,6 +97,7 @@
          <?php foreach ($as as $asignatura):?>
             <div id="asignatura_<?php echo $asignatura->getId();?>" class="hiddenStructure">
                 <form id="form_<?php echo $asignatura->getId();?>" method="POST" action="generar_qr">
+                    <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
                     <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
                     <label for="cantidad">Cantidad:</label>
                     <select id="cantidad" name="cantidad">
