@@ -25,6 +25,33 @@ class AsignaturaAlumno
      */
     private $idAlumno;
 
+    /**
+     * @var integer
+     */
+    private $num;
+    
+    /**
+     * Get num
+     *
+     * @return integer 
+     */
+    public function getNum()
+    {
+        return $this->num;
+    }
+    
+    /**
+     * Set num
+     *
+     * @param integer $num
+     * @return AsignaturaAlumno 
+     */
+    public function setNum($num)
+    {
+        $this->num = $num;
+        
+        return $this;
+    }
 
     /**
      * Get idAsignaturaAlumno
