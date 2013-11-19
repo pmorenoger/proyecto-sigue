@@ -4,6 +4,7 @@
     <id name="idAsignaturaAlumno" type="integer" column="id_asignatura_alumno">
       <generator strategy="IDENTITY"/>
     </id>
+    <field name="num" type="integer" column="num" nullable="false"/>
     <many-to-one field="idAsignatura" target-entity="Asignaturas">
       <join-columns>
         <join-column name="id_asignatura" referenced-column-name="id"/>

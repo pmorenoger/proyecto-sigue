@@ -64,11 +64,22 @@ class AlumnoController extends Controller
             //registramos el código para el alumno y la asignatura
             $a = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
             if (!is_null($a)){
+                //actualizamos el codigo con la fecha de alta
+                $date_time = new \DateTime();
+                $codigo->setFechaAlta($date_time);
+                $em->persist($codigo);
+                $em->flush();
+                //registramos el codigo en la tabla de asignatura-alumno-codigo
                 $asig_cod = new AsignaturaCodigo();
                 $asig_cod->setIdAsignaturaAlumno($a);
                 $asig_cod->setIdCodigo($codigo);
                 $em->persist($asig_cod);
                 $em->flush();
+                //actualizamos el número de tokens en la tabla asignatura alumno
+                $a->setNum($a->getNum() + 1);
+                $em->persist($a);
+                $em->flush();
+                //resultado positivo
                 $res = 2;
             }else{
                 $res = 1;
