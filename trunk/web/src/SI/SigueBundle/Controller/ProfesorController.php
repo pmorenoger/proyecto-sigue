@@ -162,6 +162,7 @@ class ProfesorController extends Controller
            $asignatura_alumno = new AsignaturaAlumno();
            $asignatura_alumno->setIdAlumno($alumno);
            $asignatura_alumno->setIdAsignatura($asignatura);
+           $asignatura_alumno->setNum(0);
            $em->persist($asignatura_alumno);
         }
  
