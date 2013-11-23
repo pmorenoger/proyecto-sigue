@@ -27,18 +27,18 @@ class DefaultController extends Controller
 
             $profesor = $em
                         ->getRepository('SISigueBundle:Profesor')
-                        ->findOneByCorreo(array('correo' => $correo, 'password' => $pass));
-                        //->findOneByCorreo($correo);
+                        //->findOneByCorreo(array('correo' => $correo, 'password' => $pass));
+                        ->findOneByCorreo($correo);
             
             $alumno = $this->getDoctrine()
                         ->getRepository('SISigueBundle:Alumnos')
-                         ->findOneBy(array('correo' => $correo, 'password' => $pass));
-                         //->findOneByCorreo($correo);
+                         //->findOneBy(array('correo' => $correo, 'password' => $pass));
+                         ->findOneByCorreo($correo);
             
             $res = 0;
             if($profesor) {
             /*SI ES UN PROFESOR*/
-                $encrypted_password = $profesor->getPassaword();
+                $encrypted_password = $profesor->getPassword();
                 $salt = $profesor->getSalt();
                 $hash = self::checkhashSSHA($salt, $pass);
                 if ($encrypted_password == $hash){
@@ -49,8 +49,8 @@ class DefaultController extends Controller
                 }
             }elseif($alumno){
                 /*SI ES UN ALUMNO*/
-                $encrypted_password = $profesor->Passaword();
-                $salt = $profesor->getSalt();
+                $encrypted_password = $alumno->getPassword();
+                $salt = $alumno->getSalt();
                 $hash = self::checkhashSSHA($salt, $pass);
                 if ($encrypted_password == $hash){
                     $session = $this->getRequest()->getSession();
@@ -62,8 +62,8 @@ class DefaultController extends Controller
             /*SI NO ES UN ALUMNO TAMPOCO: REDIRECT A INICIO*/
                  //return $this->render('SISigueBundle:Default:error.html.php');               
             //}
-            if ($res == 1) return $this->render('SISigueBundle:Default:error.html.php');
-            else if ($res == 2) return $this->redirect('Profesor/inicio');
+            if ($res == 1) return $this->redirect('Profesor/inicio');
+            else if ($res == 2) return $this->redirect('Alumno/inicio');
             return $this->render('SISigueBundle:Default:error.html.php'); 
     }
     
