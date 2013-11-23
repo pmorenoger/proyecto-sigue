@@ -2,11 +2,11 @@
 
 namespace SI\SigueBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-
 use SI\SigueBundle\Entity\Alumno;
-
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 
 class DefaultController extends Controller
 {
@@ -18,9 +18,7 @@ class DefaultController extends Controller
     public function loginAction(){
         
          /*AQUI TENGO QUE CONTROLAR LA INFO DEL LOGIN*/
-            
             $request = Request::createFromGlobals();
-            
             
             $correo = $request->request->get("user");
             $pass = $request->request->get("password");
@@ -30,31 +28,48 @@ class DefaultController extends Controller
             $profesor = $em
                         ->getRepository('SISigueBundle:Profesor')
                         ->findOneByCorreo(array('correo' => $correo, 'password' => $pass));
+                        //->findOneByCorreo($correo);
             
             $alumno = $this->getDoctrine()
                         ->getRepository('SISigueBundle:Alumnos')
                          ->findOneBy(array('correo' => $correo, 'password' => $pass));
+                         //->findOneByCorreo($correo);
             
-            
-            
+            $res = 0;
             if($profesor) {
             /*SI ES UN PROFESOR*/
-              
-                $session = $this->getRequest()->getSession();
-                $session->set('idprofesor', $profesor->getIdprofesor());
-                return $this->redirect('Profesor/inicio');
+                $encrypted_password = $profesor->getPassaword();
+                $salt = $profesor->getSalt();
+                $hash = self::checkhashSSHA($salt, $pass);
+                if ($encrypted_password == $hash){
+                    $session = $this->getRequest()->getSession();
+                    $session->set('idprofesor', $profesor->getIdprofesor());
+                    //return $this->redirect('Profesor/inicio');
+                    $res = 1;
+                }
             }elseif($alumno){
                 /*SI ES UN ALUMNO*/
-                //return $this->forward('SISigueBundle:Alumno:perfil',array('alumno' => $alumno));
-                $session = $this->getRequest()->getSession();
-                $session->set('idalumno', $alumno->getIdalumno());
-                return $this->redirect('Alumno/inicio');
-            }else{
+                $encrypted_password = $profesor->Passaword();
+                $salt = $profesor->getSalt();
+                $hash = self::checkhashSSHA($salt, $pass);
+                if ($encrypted_password == $hash){
+                    $session = $this->getRequest()->getSession();
+                    $session->set('idalumno', $alumno->getIdalumno());
+                    //return $this->redirect('Alumno/inicio');
+                    $res = 2;
+                }
+            }//else{
             /*SI NO ES UN ALUMNO TAMPOCO: REDIRECT A INICIO*/
-                 return $this->render('SISigueBundle:Default:error.html.php');               
-            }
-        
+                 //return $this->render('SISigueBundle:Default:error.html.php');               
+            //}
+            if ($res == 1) return $this->render('SISigueBundle:Default:error.html.php');
+            else if ($res == 2) return $this->redirect('Profesor/inicio');
+            return $this->render('SISigueBundle:Default:error.html.php'); 
     }
     
-    
+    private function checkhashSSHA($salt, $password) {
+        $hash = base64_encode(sha1($password . $salt, true) . $salt);
+        return $hash;
+
+    }
 }
