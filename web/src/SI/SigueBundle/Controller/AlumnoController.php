@@ -15,11 +15,12 @@ class AlumnoController extends Controller
     {  
         $peticion = $this->getRequest()->getSession();
         $id = $peticion->get('idalumno');
+        $p = $peticion->get('pAl');
         $em = $this->getDoctrine()->getEntityManager();
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         
         if ($alumno->getCodigo_id() === NULL){
-            $alumno->setCodigo_id($alumno->getCorreo()."#&".$alumno->getPassword());
+            $alumno->setCodigo_id($alumno->getCorreo()."#&".$p);
             $em->persist($alumno);
             $em->flush();
             
