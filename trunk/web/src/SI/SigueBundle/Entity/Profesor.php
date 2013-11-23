@@ -33,6 +33,11 @@ class Profesor
      * @var string
      */
     private $password;
+    
+    /**
+     * @var string
+     */
+    private $salt;
 
     /**
      * @var integer
@@ -176,5 +181,28 @@ class Profesor
         $this->idprofesor = $idprofesor;
     
         return $this;
+    }
+    
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return Profesor
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    
+        return $this;
+    }
+
+    /**
+     * Get salt
+     *
+     * @return string 
+     */
+    public function getSalt()
+    {
+        return $this->salt;
     }
 }

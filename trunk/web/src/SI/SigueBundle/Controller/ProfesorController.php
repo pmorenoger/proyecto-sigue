@@ -56,7 +56,7 @@ class ProfesorController extends Controller
              $exito = "none";  
              if( $kernel->getEnvironment() === "dev" ){
                  /*Si quereis que funcione en vuestro desarrollo localhost cambiad esta ruta.*/
-                $uploaddir = 'K:/Users/loko64z/Desktop/Sistemas-Informaticos/proyecto-sigue/web/web/archivos/';
+                $uploaddir = 'C:\Users\j\Documents\proyecto-sigue\web\web\archivos';
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
                
              }else{
@@ -76,14 +76,12 @@ class ProfesorController extends Controller
                     $inputFileType = \PHPExcel_IOFactory::identify($inputFileName);
                     /**  Create a new Reader of the type that has been identified  **/
                     $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
-
-
+                    
                     $objPHPExcel = $objReader->load($inputFileName);
 
                     $objWorksheet = $objPHPExcel->getActiveSheet();
                     /*Recogemos todos los datos del formulario de creación de asignaturas.*/
                     $nombre_asignatura = $request->request->get('nombre_asignatura', 'default');
-
 
                     $curso = $request->request->get('curso', '1');
                     $grupo = $request->request->get('grupo', 'A');
@@ -105,31 +103,18 @@ class ProfesorController extends Controller
                         $cellIterator->setIterateOnlyExistingCells(true); // This loops all cells iterated.                       
                         self::subir_alumno($cellIterator, $asignatura);                    
                     }
-                    
-                 
-                   
-                   
-                   
-                  
-                   
                    $profesor = $em->getRepository('SISigueBundle:Profesor')->find($idprofesor);
                    $profesor_asignatura = new ProfesorAsignatura();
                    $profesor_asignatura->setIdAsignatura($asignatura->getId());
                    $profesor_asignatura->setIdProfesor($profesor);
                    $em->persist($profesor_asignatura);
-                   
-                   $em->flush();
-                   
-                   
-                   
-                    
-                    return $this->indexAction("true");
+                   $em->flush(); 
+                   return $this->indexAction("true");
                 
         }
         
         
-        public function subir_alumno($fila, $asignatura)
-            {
+        public function subir_alumno($fila, $asignatura){
             $em = $this->getDoctrine()->getManager();
             $alumno = new Alumnos();
             foreach($fila as $celda){               
@@ -148,44 +133,39 @@ class ProfesorController extends Controller
                                 break;                        
                         case "E":
                                 $alumno->setCorreo($celda->getValue());
-                                break;
-                        
+                                break;    
                     }
                 }else{
-                    
                     return;
                 }
-                
                 $existe_alumno = $em->getRepository('SISigueBundle:Alumnos')->findByCorreo($alumno->getCorreo());
                 if(!$existe_alumno){
                     $pass_provisional = explode("@",$alumno->getCorreo());
                     $pass_provisional[0] = $pass_provisional[0].rand(0,99);
-                    $alumno->setPassword($pass_provisional[0]);
-                }
-                
-            }
                     
-                //var_dump($alumno);
-                  
-                    
-                    
-                    //var_dump($existe_alumno);
-                    /*Solo lo añado a la tabla alumnos si no existe en esa tabla*/
-                    if($existe_alumno){
-                                         
-                        $alumno = $existe_alumno[0];
-                    }
-                    $em->persist($alumno);
-                    /*A la asignatura nueva se añade siempre*/
-                    $asignatura_alumno = new AsignaturaAlumno();
-                    $asignatura_alumno->setIdAlumno($alumno);
-                    $asignatura_alumno->setIdAsignatura($asignatura);
-                    $em->persist($asignatura_alumno);
-            }
-            
-            
-            public function generar_qrAction(){
-                
+                    $hash = self::hashSSHA($pass_provisional[0]);
+                    $encrypted_password = $hash["encrypted"];
+                    $salt = $hash["salt"];
+                    $alumno->setSalt($salt);
+                    $alumno->setPassword($encrypted_password);
+                    //$alumno->setPassword($pass_provisional[0]);
+                }                
+           }
+           //var_dump($alumno);
+           //var_dump($existe_alumno);
+           /*Solo lo añado a la tabla alumnos si no existe en esa tabla*/
+           if($existe_alumno){                              
+                $alumno = $existe_alumno[0];
+           }
+           $em->persist($alumno);
+           /*A la asignatura nueva se añade siempre*/
+           $asignatura_alumno = new AsignaturaAlumno();
+           $asignatura_alumno->setIdAlumno($alumno);
+           $asignatura_alumno->setIdAsignatura($asignatura);
+           $em->persist($asignatura_alumno);
+        }
+ 
+        public function generar_qrAction(){
                 $request = Request::createFromGlobals();
                 $cantidad = $request->request->get('cantidad');
                 $id_asignatura = $request->request->get('id_asignatura');
@@ -195,7 +175,6 @@ class ProfesorController extends Controller
                 $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
                 // var_dump($asignatura);
                 for($i = 0;$i < $cantidad; $i++){
-                    
                     $cuerpo_codigo = $unique_key = substr(md5(rand(0, 1000000)), 0, 15 );
                     // var_dump($cuerpo_codigo);                  
                     $codigo = $em->getRepository('SISigueBundle:Codigos')->findByCodigo( $cuerpo_codigo);
@@ -205,20 +184,23 @@ class ProfesorController extends Controller
                         $codigo->setId($asignatura);
                         $date_time = new \DateTime();
                         $codigo->setFechaCreacion($date_time);
-                        $em->persist($codigo);
-                        
+                        $em->persist($codigo);   
                     }else{
                         /*Ese codigo queda descartado*/
                         $i--;
-                    }
-                    
+                    }   
                 }
                 $em->flush();
-                
-                                               
-                
-                return $this->indexAction("true2");
-                
-            }
+                return $this->indexAction("true2");    
+        }
+        
+        private function hashSSHA($password) {
+        $salt = sha1(rand());
+        $salt = substr($salt, 0, 10);
+        $encrypted = base64_encode(sha1($password . $salt, true) . $salt);
+        $hash = array("salt" => $salt, "encrypted" => $encrypted);
+        return $hash;
+
+    }
     }
 ?>
