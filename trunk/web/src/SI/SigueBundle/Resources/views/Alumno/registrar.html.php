@@ -6,7 +6,9 @@
     <div class="encabezado3">
         <h3>Asignatura  <?php echo $asignatura->getNombre(); ?></h3> 
     </div>
-    
+    <table>
+    <tr>
+    <td>
     <div id="accordion-resizer" class="ui-widget-content">
         <div id="accordion">
             <h3>Registar un nuevo TOKEN</h3>
@@ -31,10 +33,24 @@
                 </div>
             <h3>Ver estadísticas</h3>
                 <div>
-                    
+                    <ul>
+                        <li><a href="<?php echo $view['router']->generate('si_sigue_alumno_estadisticas', array('id' => $alumno->getIdalumno(),'asig'=>$asignatura->getId()),true); ?>"> Mis TOKENS </a> </li>
+                    </ul>
                 </div>
         </div>
     </div>
+    </td>
+    <td>       
+        <div id="grafica">
+            <?php if ($est !== NULL): ?>
+                <p>Número total de TOKENS de esta asignatura es: <?php echo $est['total'];?></p>
+                <p>Tu número de TOKENS de esta asignatura es: <?php echo $est['num'];?></p>
+                <p>Los máximos TOKENS obtenidos de esta asignatura es: <?php echo $est['max'];?></p>
+            <?php endif;?>
+        </div>
+    </td>
+    </tr>
+    </table>
 </div> 
 <?php $view['slots']->stop(); ?>
 
@@ -65,10 +81,11 @@
         
         $("#bRegistrar").submit(fnOnSubmit);
         $("#registrar_token").validationEngine('attach',{relative: true,promptPosition: "bottomRight"});
+        
         function fnOnSubmit(){
                 if (!$("#bRegistrar").validationEngine('validate')) return false;
                 return true;
-            }
+        }
     });
 </script>
 <?php $view['slots']->stop(); ?>
