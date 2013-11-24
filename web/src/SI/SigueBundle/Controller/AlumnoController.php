@@ -47,13 +47,12 @@ class AlumnoController extends Controller
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
         
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0));
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,'est'=>NULL));
     }
     
     public function tokenAction($id,$asig){
         $res = 0;
         $em = $this->getDoctrine()->getEntityManager();
-        
         
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
@@ -89,7 +88,7 @@ class AlumnoController extends Controller
             $res = 1;
         }
         
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>$res));
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>$res,'est'=>NULL));
     }
     
     private function tokenValido($em,$token,$asignatura){
@@ -103,6 +102,37 @@ class AlumnoController extends Controller
             }else return NULL;
         }
         return NULL;
+    }
+    
+    public function estadisticasAction($id,$asig){
+        $est = NULL;
+        $em = $this->getDoctrine()->getEntityManager();
+        $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
+        $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
+        if ($alumno and $asignatura){
+            $a = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
+            if($a){
+                $array = self::numTotalToken($asig,$em);
+                $est = array('num' => $a->getNum(),'total' => $array['num'],'max' => $array['max']); 
+            }
+        }
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,'est'=>$est));
+    }
+    
+    private function numTotalToken($asig,$em){
+        $list = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAsignatura'=> $asig));
+        if (!$list) return 0;
+        $n = count($list);
+        if ($n == 0) return 0;
+        $num = 0;
+        $max = -1;
+        for($i = 0;$i<$n;$i++){
+            $num = $num + $list[$i]->getNum();
+            if($max < $list[$i]->getNum()) {
+                $max = $list[$i]->getNum();
+            }
+        }
+        return array('num' => $num,'max' => $max);
     }
 }
 ?>
