@@ -116,3 +116,12 @@ body {
     width:auto;
 }
 
+.bloque_asignatura{
+    cursor:pointer;    
+}
+
+.lista_opciones{
+    font-size: 13px;
+    color:graytext;
+    
+}
