@@ -3090,6 +3090,7 @@
         //----------------------------------------------------------------------
         public static function png($text, $outfile = false, $level = QR_ECLEVEL_L, $size = 3, $margin = 4, $saveandprint=false) 
         {
+            
             $enc = QRencode::factory($level, $size, $margin);
             return $enc->encodePNG($text, $outfile, $saveandprint=false);
         }
@@ -3293,7 +3294,7 @@
                 $tab = $this->encode($intext);
                 $err = ob_get_contents();
                 ob_end_clean();
-                
+               
                 if ($err != '')
                     QRtools::log($outfile, $err);
                 
@@ -3304,7 +3305,7 @@
             } catch (Exception $e) {
             
                 QRtools::log($outfile, $e->getMessage());
-            
+                 var_dump($e);
             }
         }
     }

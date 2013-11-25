@@ -36,27 +36,26 @@ class ProfesorController extends Controller
            }              
         }
         public function subir_alumnoAction(){
-            
-            $kernel = $this->get('kernel');
-            $dir_abs = $kernel->getRootDir();
-            //Aqui tenemos la direccion hasta app, hay que volver y paso, y aplicar vendor.
-            $dir_abs = explode('/', $dir_abs);
-            array_pop($dir_abs);
-            $dir_abs = implode('/', $dir_abs);
+              $kernel = $this->get('kernel');
+            $dir_abs = self::getDireccionAbsoluta();
             require_once $dir_abs . '/vendor/Excel/lib/src/Classes/PHPExcel.php';
             
              $request = Request::createFromGlobals();
             /*PARA SUBIR UNA LISTA EXCEL DE ALUMNOS, HAY QUE:
              * 1º PROCESAR EL FICHERO \/
              * 2º GUARDAR CADA FILA EN LA TABLA ALUMNOS (con la entity Alumno) \/
-             * 3º GUARDAR EL COMBO PROFESOR-ASIGNATURA -- PENDIENTE!!!
+             * 3º GUARDAR EL COMBO PROFESOR-ASIGNATURA \/
              * 
              */
             
              $exito = "none";  
              if( $kernel->getEnvironment() === "dev" ){
                  /*Si quereis que funcione en vuestro desarrollo localhost cambiad esta ruta.*/
-                $uploaddir = 'C:\Users\j\Documents\proyecto-sigue\web\web\archivos';
+                 
+                //HECTOR:
+                //$uploaddir = 'C:\Users\j\Documents\proyecto-sigue\web\web\archivos';
+                 //DIEGO:
+                 $uploaddir = 'K:\Users\Loko64z\Desktop\Sistemas-Informaticos\proyecto-sigue\web\web\archivos';
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
                
              }else{
@@ -170,7 +169,7 @@ class ProfesorController extends Controller
                 $request = Request::createFromGlobals();
                 $cantidad = $request->request->get('cantidad');
                 $id_asignatura = $request->request->get('id_asignatura');
-                // var_dump($id_asignatura);
+                $lista_codigos = array();
                 $codigo = new Codigos();
                 $em = $this->getDoctrine()->getManager();
                 $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
@@ -185,15 +184,29 @@ class ProfesorController extends Controller
                         $codigo->setId($asignatura);
                         $date_time = new \DateTime();
                         $codigo->setFechaCreacion($date_time);
-                        $em->persist($codigo);   
+                        $em->persist($codigo);
+                        array_push($lista_codigos,$codigo);
+                        
                     }else{
                         /*Ese codigo queda descartado*/
                         $i--;
                     }   
                 }
                 $em->flush();
-                return $this->indexAction("true2");    
-        }
+                
+                /*Aquí debo manejar los códigos ($lista_codigos) para mandarlos por email en pdf o algo.*/                               
+                /*1º Crear los códigos QR a partir de los códigos normales*/
+                $rutas_codigos = self::crearImgCodigos($lista_codigos);
+                /*2º Crear el pdf a partir de todas la imágenes generadas*/
+                    self::crearPdfCodigos($rutas_codigos);
+                /*3º Enviar por email*/
+                
+                
+                
+                return $this->indexAction("true2");
+                
+            }
+               
         
         private function hashSSHA($password) {
         $salt = sha1(rand());
@@ -201,7 +214,64 @@ class ProfesorController extends Controller
         $encrypted = base64_encode(sha1($password . $salt, true) . $salt);
         $hash = array("salt" => $salt, "encrypted" => $encrypted);
         return $hash;
-
+        
+        }
+            
+            public function crearImgCodigos($lista_codigos){
+                require '../vendor/PHPqrcode/phpqrcode.php';
+                $kernel = $this->get('kernel');
+                $i = 0;
+                $lista_archivos = array();
+                $dir_abs = self::getDireccionAbsoluta();
+                foreach ($lista_codigos as $codigo){
+                    //Generar el png con el código qr
+                   
+                    $ruta = $dir_abs.'/web/archivos/codigosQR/qr_'.$i.'.png';
+                    /*
+                        var_dump($dir_abs.$ruta);                     
+                        die();
+                     * 
+                     */
+                    if($kernel->getEnvironment() === "dev"){
+                        $ruta = \str_replace("/","\\",$ruta);
+                    }
+                    \QRcode::png($codigo->getCodigo(),$ruta ,QR_ECLEVEL_H,6,4,true);
+                    array_push($lista_archivos,$ruta);
+                    $i++;
+                }
+                //var_dump($lista_archivos);
+                //die();
+                return $lista_archivos;
+            }
+            
+            public function crearPdfCodigos($imgCodigos){
+                
+                require '../vendor/FPDF/fpdf.php';
+                $kernel = $this->get("kernel");
+                $pdf = new \FPDF();
+                foreach($imgCodigos as $codigo){
+                    $pdf->AddPage();
+                    $pdf->SetFont('Arial','B',16);
+                    $pdf->Image($codigo,10,8,33);
+                    $pdf->Cell(40,80,$codigo);                   
+                }
+                 $ruta = self::getDireccionAbsoluta()."/web/archivos/pdfs/";
+                  if($kernel->getEnvironment() === "dev"){
+                        $ruta = \str_replace("/","\\",$ruta);
+                    }
+                 $pdf->Output($ruta."lista_codigos.pdf","F" );
+            }
+            
+            public function getDireccionAbsoluta(){
+                
+                $kernel = $this->get("kernel");
+                $dir_abs = $kernel->getRootDir();
+                //Aqui tenemos la direccion hasta app, hay que volver y paso, y aplicar vendor.
+                $dir_abs = explode('/', $dir_abs);
+                array_pop($dir_abs);
+                $dir_abs = implode('/', $dir_abs);
+                return $dir_abs;
+            }
     }
-    }
+  
 ?>

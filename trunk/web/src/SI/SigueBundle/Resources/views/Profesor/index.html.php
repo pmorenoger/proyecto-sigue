@@ -14,7 +14,25 @@
                         <?php foreach ($asignaturas as $as): ?>
                         <li>
                              <?php foreach ($as as $asignatura):?>
-                                <a href="#" onclick="generar_qr_pop_up(<?php echo $asignatura->getId();?>);"><?php echo $asignatura->getNombre();?> </a> 
+                                <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="mostrar_opciones_asignatura(<?php echo $asignatura->getId();?>);"><?php echo $asignatura->getNombre();?> </div>
+                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="hiddenStructure lista_opciones">
+                                    <li>
+                                    <a href="#" onclick="generar_qr_pop_up(<?php echo $asignatura->getId();?>);">Generar Códigos </a> 
+                                    </li>
+                                    <li>
+                                    <a href="#" onclick="ver_stats_codigo(<?php echo $asignatura->getId();?>)">Ver estadísticas de los Códigos</a>
+                                    </li>
+                                    <li>
+                                    <a href="#" onclick="">Gestionar actividades</a>                                   
+                                    </li>
+                                     <li>
+                                    <a href="#" onclick="">Ver lista de calificaciones</a>
+                                    </li>
+                                     <li>
+                                    <a href="#" onclick="">Exportar lista de notas</a>
+                                    </li>
+                                </ul>
+                                
                              <?php endforeach; ?>                            
                         </li>
                         <?php endforeach; ?>
@@ -24,6 +42,7 @@
             <h3>Otras Opciones</h3>
                 <div>
                     <ul>           
+                        <li> <a href="#" onclick="add_asignatura(); return false;"> Añadir Asignatura </a> </li>
                         <li> <a href=""> Perfil </a> </li>
                         <li> <a href=""> Otros </a> </li>
                  </div>
@@ -58,7 +77,7 @@
         <p>No se ha podido procesar la solicitud. Inténtelo de nuevo más tarde.</p>
     </div>
 <?php endif;?>
-<div id="nueva_asignatura" style="margin-left:750px;">
+<div id="nueva_asignatura" style="margin-left:750px;" class="hiddenStructure">
     <form enctype="multipart/form-data" action="subir_alumno" method="POST">
         <!-- MAX_FILE_SIZE debe preceder el campo de entrada de archivo -->
         <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
@@ -91,11 +110,12 @@
 
 </div>
 
+
 <?php if (count($asignaturas)>0) :?>
     <?php /*FALTARIA HACER DINAMICOS LOS AÑOS EN LA PARTE PROFESOR*/ ?>             
     <?php foreach ($asignaturas as $as): ?>        
          <?php foreach ($as as $asignatura):?>
-            <div id="asignatura_<?php echo $asignatura->getId();?>" class="hiddenStructure">
+            <div id="asignatura_<?php echo $asignatura->getId();?>" style="margin-left:750px;" class="hiddenStructure">
                 <form id="form_<?php echo $asignatura->getId();?>" method="POST" action="generar_qr">
                     <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
                     <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
@@ -105,9 +125,16 @@
                         <option value="20">20</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                    </select>                    
+                    </select>  
+                    <input type="submit" value="Generar" />
                 </form>
-            </div>            
+            </div>   
+            <div id="stats_codigos_<?php echo $asignatura->getId();?>" class="hiddenStructure">
+                
+    
+    
+            </div>
+
          <?php endforeach; ?>                                   
     <?php endforeach; ?>
 <?php endif; ?>
@@ -151,18 +178,31 @@
        });
        
         function generar_qr_pop_up(id_asignatura){               
-                $("#asignatura_"+id_asignatura).dialog({
-                    buttons: [
-                        {
-                            text: "OK",
-                            click: function() {
-                              $("#form_"+id_asignatura).submit();  
-                              $( this ).dialog( "close" );
-                            }
-                          }
-                        ]                    
-                });
+                 ocultar_todo();
+                 $("#asignatura_"+id_asignatura).removeClass("hiddenStructure");
               }
+         function mostrar_opciones_asignatura(id_asignatura){    
+                ocultar_todo();
+                $("ul [id^='lista_opciones']").addClass("hiddenStructure");
+                $("#lista_opciones_"+id_asignatura).removeClass("hiddenStructure");
+                $("#nueva_asignatura").addClass("hiddenStructure");         
+                //console.log("Ha llegado al de la id "+id_asignatura);
+                return false;
+         }
+         
+         function ocultar_todo(){
+            $("div [id^='asignatura_']").addClass("hiddenStructure");                       
+         }
+         
+         function add_asignatura(){
+            ocultar_todo();          
+            $("#nueva_asignatura").removeClass("hiddenStructure");             
+         }
+         
+         function ver_stats_codigo(){
+             
+             
+         }
        
 </script>
 <?php $view['slots']->stop(); ?>
