@@ -23,6 +23,11 @@ class AsignaturaCodigo
      * @var \SI\SigueBundle\Entity\AsignaturaAlumno
      */
     private $idAsignaturaAlumno;
+    
+    /**
+     *  @integer
+     */
+    private $num;
 
 
     /**
@@ -79,5 +84,25 @@ class AsignaturaCodigo
     public function getIdAsignaturaAlumno()
     {
         return $this->idAsignaturaAlumno;
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getNum()
+    {
+        return $this->num;
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function setNum($num)
+    {
+        $this->num = $num;
     }
 }

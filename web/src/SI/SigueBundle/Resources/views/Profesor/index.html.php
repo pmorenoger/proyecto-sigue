@@ -20,7 +20,7 @@
                                     <a href="#" onclick="generar_qr_pop_up(<?php echo $asignatura->getId();?>);">Generar Códigos </a> 
                                     </li>
                                     <li>
-                                    <a href="#" onclick="ver_stats_codigo(<?php echo $asignatura->getId();?>)">Ver estadísticas de los Códigos</a>
+                                    <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asignatura->getId() ));?>" onclick="ver_stats_codigo(<?php echo $asignatura->getId();?>)">Ver estadísticas de los Códigos</a>
                                     </li>
                                     <li>
                                     <a href="#" onclick="">Gestionar actividades</a>                                   
@@ -67,7 +67,7 @@
 <?php if($exito==="true2"): ?>
     <div id="tooltip_exito"> 
         <p>¡La lista de TOKENS ha sido creada!</p>
-        <p>En breve podrá imprimir dichos TOKENS.</p>
+        <p>Haga click <a href="descargar_pdf/<?php echo $ruta_pdf;?>" id="ruta_pdf">aquí</a> para descargar el pdf.</p>      
     </div>
 <?php endif; ?>
 
@@ -116,7 +116,7 @@
     <?php foreach ($asignaturas as $as): ?>        
          <?php foreach ($as as $asignatura):?>
             <div id="asignatura_<?php echo $asignatura->getId();?>" style="margin-left:750px;" class="hiddenStructure">
-                <form id="form_<?php echo $asignatura->getId();?>" method="POST" action="generar_qr">
+                <form id="form_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_tokens_profesor' );?>">
                     <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
                     <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
                     <label for="cantidad">Cantidad:</label>
@@ -129,11 +129,24 @@
                     <input type="submit" value="Generar" />
                 </form>
             </div>   
-            <div id="stats_codigos_<?php echo $asignatura->getId();?>" class="hiddenStructure">
-                
-    
+            <?php if(!is_null($alumnos)): ?>
+            <div id="stats_codigos_<?php $asignatura->getId() ;?>" <?php if ($exito!="stats_".$asignatura->getId()) : ?>class="hiddenStructure" <?php else: ?>style="margin-left:750px;" <?php endif;?>>                
+                    <table boder="1">
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Num. Códigos</th>
+                        <?php foreach($alumnos as $alumno) :?>
+                        <tr>
+                            <td><?php echo $alumno->getIdAlumno()->getNombre(); ?></td>
+                            <td><?php echo $alumno->getIdAlumno()->getApellidos();?></td>
+                            <td><?php echo $alumno->getNum();?></td>
+                        </tr>
+
+                    <?php endforeach; ?>
+                    </table>
     
             </div>
+            <?php endif ?>
 
          <?php endforeach; ?>                                   
     <?php endforeach; ?>
@@ -191,7 +204,8 @@
          }
          
          function ocultar_todo(){
-            $("div [id^='asignatura_']").addClass("hiddenStructure");                       
+            $("div [id^='asignatura_']").addClass("hiddenStructure");
+            $("div [id^='stats_codigos']").addClass("hiddenStructure");
          }
          
          function add_asignatura(){
@@ -199,10 +213,14 @@
             $("#nueva_asignatura").removeClass("hiddenStructure");             
          }
          
-         function ver_stats_codigo(){
-             
-             
+         function ver_stats_codigo(idAsignatura){
+           //window.location = "/estadisticas_asignatura/"+idAsignatura;       
          }
+         
+         $("#ruta_pdf").click(function(){
+             
+            $("#tooltip_exito").dialog( "close" );
+         });
        
 </script>
 <?php $view['slots']->stop(); ?>
