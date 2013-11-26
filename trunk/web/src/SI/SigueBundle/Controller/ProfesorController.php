@@ -12,26 +12,25 @@ use SI\SigueBundle\Entity\AsignaturaAlumno;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+ use Symfony\Component\HttpFoundation\Response;
 
 class ProfesorController extends Controller
     {
         public function indexAction($exito)
         {     
-            $peticion = $this->getRequest()->getSession();
-            $id = $peticion->get('idprofesor');
-            $em = $this->getDoctrine()->getManager();
-            $asignaturas = $em->getRepository('SISigueBundle:ProfesorAsignatura')->findBy(array('idProfesor' => $id));
-            //var_dump($asignaturas);
-            $asig = array();
-            foreach ($asignaturas as $a){
-                    $as = $em->getRepository('SISigueBundle:Asignaturas')->findBy(array('id' => $a->getIdAsignatura()));
-                array_push($asig, $as);             
-            }
+           $asig = self::getAsignaturas();
+            
            if(!is_array($exito)){                           
                return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig));
            }else{
-               array_push($exito,$asig);
-               var_dump($exito);
+               $asig2 = array("asignaturas" => $asig);
+               if(! array_key_exists("alumnos",$exito)){
+                  $exito = array_merge($exito, array("alumnos" => null)) ;
+               }
+               $exito = array_merge($exito,$asig2);
+               //var_dump($exito);
+              
                return $this->render('SISigueBundle:Profesor:index.html.php',$exito);
            }              
         }
@@ -55,7 +54,7 @@ class ProfesorController extends Controller
                 //HECTOR:
                 //$uploaddir = 'C:\Users\j\Documents\proyecto-sigue\web\web\archivos';
                  //DIEGO:
-                 $uploaddir = 'K:\Users\Loko64z\Desktop\Sistemas-Informaticos\proyecto-sigue\web\web\archivos';
+                 $uploaddir = self::getDireccionAbsoluta()."/web/archivos/";
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
                
              }else{
@@ -164,7 +163,30 @@ class ProfesorController extends Controller
            $asignatura_alumno->setNum(0);
            $em->persist($asignatura_alumno);
         }
- 
+        
+        public function descargar_pdfAction($pdf){
+            
+             $path = self::getDireccionAbsoluta() ."/web/archivos/pdfs/". $pdf;
+            $content = file_get_contents($path);
+
+            $response = new Response();
+
+            $response->headers->set('Content-Type', 'file/pdf');
+            $response->headers->set('Content-Disposition', 'attachment;filename="'.$pdf);
+
+            $response->setContent($content);
+            /*
+            $response = new Response();
+            $d = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $pdf);
+
+            $response->headers->set('Content-Disposition', $d);
+             * */
+            
+            return $response;
+        }
+        
+        
+        
         public function generar_qrAction(){
                 $request = Request::createFromGlobals();
                 $cantidad = $request->request->get('cantidad');
@@ -198,16 +220,31 @@ class ProfesorController extends Controller
                 /*1º Crear los códigos QR a partir de los códigos normales*/
                 $rutas_codigos = self::crearImgCodigos($lista_codigos);
                 /*2º Crear el pdf a partir de todas la imágenes generadas*/
-                    self::crearPdfCodigos($rutas_codigos);
+                $ruta_pdf = self::crearPdfCodigos($rutas_codigos);
                 /*3º Enviar por email*/
                 
                 
                 
-                return $this->indexAction("true2");
+                return $this->indexAction(array("exito" => "true2", "ruta_pdf" => $ruta_pdf));
                 
             }
                
-        
+        public function statsAction($id_asignatura){
+            /*Tengo que sacar los codigos asociados a esa asignatura 
+             * que estén usados por algún alumno, y sacar los pares alunmo, nºcodigos*/
+           $em = $this->getDoctrine()->getManager();
+           $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
+           $alumnos = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findByIdAsignatura($asignatura);
+           $exito = "stats_".$asignatura->getId();
+           //var_dump($alumnos);
+          // die();
+           
+           $asignaturas = self::getAsignaturas();
+           $array = ["exito" => $exito, "alumnos" =>$alumnos ];           
+           return $this->indexAction($array);
+        }
+            
+            
         private function hashSSHA($password) {
         $salt = sha1(rand());
         $salt = substr($salt, 0, 10);
@@ -259,18 +296,37 @@ class ProfesorController extends Controller
                   if($kernel->getEnvironment() === "dev"){
                         $ruta = \str_replace("/","\\",$ruta);
                     }
-                 $pdf->Output($ruta."lista_codigos.pdf","F" );
+                $date_time = new \DateTime();
+                 $fichero = "lista_codigos".$date_time->getTimestamp().".pdf";
+                 $ruta2 = $ruta . $fichero;
+                
+                 $pdf->Output($ruta2,"F" );
+                 return $fichero;
             }
             
             public function getDireccionAbsoluta(){
                 
                 $kernel = $this->get("kernel");
                 $dir_abs = $kernel->getRootDir();
-                //Aqui tenemos la direccion hasta app, hay que volver y paso, y aplicar vendor.
+                //Aqui tenemos la direccion hasta app, hay que volver y paso.
                 $dir_abs = explode('/', $dir_abs);
                 array_pop($dir_abs);
                 $dir_abs = implode('/', $dir_abs);
                 return $dir_abs;
+            }
+            
+            private function getAsignaturas(){
+                 $peticion = $this->getRequest()->getSession();
+                $id = $peticion->get('idprofesor');
+                $em = $this->getDoctrine()->getManager();
+                $asignaturas = $em->getRepository('SISigueBundle:ProfesorAsignatura')->findBy(array('idProfesor' => $id));
+                //var_dump($asignaturas);
+                $asig = array();
+                foreach ($asignaturas as $a){
+                    $as = $em->getRepository('SISigueBundle:Asignaturas')->findBy(array('id' => $a->getIdAsignatura()));
+                array_push($asig, $as);             
+            }
+                return $asig;
             }
     }
   
