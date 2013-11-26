@@ -62,6 +62,45 @@ class DB_Functions {
 
         if ($result) {
 
+           return true;
+
+        } else {
+
+            return false;
+
+        }
+
+    }
+	
+	
+	public function storeCode($idcodigos, $id_asignatura_alumnos) {
+
+        $result = mysql_query("INSERT INTO asignatura_codigo(id_codigo, id_asignatura_alumno) VALUES('$idcodigos','$id_asignatura_alumnos')");
+
+        // check for successful store
+
+        if ($result) {
+
+            // return user details
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+    }
+	
+	public function activateCode($idcodigo) {
+
+        $result = mysql_query("update codigos set fecha_alta = now() where idcodigos = '$idcodigo'");
+
+        // check for successful store
+
+        if ($result) {
+
             // get user details
 
             $uid = mysql_insert_id(); // last inserted id
@@ -155,7 +194,56 @@ class DB_Functions {
         }
 
     }
+	
+	/**
+	
+	*Check if user is singed up on that subject
+	
+	*/
+	
+	public function isUserSignedUp($usuario,$asignatura) {
 
+        $result = mysql_query("SELECT id_asignatura_alumno from asignatura_alumno WHERE id_alumno = '$usuario' AND id_asignatura = '$asignatura'");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // user existed
+
+            return mysql_fetch_array($result);;
+
+        } else {
+
+            // user not existed
+
+            return false;
+
+        }
+
+    }
+
+	public function isCodeExistingNotSignedUp($codigo) {
+
+        $result = mysql_query("SELECT idcodigos FROM codigos WHERE codigo = '4d89a7a154de95c' AND fecha_alta IS NULL");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return mysql_fetch_array($result);;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+    }
 
 
     /**

@@ -154,7 +154,51 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 
         }
 
-    } else {
+    }else if ($tag == 'qr_register') {
+		$codigo = $_POST['codigo'];
+
+        $asignatura = $_POST['asignatura'];
+
+        $user = $_POST['user'];
+		
+		$alumn_asig = $db->isUserSignedUp($user,$asignatura);
+		
+		if ($alumn_asig) {
+
+           $id_asignatura_alumno = $alumn_asig["id_asignatura_alumno"];
+		   
+		   $idcod = $db->isCodeExistingNotSignedUp($codigo);
+		   
+		   if ($idcod){
+		   
+				$idcodigos = $idcod["idcodigos"];
+				
+				$db->activateCode($idcodigos);
+				
+				$db->storeCode($idcodigos,$id_asignatura_alumno);
+				
+				$response["success"] = 1;
+
+                
+
+                $response["user"]["idcodigos"] = $idcod["idcodigos"];
+				
+		   }else{
+		   
+				$response["error"] = 2;
+
+				$response["error_msg"] = "Code not existing or already signed up";
+		   }
+
+        } else {
+		 // user is already signed up - error response
+		 
+			$response["error"] = 2;
+
+            $response["error_msg"] = "User Not Signed Up on that subject";
+	}	
+		echo json_encode($response);
+	}else {
 
         echo "Invalid Request";
 
