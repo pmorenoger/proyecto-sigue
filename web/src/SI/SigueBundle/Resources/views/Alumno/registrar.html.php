@@ -41,12 +41,39 @@
     </div>
     </td>
     <td>       
-        <div id="grafica">
+        <div id="estadisticasAlumnoAsignatura">
             <?php if ($est !== NULL): ?>
                 <p>Número total de TOKENS de esta asignatura es: <?php echo $est['total'];?></p>
                 <p>Tu número de TOKENS de esta asignatura es: <?php echo $est['num'];?></p>
                 <p>Los máximos TOKENS obtenidos de esta asignatura es: <?php echo $est['max'];?></p>
+                <script type="text/javascript">
+                    google.load('visualization', '1.0', {'packages':['corechart']});
+                    google.setOnLoadCallback(drawChart);
+                    function drawChart() {
+                        // Create the data table.
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Slices');
+                        var menos  = <?php echo $est['menos']; ?>;
+                        var mas  = <?php echo $est['mas']; ?>;
+                        data.addRows([
+                          ['Alumnos con menos TOKENS', menos],
+                          ['Alumnos con más TOKENS', mas]
+                        ]);
+                        var options = {'title':'Mis estadísticas',
+                                       'width':400,
+                                       'height':300,
+                                       'backgroundColor': '#ceecf5',
+                                       'legend.position': 'bottom',
+                                       'legend.alignment':'center',
+                                       'fontName': 'Comic Sans MS',
+                                       'is3D':true};
+                        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+                        chart.draw(data, options);
+                        }
+                </script>
             <?php endif;?>
+            <div id="piechart_3d"></div>
         </div>
     </td>
     </tr>
@@ -87,5 +114,7 @@
                 return true;
         }
     });
+    
+    
 </script>
 <?php $view['slots']->stop(); ?>

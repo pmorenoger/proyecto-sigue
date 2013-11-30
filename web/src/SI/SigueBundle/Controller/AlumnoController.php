@@ -112,27 +112,39 @@ class AlumnoController extends Controller
         if ($alumno and $asignatura){
             $a = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
             if($a){
-                $array = self::numTotalToken($asig,$em);
-                $est = array('num' => $a->getNum(),'total' => $array['num'],'max' => $array['max']); 
+                $array = self::numTotalToken($asig,$em,$a->getNum());
+                $est = array('num' => $a->getNum(),'total' => $array['num'],'max' => $array['max'], 'mas' => $array['mas'], 'menos' => $array['menos']); 
             }
         }
         return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,'est'=>$est));
     }
     
-    private function numTotalToken($asig,$em){
+    private function numTotalToken($asig,$em,$t){
         $list = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAsignatura'=> $asig));
         if (!$list) return 0;
         $n = count($list);
         if ($n == 0) return 0;
         $num = 0;
         $max = -1;
+        $mas = 0;
+        $menos = 0;
         for($i = 0;$i<$n;$i++){
-            $num = $num + $list[$i]->getNum();
-            if($max < $list[$i]->getNum()) {
-                $max = $list[$i]->getNum();
+            $act = $list[$i]->getNum();
+            $num = $num + $act;
+            if($max < $act) {
+                $max = $act;
+            }
+            if($act <= $t){
+                $menos = $menos + 1; 
+            }else{
+                $mas = $mas + 1;
             }
         }
-        return array('num' => $num,'max' => $max);
+        /*if ($mas >0 or $menos>0){
+            $mas = ($mas * 100)/$n;
+            $menos = ($menos * 100)/$n;
+        }*/
+        return array('num' => $num,'max' => $max,'mas' => $mas, 'menos' => $menos);
     }
 }
 ?>
