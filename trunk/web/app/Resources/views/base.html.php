@@ -10,6 +10,7 @@
         <script src="<?php echo $view['assets']->getUrl('scripts/jquery-ui-1.10.3.custom.min.js') ?>"  type="text/javascript" ></script>
         <script src="<?php echo $view['assets']->getUrl('scripts/jquery.validationEngine.js') ?>"  type="text/javascript" ></script>
         <script src="<?php echo $view['assets']->getUrl('scripts/jquery.validationEngine-es.js') ?>" type="text/javascript"> </script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         
         <link href="<?php echo $view['assets']->getUrl('css/estilos.css') ?>" rel="stylesheet" type="text/css" />
         <link href="<?php echo $view['assets']->getUrl('css/alumnoCSS.css') ?>" rel="stylesheet" type="text/css" />
