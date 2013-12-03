@@ -43,6 +43,7 @@
     <td>       
         <div id="estadisticasAlumnoAsignatura">
             <?php if ($est !== NULL): ?>
+                <?php if ($est['total'] > 0 and $est['num']>0): ?>
                 <p>Número total de TOKENS de esta asignatura es: <?php echo $est['total'];?></p>
                 <p>Tu número de TOKENS de esta asignatura es: <?php echo $est['num'];?></p>
                 <p>Los máximos TOKENS obtenidos de esta asignatura es: <?php echo $est['max'];?></p>
@@ -72,6 +73,9 @@
                         chart.draw(data, options);
                         }
                 </script>
+                <?php else:?>
+                <p><strong>No tienes ningún token....PONTE LAS PILAS!!!</strong></p>
+                <?php endif;?>
             <?php endif;?>
             <div id="piechart_3d"></div>
         </div>
