@@ -31,6 +31,7 @@
                         </div>
                     </td>
                     <td>
+                        <p><strong>El número total de tokens que tienes es: <?php echo $total ?></strong></p>
                         <div id="codQR">
 
                         </div>

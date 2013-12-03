@@ -34,11 +34,13 @@ class AlumnoController extends Controller
         
         $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
         $asig = array();
+        $total = 0;
         foreach ($asignaturas as $a){
             array_push($asig, $a->getIdAsignatura());
+            $total = $total + $a->getNum();
         }
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' =>$asig));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total));
     }
     
     public function registrarAction($id,$asig){
