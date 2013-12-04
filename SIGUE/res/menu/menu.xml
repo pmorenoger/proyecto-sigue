@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <menu xmlns:android="http://schemas.android.com/apk/res/android">
+        
+        <item android:id="@+id/Escanear"
+            android:orderInCategory="1"
+            android:showAsAction="never"
+            android:title="Escanear QR"/>
+        <item android:id="@+id/Actualizar"
+            android:orderInCategory="1"
+            android:showAsAction="never"
+            android:title="Actualizar"/>
+        <item android:id="@+id/Desvincular"
+            android:orderInCategory="1"
+            android:showAsAction="never"
+            android:title="Desvincular aplicación"/>
+    </menu>
