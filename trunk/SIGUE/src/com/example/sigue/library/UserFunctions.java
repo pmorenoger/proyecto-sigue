@@ -33,14 +33,25 @@ public class UserFunctions {
     // use http://10.0.2.2/ to connect to your localhost ie http://localhost/
 
     private static String loginURL = "http://sigue.no-ip.org/Android_api/";
+    
+    //private static String loginURL = "http://192.168.1.122:8080/xampp/Android_api/";
 
     private static String registerURL = "http://sigue.no-ip.org/Android_api/";
-
+    
+    //private static String registerURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    
+    private static String qrURL = "http://sigue.no-ip.org/Android_api/";
+    
+    //private static String qrURL = "http://192.168.1.122:8080/xampp/Android_api/";
 
 
     private static String login_tag = "login";
 
     private static String register_tag = "register";
+    
+    private static String qr_tag = "qr_register";
+    
+    private static String subject_tag = "subject_tag";
 
 
 
@@ -78,7 +89,51 @@ public class UserFunctions {
 
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
 
-        // return json
+        
+
+        // Log.e("JSON", json.toString());
+
+        return json;
+
+    }
+    
+    public JSONObject qrRegister(String codigo, String asignatura, String user){
+
+        // Building Parameters
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("tag", qr_tag));
+
+        params.add(new BasicNameValuePair("codigo", codigo));
+
+        params.add(new BasicNameValuePair("asignatura", asignatura));
+        
+        params.add(new BasicNameValuePair("user", user));
+
+        JSONObject json = jsonParser.getJSONFromUrl(qrURL, params);
+
+        
+
+        // Log.e("JSON", json.toString());
+
+        return json;
+
+    }
+    
+    public JSONObject getSubjects(String user){
+
+        // Building Parameters
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("tag", subject_tag));
+        
+        params.add(new BasicNameValuePair("user", user));
+
+        JSONObject json = jsonParser.getJSONFromUrl(qrURL, params);
+
+        
 
         // Log.e("JSON", json.toString());
 

@@ -39,6 +39,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     // Login table name
 
     private static final String TABLE_LOGIN = "login";
+    
+    private static final String TABLE_TOKEN = "tokens";
+    
+    private static final String TABLE_ASIG = "asignaturas";
 
 
 
@@ -47,12 +51,26 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
 
     private static final String KEY_NAME = "name";
+    
+    private static final String KEY_SURNAME = "surname";
 
     private static final String KEY_EMAIL = "email";
 
     private static final String KEY_UID = "uid";
 
     private static final String KEY_CREATED_AT = "created_at";
+    
+    private static final String KEY_CODID = "id_cod";
+    
+    private static final String KEY_CODIGO = "codigo";
+    
+    private static final String KEY_CODASIG = "cod_asig";
+    
+    private static final String KEY_CURSO = "curso";
+    
+    private static final String KEY_GRUPO = "grupo";
+    
+    private static final String KEY_NOMASIG = "asignatura";
 
 
 
@@ -75,14 +93,34 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY,"
 
                 + KEY_NAME + " TEXT,"
+                
+                + KEY_SURNAME + " TEXT,"
 
                 + KEY_EMAIL + " TEXT UNIQUE,"
 
-                + KEY_UID + " TEXT,"
-
-                + KEY_CREATED_AT + " TEXT" + ")";
+                + KEY_UID + " TEXT" + ")";
+        
+        String CREATE_TOKEN_TABLE = "CREATE TABLE " + TABLE_TOKEN + "("
+        		
+        		+ KEY_CODID + " INTEGER PRIMARY KEY,"
+        		
+        		+ KEY_CODIGO + " TEXT,"
+        		
+        		+ KEY_CODASIG + " INTEGER)";
+        
+        String CREATE_ASIG_TABLE = "CREATE TABLE " + TABLE_ASIG + "("
+        		
+        		+ KEY_CODASIG + " INTEGER PRIMARY KEY,"
+        		
+        		+ KEY_CURSO + " TEXT,"
+        		
+        		+ KEY_GRUPO + " TEXT,"
+ 
+        		+KEY_NOMASIG + "TEXT)";
 
         db.execSQL(CREATE_LOGIN_TABLE);
+        db.execSQL(CREATE_TOKEN_TABLE);
+        db.execSQL(CREATE_ASIG_TABLE);
 
     }
 
@@ -97,6 +135,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         // Drop older table if existed
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOKEN);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ASIG);
 
 
 
@@ -114,7 +154,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
      * */
 
-    public void addUser(String name, String email, String uid, String created_at) {
+    public void addUser(String name, String email, String uid, String surname) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -126,9 +166,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         values.put(KEY_EMAIL, email); // Email
 
-        values.put(KEY_UID, uid); // Email
+        values.put(KEY_UID, uid); // UID
 
-        values.put(KEY_CREATED_AT, created_at); // Created At
+        values.put(KEY_SURNAME, surname); // Surname
 
 
 
@@ -167,12 +207,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         if(cursor.getCount() > 0){
 
             user.put("name", cursor.getString(1));
+            
+            user.put("surname", cursor.getString(3));
 
-            user.put("email", cursor.getString(2));
+            user.put("email", cursor.getString(4));
 
-            user.put("uid", cursor.getString(3));
-
-            user.put("created_at", cursor.getString(4));
+            user.put("uid", cursor.getString(2));
 
         }
 
@@ -235,6 +275,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         // Delete All Rows
 
         db.delete(TABLE_LOGIN, null, null);
+        db.delete(TABLE_TOKEN, null, null);
+        db.delete(TABLE_ASIG, null, null);
 
         db.close();
 

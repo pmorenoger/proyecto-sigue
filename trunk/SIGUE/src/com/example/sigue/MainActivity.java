@@ -52,6 +52,8 @@ public class MainActivity extends Activity {
     private static String KEY_UID = "uid";
 
     private static String KEY_NAME = "name";
+    
+    private static String KEY_SURNAME = "surname";
 
     private static String KEY_EMAIL = "email";
 
@@ -172,7 +174,7 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
 
                     userFunction.logoutUser(getApplicationContext());
 
-                    db.addUser(json_user.getString(KEY_NAME), json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));                        
+                    db.addUser(json_user.getString(KEY_NAME),json_user.getString(KEY_SURNAME), json_user.getString(KEY_EMAIL), json.getString(KEY_UID));                        
 
 
 
