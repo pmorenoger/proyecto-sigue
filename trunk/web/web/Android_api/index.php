@@ -66,15 +66,13 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 
             $response["success"] = 1;
 
-            $response["uid"] = $user["unique_id"];
+            $response["uid"] = $user["idalumno"];
 
-            $response["user"]["name"] = $user["name"];
+            $response["user"]["name"] = $user["nombre"];
+			
+			$response["user"]["surname"] = $user["apellidos"];
 
-            $response["user"]["email"] = $user["email"];
-
-            $response["user"]["created_at"] = $user["created_at"];
-
-            $response["user"]["updated_at"] = $user["updated_at"];
+            $response["user"]["email"] = $user["correo"];
 
             echo json_encode($response);
 
@@ -153,6 +151,58 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             }
 
         }
+
+    }else if ($tag == 'subject_tag') {
+
+        // Request type is Register new user
+
+        $user = $_POST['user'];
+
+            // store user
+
+            $subjects = $db->getSubjects($user);
+
+            if ($subjects) {
+			//$response []= array(
+			//			'Asignatura'=>array(
+			//							'Datos'=>array(),
+			//							'Tokens'=>array())
+			//			);
+			//			prev($response);
+			$response["success"] = 1;
+			$i= 0;
+			while($row = mysql_fetch_assoc($subjects)){
+				$tokens = $db->getTokens($row["id_asignatura_alumno"]);
+				if($tokens){
+				$response ['Asignaturas'][$i]['Asignatura']['Datos'] =  $row;
+				prev($response);
+				while($column = mysql_fetch_assoc($tokens)){
+				$response ['Asignaturas'][$i]['Asignatura']['Tokens'][] =  $column;
+				}
+				$i = $i + 1;
+				}else{
+					$response ['Asignaturas'][$i]['Asignatura']['Datos'] =  $row;
+					$response ['ASignaturas'][$i]['Asignatura']['Tokens']=array();
+					$i = $i + 1;
+				}
+				//$response ["name"]["tokens"] = db->getTokens($subjects["id_asignatura_alumno"]);
+			}
+
+                echo json_encode($response);
+
+            } else {
+
+                // user failed to store
+
+                $response["error"] = 1;
+
+                $response["error_msg"] = "Error occured in Registartion";
+
+                echo json_encode($response);
+
+            }
+
+        
 
     }else if ($tag == 'qr_register') {
 		$codigo = $_POST['codigo'];

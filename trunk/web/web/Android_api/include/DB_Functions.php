@@ -129,7 +129,7 @@ class DB_Functions {
 
     public function getUserByEmailAndPassword($email, $password) {
 
-        $result = mysql_query("SELECT * FROM users WHERE email = '$email'") or die(mysql_error());
+        $result = mysql_query("SELECT * FROM alumnos WHERE correo = '$email'") or die(mysql_error());
 
         // check for result
 
@@ -141,7 +141,7 @@ class DB_Functions {
 
             $salt = $result['salt'];
 
-            $encrypted_password = $result['encrypted_password'];
+            $encrypted_password = $result['password'];
 
             $hash = $this->checkhashSSHA($salt, $password);
 
@@ -225,7 +225,7 @@ class DB_Functions {
 
 	public function isCodeExistingNotSignedUp($codigo) {
 
-        $result = mysql_query("SELECT idcodigos FROM codigos WHERE codigo = '4d89a7a154de95c' AND fecha_alta IS NULL");
+        $result = mysql_query("SELECT idcodigos FROM codigos WHERE codigo = '$codigo' AND fecha_alta IS NULL");
 
         $no_of_rows = mysql_num_rows($result);
 
@@ -244,8 +244,53 @@ class DB_Functions {
         }
 
     }
+	
+	public function getSubjects($user) {
+
+        $result = mysql_query("SELECT nombre, curso, grupo, id_asignatura_alumno FROM `asignaturas`, `asignatura_alumno` WHERE id_alumno=$user and id_asignatura = id");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+    }
 
 
+	public function getTokens($asig_alumn) {
+
+        $result = mysql_query("SELECT codigo, fecha_alta FROM `codigos`, `asignatura_codigo` WHERE id_asignatura_alumno=$asig_alumn and id_codigo = idcodigos");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+    }
+	
+	
     /**
 
      * Encrypting password
