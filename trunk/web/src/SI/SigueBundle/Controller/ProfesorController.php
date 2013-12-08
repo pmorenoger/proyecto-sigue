@@ -286,11 +286,29 @@ class ProfesorController extends Controller
                 require '../vendor/FPDF/fpdf.php';
                 $kernel = $this->get("kernel");
                 $pdf = new \FPDF();
+                $i = 0;
+                $x = 10;
+                $y = 20;
+                $esp = 150;
                 foreach($imgCodigos as $codigo){
-                    $pdf->AddPage();
-                    $pdf->SetFont('Arial','B',16);
+                    $p = ($i % 4);
+                    if ($p == 0){
+                        $pdf->AddPage();
+                        $pdf->SetFont('Arial','B',14); 
+                        self::colocarQR($pdf,$x,$y,$codigo);
+                    }else if ($p == 1){
+                        self::colocarQR($pdf,$x*11,$y,$codigo);
+                        $pdf->Ln($esp);
+                    }else if ($p == 2){
+                        self::colocarQR($pdf,$x,$y+$esp+10,$codigo);
+                    }else if ($p == 3){
+                        self::colocarQR($pdf,$x*11,$y+$esp+10,$codigo);
+                    }
+                    $i = $i + 1;
+                    /*
+                    $pdf->Cell(40,80,$codigo);
                     $pdf->Image($codigo,10,8,33);
-                    $pdf->Cell(40,80,$codigo);                   
+                    */                   
                 }
                  $ruta = self::getDireccionAbsoluta()."/web/archivos/pdfs/";
                   if($kernel->getEnvironment() === "dev"){
@@ -327,6 +345,11 @@ class ProfesorController extends Controller
                 array_push($asig, $as);             
             }
                 return $asig;
+            }
+            
+            private function colocarQR($pdf,$x,$y,$codigo){
+                $pdf->Cell(100,10,'logo');
+                $pdf->Image($codigo,$x,$y,80,80);
             }
     }
   
