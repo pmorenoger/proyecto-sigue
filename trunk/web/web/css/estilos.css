@@ -125,3 +125,17 @@ body {
     color:graytext;
     
 }
+textarea{
+    
+    display:block;
+	margin-bottom:10px;
+	margin-top:20px;
+	width:290px;
+	height:50px;
+	border:1px solid #D9D9D9;
+	border-radius:2px;
+	box-shadow:0 2px 1px #B0E0E6;
+	font-size:1.4em;
+	color:#737373;
+	padding:0 5px;
+}

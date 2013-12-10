@@ -256,4 +256,10 @@ class Alumnos
     
         return $this;
     }
+    /**
+     * @var string
+     */
+    private $codigoId;
+
+
 }

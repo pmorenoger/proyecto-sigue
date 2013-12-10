@@ -34,5 +34,10 @@ si_sigue_descargar_pdf_profesor:
 si_sigue_estadisticas_asignatura_profesor:
     pattern:  /Profesor/estadisticas/{id_asignatura}
     defaults:   {_controller: SISigueBundle:Profesor:stats}
-    
+si_sigue_actividad_profesor:
+    pattern:  /Profesor/actividad/{id_asignatura}
+    defaults:   {_controller: SISigueBundle:Profesor:actividad}   
+si_sigue_generar_actividad_profesor:
+    pattern:  /Profesor/generar_actividad
+    defaults:   {_controller: SISigueBundle:Profesor:generar_actividad}   
     

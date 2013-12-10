@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="SI\SigueBundle\Entity\ActividadAsignatura" table="actividad_asignatura">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="nota" type="float" column="Nota" nullable="true"/>
+    <field name="peso" type="float" column="Peso" nullable="true"/>
+    <field name="nombre" type="string" column="Nombre" length="45" nullable="true"/>
+    <field name="descripcion" type="text" column="Descripcion" nullable="true"/>
+    <field name="observaciones" type="text" column="Observaciones" nullable="true"/>
+    <field name="fechaCreacion" type="datetime" column="Fecha_creacion" nullable="true"/>
+    <field name="fechaLimite" type="datetime" column="Fecha_limite" nullable="true"/>
+    <many-to-one field="idAlumno" target-entity="Alumnos">
+      <join-columns>
+        <join-column name="Id_Alumno" referenced-column-name="idalumno"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idAsignatura" target-entity="Asignaturas">
+      <join-columns>
+        <join-column name="Id_Asignatura" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>
