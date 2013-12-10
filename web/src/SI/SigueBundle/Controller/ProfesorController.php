@@ -7,6 +7,7 @@ namespace SI\SigueBundle\Controller;
 use SI\SigueBundle\Entity\Alumnos;
 use SI\SigueBundle\Entity\Codigos;
 use SI\SigueBundle\Entity\Asignaturas;
+use SI\SigueBundle\Entity\ActividadAsignatura;
 use SI\SigueBundle\Entity\ProfesorAsignatura;
 use SI\SigueBundle\Entity\AsignaturaAlumno;
 use Symfony\Component\HttpFoundation\Request;
@@ -242,6 +243,66 @@ class ProfesorController extends Controller
            $asignaturas = self::getAsignaturas();
            $array = ["exito" => $exito, "alumnos" =>$alumnos ];           
            return $this->indexAction($array);
+        }
+        
+        public function actividadAction($id_asignatura){            
+            $em = $this->getDoctrine()->getManager();
+            $repo = $em->getRepository('SISigueBundle:Asignaturas');
+            $asignatura = $repo->find($id_asignatura);
+            //$actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAsignatura'=>$id_asignatura), array("fechaCreacion"=>"ASC"), array('groupBy'=>'nombre'));
+            $query = $em->createQuery(
+                    'SELECT p
+                    FROM SISigueBundle:ActividadAsignatura p
+                    WHERE p.idAsignatura = :idAsignatura
+                    GROUP BY p.nombre
+                    ORDER BY p.fechaCreacion ASC                   
+                    '
+                )->setParameter('idAsignatura', $id_asignatura);
+            $actividades = $query->getResult();
+            $act_resultados = array();
+            $repo = $em->getRepository('SISigueBundle:ActividadAsignatura');
+            foreach ($actividades as $actividad) {                              
+               $resultado =  $repo->findByNombre($actividad->getNombre());                  
+               array_push($act_resultados, $resultado);
+            }
+            //var_dump($act_resultados);die();
+            return $this->render('SISigueBundle:Profesor:actividad.html.php', array("asignatura"=>$asignatura, "actividades"=>$actividades, "resultados"=>$act_resultados));
+        }
+        
+        public function generar_actividadAction(){
+            $request = Request::createFromGlobals();
+             
+            $id_asignatura = $request->request->get("id_asignatura");
+            $nombre = $request->request->get("nombre");
+            $pesoStr = $request->request->get("peso");
+            $descripcion = $request->request->get("descripcion");
+            $peso = intval($pesoStr)/100;            
+            $date_time = new \DateTime();
+            $em = $this->getDoctrine()->getManager();            
+            $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
+            //var_dump($asignatura);
+            $alumnos = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findByIdAsignatura($id_asignatura);
+            //var_dump($alumnos);
+            foreach($alumnos as $al){
+                $id_al = $al->getIdAlumno();
+                //var_dump($id_al);
+                $alumno = $em->getRepository('SISigueBundle:Alumnos')->findByIdalumno($id_al);
+                //ar_dump($alumno);
+                $actividad = new ActividadAsignatura();
+                $actividad->setIdAlumno($alumno[0]);
+                $actividad->setIdAsignatura($asignatura);
+                $actividad->setNombre($nombre);
+                $actividad->setPeso($peso);
+                $actividad->setDescripcion($descripcion);
+                $actividad->setFechaCreacion($date_time);
+                $em->persist( $actividad);
+                //var_dump($actividad);
+           
+             }
+             //die();
+             $em->flush();
+            return $this->actividadAction($id_asignatura);
+             //return $this->render('SISigueBundle:Profesor:actividad.html.php');
         }
             
             

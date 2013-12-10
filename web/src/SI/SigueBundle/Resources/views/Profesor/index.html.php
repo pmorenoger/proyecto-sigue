@@ -23,7 +23,7 @@
                                     <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asignatura->getId() ));?>" onclick="ver_stats_codigo(<?php echo $asignatura->getId();?>)">Ver estadísticas de los Códigos</a>
                                     </li>
                                     <li>
-                                    <a href="#" onclick="">Gestionar actividades</a>                                   
+                                    <a href="actividad/<?php echo $asignatura->getId();?>" >Gestionar actividades</a>                                   
                                     </li>
                                      <li>
                                     <a href="#" onclick="">Ver lista de calificaciones</a>
@@ -129,14 +129,20 @@
                     <input type="submit" value="Generar" />
                 </form>
             </div>   
-            <?php if(!is_null($alumnos)): ?>
+            
+            
+            
+
+
+            <?php if(isset($alumnos) && !is_null($alumnos)): ?>
             <div id="stats_codigos_<?php $asignatura->getId() ;?>" <?php if ($exito!="stats_".$asignatura->getId()) : ?>class="hiddenStructure" <?php else: ?>style="margin-left:750px;" <?php endif;?>>                
-                    <table boder="1">
+                <h3><?php echo $asignatura->getNombre() ;?></h3>
+                    <table border="3">
                         <th>Nombre</th>
                         <th>Apellidos</th>
                         <th>Num. Códigos</th>
                         <?php foreach($alumnos as $alumno) :?>
-                        <tr>
+                        <tr style="text-align: center">
                             <td><?php echo $alumno->getIdAlumno()->getNombre(); ?></td>
                             <td><?php echo $alumno->getIdAlumno()->getApellidos();?></td>
                             <td><?php echo $alumno->getNum();?></td>
@@ -194,8 +200,10 @@
                  ocultar_todo();
                  $("#asignatura_"+id_asignatura).removeClass("hiddenStructure");
               }
+              
+         
          function mostrar_opciones_asignatura(id_asignatura){    
-                ocultar_todo();
+               // ocultar_todo();
                 $("ul [id^='lista_opciones']").addClass("hiddenStructure");
                 $("#lista_opciones_"+id_asignatura).removeClass("hiddenStructure");
                 $("#nueva_asignatura").addClass("hiddenStructure");         
@@ -212,6 +220,8 @@
             ocultar_todo();          
             $("#nueva_asignatura").removeClass("hiddenStructure");             
          }
+         
+         
          
          function ver_stats_codigo(idAsignatura){
            //window.location = "/estadisticas_asignatura/"+idAsignatura;       
