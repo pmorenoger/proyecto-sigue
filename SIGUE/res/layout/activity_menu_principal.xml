@@ -39,10 +39,15 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent" >
  
-                <TextView android:id="@+id/textView2"
-                      android:text="Contenido Tab 2"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content" />
+                <ViewFlipper android:id="@+id/viewFlipper"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent" >
+ 
+        <include layout="@layout/pagina_1"/>
+ 
+        <include layout="@layout/pagina_2"/>
+ 
+    </ViewFlipper>
         </LinearLayout>
          </FrameLayout>
     </LinearLayout>
