@@ -40,7 +40,9 @@ class AlumnoController extends Controller
             $total = $total + $a->getNum();
         }
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total));
+        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total,'actividades' => $actividades));
     }
     
     public function registrarAction($id,$asig){
@@ -142,10 +144,6 @@ class AlumnoController extends Controller
                 $mas = $mas + 1;
             }
         }
-        /*if ($mas >0 or $menos>0){
-            $mas = ($mas * 100)/$n;
-            $menos = ($menos * 100)/$n;
-        }*/
         return array('num' => $num,'max' => $max,'mas' => $mas, 'menos' => $menos);
     }
 }
