@@ -32,7 +32,7 @@
 <!-- AQUI IRAN LAS OPCIONES QUE TENGA EL PROFESOR -->
 <div style="margin-left: 750px">                        
     <div id="actividad_asignatura" class="hiddenStructure">
-        <form id="actividad_form" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_actividad_profesor' );?>">
+        <form id="factividad_form" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_actividad_profesor' );?>">
             <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
             <span>Crear una nueva Actividad en <h3><?php echo $asignatura->getNombre();?> </h3></span>
             <label for="nombre">Nombre:</label>

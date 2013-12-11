@@ -135,19 +135,4 @@ class Codigos
     {
         return $this->fechaAlta;
     }
-    /**
-     * @var integer
-     */
-    private $idcodigos;
-
-
-    /**
-     * Get idcodigos
-     *
-     * @return integer 
-     */
-    public function getIdcodigos()
-    {
-        return $this->idcodigos;
-    }
 }

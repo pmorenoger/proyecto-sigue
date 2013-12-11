@@ -334,7 +334,8 @@ class ProfesorController extends Controller
                         $ruta = \str_replace("/","\\",$ruta);
                     }
                     \QRcode::png($codigo->getCodigo(),$ruta ,QR_ECLEVEL_H,6,4,true);
-                    array_push($lista_archivos,$ruta);
+                    //array_push($lista_archivos,$ruta);
+                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo());
                     $i++;
                 }
                 //var_dump($lista_archivos);
@@ -409,8 +410,8 @@ class ProfesorController extends Controller
             }
             
             private function colocarQR($pdf,$x,$y,$codigo){
-                $pdf->Cell(100,10,'logo');
-                $pdf->Image($codigo,$x,$y,80,80);
+                $pdf->Cell(100,10,$codigo[1]);
+                $pdf->Image($codigo[0],$x,$y,80,80);
             }
     }
   
