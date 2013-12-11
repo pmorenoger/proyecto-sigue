@@ -22,7 +22,12 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -35,6 +40,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 
 
@@ -54,6 +60,8 @@ public class MenuPrincipal extends Activity {
 	public static List<String> listDataHeader;
 	public static HashMap<String, ArrayList<String>> listDataChild;
 	private static boolean change = false;
+	public float init_x;
+    private ViewFlipper vf;
 	
     UserFunctions userFunction;
 
@@ -150,6 +158,30 @@ public class MenuPrincipal extends Activity {
         	if(!change){
         		new Asincrono2().execute(userFunction);   
         	}
+        	
+        	 vf = (ViewFlipper) findViewById(R.id.viewFlipper);
+        	 
+             Button bt1 = (Button) findViewById(R.id.buttonUno);
+             bt1.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View arg0, MotionEvent arg1) {
+					// TODO Auto-generated method stub
+                    vf.showNext();
+					return true;
+				}
+             });
+      
+             Button bt2 = (Button) findViewById(R.id.buttondos);
+             bt2.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					// TODO Auto-generated method stub
+					vf.showPrevious();
+					return true;
+				}
+             });
+      
+             vf.setOnTouchListener(new ListenerTouchViewFlipper());
         	}else{
 
             // user is not logged in show login screen
@@ -199,6 +231,87 @@ private void prepareListData(JSONObject json) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+}
+
+private class ListenerTouchViewFlipper implements View.OnTouchListener{
+	 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+
+        switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN: //Cuando el usuario toca la pantalla por primera vez
+            init_x=event.getX();
+            return true;
+        case MotionEvent.ACTION_UP: //Cuando el usuario deja de presionar
+            float distance =init_x-event.getX();
+
+            if(distance>0)
+            {
+                 vf.setInAnimation(inFromRightAnimation());
+                 vf.setOutAnimation(outToLeftAnimation());
+                 vf.showPrevious();
+            }
+
+            if(distance<0)
+            {
+                 vf.setInAnimation(inFromLeftAnimation());
+                 vf.setOutAnimation(outToRightAnimation());
+                 vf.showNext();
+            }
+
+        default:
+            break;
+        }
+
+        return false;
+    }
+
+}
+
+private Animation inFromRightAnimation() {
+
+    Animation inFromRight = new TranslateAnimation(
+    Animation.RELATIVE_TO_PARENT,  +1.0f, Animation.RELATIVE_TO_PARENT,  0.0f,
+    Animation.RELATIVE_TO_PARENT,  0.0f, Animation.RELATIVE_TO_PARENT,   0.0f );
+
+    inFromRight.setDuration(500);
+    inFromRight.setInterpolator(new AccelerateInterpolator());
+
+    return inFromRight;
+
+}
+
+private Animation outToLeftAnimation() {
+    Animation outtoLeft = new TranslateAnimation(
+            Animation.RELATIVE_TO_PARENT, 0.0f,
+            Animation.RELATIVE_TO_PARENT, -1.0f,
+            Animation.RELATIVE_TO_PARENT, 0.0f,
+            Animation.RELATIVE_TO_PARENT, 0.0f);
+    outtoLeft.setDuration(500);
+    outtoLeft.setInterpolator(new AccelerateInterpolator());
+    return outtoLeft;
+}
+
+private Animation inFromLeftAnimation() {
+    Animation inFromLeft = new TranslateAnimation(
+            Animation.RELATIVE_TO_PARENT, -1.0f,
+            Animation.RELATIVE_TO_PARENT, 0.0f,
+            Animation.RELATIVE_TO_PARENT, 0.0f,
+            Animation.RELATIVE_TO_PARENT, 0.0f);
+    inFromLeft.setDuration(500);
+    inFromLeft.setInterpolator(new AccelerateInterpolator());
+    return inFromLeft;
+}
+
+private Animation outToRightAnimation() {
+    Animation outtoRight = new TranslateAnimation(
+            Animation.RELATIVE_TO_PARENT, 0.0f,
+            Animation.RELATIVE_TO_PARENT, +1.0f,
+            Animation.RELATIVE_TO_PARENT, 0.0f,
+            Animation.RELATIVE_TO_PARENT, 0.0f);
+    outtoRight.setDuration(500);
+    outtoRight.setInterpolator(new AccelerateInterpolator());
+    return outtoRight;
 }
 
 private void prepareListData() {
