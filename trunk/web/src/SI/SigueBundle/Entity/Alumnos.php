@@ -200,29 +200,6 @@ class Alumnos
     }
 
     /**
-     * Set codigo_id
-     *
-     * @param string $codigoId
-     * @return Alumnos
-     */
-    public function setCodigoId($codigoId)
-    {
-        $this->codigo_id = $codigoId;
-    
-        return $this;
-    }
-
-    /**
-     * Get codigo_id
-     *
-     * @return string 
-     */
-    public function getCodigoId()
-    {
-        return $this->codigo_id;
-    }
-
-    /**
      * Get codigo_id
      * 
      * @return string

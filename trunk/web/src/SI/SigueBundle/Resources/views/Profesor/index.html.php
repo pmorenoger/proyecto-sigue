@@ -121,9 +121,9 @@
                     <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
                     <label for="cantidad">Cantidad:</label>
                     <select id="cantidad" name="cantidad">
-                        <option value="10">16</option>
+                        <option value="16">16</option>
                         <option value="20">20</option>
-                        <option value="50">36</option>
+                        <option value="36">36</option>
                         <option value="100">100</option>
                     </select>  
                     <input type="submit" value="Generar" />
