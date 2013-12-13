@@ -163,12 +163,6 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             $subjects = $db->getSubjects($user);
 
             if ($subjects) {
-			//$response []= array(
-			//			'Asignatura'=>array(
-			//							'Datos'=>array(),
-			//							'Tokens'=>array())
-			//			);
-			//			prev($response);
 			$response["success"] = 1;
 			$i= 0;
 			while($row = mysql_fetch_assoc($subjects)){
@@ -176,6 +170,18 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				if($tokens){
 				$response ['Asignaturas'][$i]['Asignatura']['Datos'] =  $row;
 				prev($response);
+				$statistic1 = mysql_fetch_assoc( $db->getMisTokens($row["id_asignatura_alumno"]));
+				$response ['Asignaturas'][$i]['Asignatura']['Estadisticas']['MisTokens'] = $statistic1["num"];
+				$statistic = mysql_fetch_assoc( $db->getNumTokens($row["id_asignatura"]));
+				$response ['Asignaturas'][$i]['Asignatura']['Estadisticas']['AllTokens'] = $statistic["SUM(num)"];
+				$statistic = mysql_fetch_assoc( $db->getMaxNumTokens($row["id_asignatura"]));
+				$response ['Asignaturas'][$i]['Asignatura']['Estadisticas']['MaxTokens'] = $statistic["MAX(num)"];
+				$statistic = mysql_fetch_assoc( $db->getLessTokens($row["id_asignatura"],$statistic1["num"]));
+				$response ['Asignaturas'][$i]['Asignatura']['Estadisticas']['LessTokens'] = $statistic["COUNT(num)"];
+				$statistic = mysql_fetch_assoc( $db->getEqualTokens($row["id_asignatura"],$statistic1["num"]));
+				$response ['Asignaturas'][$i]['Asignatura']['Estadisticas']['EqualTokens'] = $statistic["COUNT(num)"];
+				$statistic = mysql_fetch_assoc( $db->getMoreTokens($row["id_asignatura"],$statistic1["num"]));
+				$response ['Asignaturas'][$i]['Asignatura']['Estadisticas']['MoreTokens'] = $statistic["COUNT(num)"];
 				while($column = mysql_fetch_assoc($tokens)){
 				$response ['Asignaturas'][$i]['Asignatura']['Tokens'][] =  $column;
 				}

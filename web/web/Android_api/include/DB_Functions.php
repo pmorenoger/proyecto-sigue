@@ -75,7 +75,8 @@ class DB_Functions {
 	
 	public function storeCode($idcodigos, $id_asignatura_alumnos) {
 
-        $result = mysql_query("INSERT INTO asignatura_codigo(id_codigo, id_asignatura_alumno) VALUES('$idcodigos','$id_asignatura_alumnos')");
+        $result = mysql_query("INSERT INTO asignatura_codigo(id_codigo, id_asignatura_alumno) VALUES($idcodigos,$id_asignatura_alumnos)");
+		$result = mysql_query("update asignatura_alumno set num = num + 1 where id_asignatura_alumno = '$id_asignatura_alumnos'");
 
         // check for successful store
 
@@ -105,7 +106,7 @@ class DB_Functions {
 
             $uid = mysql_insert_id(); // last inserted id
 
-            $result = mysql_query("SELECT * FROM users WHERE uid = $uid");
+            $result = mysql_query("SELECT * FROM users WHERE uid = '$uid'");
 
             // return user details
 
@@ -237,7 +238,7 @@ class DB_Functions {
 
         } else {
 
-            // code not existed
+            // code not existed or signed up
 
             return false;
 
@@ -247,7 +248,7 @@ class DB_Functions {
 	
 	public function getSubjects($user) {
 
-        $result = mysql_query("SELECT nombre, curso, grupo, id_asignatura_alumno FROM `asignaturas`, `asignatura_alumno` WHERE id_alumno=$user and id_asignatura = id");
+        $result = mysql_query("SELECT nombre, curso, grupo, id_asignatura_alumno, id_asignatura FROM `asignaturas`, `asignatura_alumno` WHERE id_alumno='$user' and id_asignatura = id");
 
         $no_of_rows = mysql_num_rows($result);
 
@@ -270,7 +271,28 @@ class DB_Functions {
 
 	public function getTokens($asig_alumn) {
 
-        $result = mysql_query("SELECT codigo, fecha_alta FROM `codigos`, `asignatura_codigo` WHERE id_asignatura_alumno=$asig_alumn and id_codigo = idcodigos");
+        $result = mysql_query("SELECT codigo, fecha_alta FROM `codigos`, `asignatura_codigo` WHERE id_asignatura_alumno='$asig_alumn' and id_codigo = idcodigos");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+		}
+		
+		public function getMisTokens($asig_alumn) {
+
+        $result = mysql_query("SELECT num FROM `asignatura_alumno` WHERE id_asignatura_alumno='$asig_alumn'");
 
         $no_of_rows = mysql_num_rows($result);
 
@@ -288,8 +310,121 @@ class DB_Functions {
 
         }
 
+
     }
 	
+	public function getNumTokens($asig) {
+
+        $result = mysql_query("SELECT SUM(num) FROM `asignatura_alumno` WHERE id_asignatura='$asig'");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+
+    }
+	
+	public function getMaxNumTokens($asig) {
+
+        $result = mysql_query("SELECT MAX(num) FROM `asignatura_alumno` WHERE id_asignatura='$asig'");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+
+    }
+	
+	public function getLessTokens($asig,$num) {
+
+        $result = mysql_query("SELECT COUNT(num) FROM `asignatura_alumno` WHERE id_asignatura='$asig' and num < '$num'");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+
+    }
+	public function getEqualTokens($asig,$num) {
+
+        $result = mysql_query("SELECT COUNT(num) FROM `asignatura_alumno` WHERE id_asignatura='$asig' and num = '$num'");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+
+    }
+	public function getMoreTokens($asig,$num) {
+
+        $result = mysql_query("SELECT COUNT(num) FROM `asignatura_alumno` WHERE id_asignatura='$asig' and num > '$num'");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+
+    }
 	
     /**
 
