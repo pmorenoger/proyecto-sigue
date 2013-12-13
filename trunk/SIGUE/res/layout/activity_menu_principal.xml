@@ -38,16 +38,12 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent" >
- 
-                <ViewFlipper android:id="@+id/viewFlipper"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent" >
- 
-        <include layout="@layout/pagina_1"/>
- 
-        <include layout="@layout/pagina_2"/>
- 
-    </ViewFlipper>
+                
+ 				<ExpandableListView
+                android:id="@+id/lvSts"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"/>
+               
         </LinearLayout>
          </FrameLayout>
     </LinearLayout>
