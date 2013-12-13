@@ -1,6 +1,7 @@
 package com.example.sigue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,6 +45,13 @@ import android.widget.ViewFlipper;
 
 
 
+import com.androidplot.pie.PieChart;
+import com.androidplot.pie.Segment;
+import com.androidplot.pie.SegmentFormatter;
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
 import com.example.sigue.library.DataBaseHandler;
 import com.example.sigue.library.UserFunctions;
 
@@ -56,12 +64,15 @@ public class MenuPrincipal extends Activity {
 	String codigoAsig;
 	String uid;
 	ExpandableListAdapter listAdapter;
+	StatisticListAdapter listAdapter1;
 	ExpandableListView expListView;
+	ExpandableListView statisticView;
 	public static List<String> listDataHeader;
 	public static HashMap<String, ArrayList<String>> listDataChild;
+	public static HashMap<String, ArrayList<String>> listStatisticChild;
 	private static boolean change = false;
-	public float init_x;
-    private ViewFlipper vf;
+    
+
 	
     UserFunctions userFunction;
 
@@ -113,16 +124,18 @@ public class MenuPrincipal extends Activity {
          
         	// get the listview
             expListView = (ExpandableListView) findViewById(R.id.lvExp);
+            statisticView = (ExpandableListView) findViewById(R.id.lvSts);
             // preparing list data
             if(!change){	
             	prepareListData();
             }
      
             listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+            listAdapter1 = new StatisticListAdapter(this, listDataHeader, listStatisticChild);
      
             // setting list adapter
             expListView.setAdapter(listAdapter);
-        
+            statisticView.setAdapter(listAdapter1);       
         	
         	TabHost.TabSpec spec=tabs.newTabSpec("Mis Tokens");
         	spec.setContent(R.id.tab1);
@@ -159,29 +172,9 @@ public class MenuPrincipal extends Activity {
         		new Asincrono2().execute(userFunction);   
         	}
         	
-        	 vf = (ViewFlipper) findViewById(R.id.viewFlipper);
-        	 
-             Button bt1 = (Button) findViewById(R.id.buttonUno);
-             bt1.setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View arg0, MotionEvent arg1) {
-					// TODO Auto-generated method stub
-                    vf.showNext();
-					return true;
-				}
-             });
-      
-             Button bt2 = (Button) findViewById(R.id.buttondos);
-             bt2.setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					// TODO Auto-generated method stub
-					vf.showPrevious();
-					return true;
-				}
-             });
-      
-             vf.setOnTouchListener(new ListenerTouchViewFlipper());
+        	 //vf = (ViewFlipper) findViewById(R.id.viewFlipper);
+             
+            
         	}else{
 
             // user is not logged in show login screen
@@ -206,9 +199,12 @@ public class MenuPrincipal extends Activity {
 private void prepareListData(JSONObject json) {
     listDataHeader = new ArrayList<String>();
     listDataChild = new HashMap<String, ArrayList<String>>();
+    listStatisticChild = new HashMap<String, ArrayList<String>>();
     ArrayList<String> tokens = new ArrayList<String>();
+    ArrayList<String> statistics = new ArrayList<String>();
     JSONArray asig = null;
     JSONArray tok = null;
+    JSONObject sts = null;
     JSONObject aux = null;
     String aux1 = null;
     try {
@@ -216,9 +212,16 @@ private void prepareListData(JSONObject json) {
 		 int i = asig.length();
 		 for(int j=0;j<i;j++){
 			 aux = asig.getJSONObject(j).getJSONObject("Asignatura").getJSONObject("Datos");
+			 sts= asig.getJSONObject(j).getJSONObject("Asignatura").getJSONObject("Estadisticas");
 			 tok = asig.getJSONObject(j).getJSONObject("Asignatura").getJSONArray("Tokens");
 			 aux1 = aux.getString("nombre")+"  grupo: " + aux.getString("grupo") + "   " + aux.getString("curso");
-			 listDataHeader.add(aux1);
+			 listDataHeader.add(aux1);	 
+			 
+			 aux1 = sts.getString("MisTokens")+ "%&" + sts.getString("AllTokens") + "%&" + sts.getString("MaxTokens")
+					 + "%&" + sts.getString("LessTokens") + "%&" + sts.getString("EqualTokens") + "%&" + sts.getString("MoreTokens");
+			 statistics.add(aux1);
+			 listStatisticChild.put(listDataHeader.get(j), (ArrayList<String>)statistics.clone());
+			 statistics.clear();
 			 int k = tok.length();
 			 for(int z=0;z<k;z++){
 				 aux1 = tok.getJSONObject(z).getString("codigo")+ "   " + tok.getJSONObject(z).getString("fecha_alta");
@@ -233,86 +236,9 @@ private void prepareListData(JSONObject json) {
 	}
 }
 
-private class ListenerTouchViewFlipper implements View.OnTouchListener{
-	 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
 
-        switch (event.getAction()) {
-        case MotionEvent.ACTION_DOWN: //Cuando el usuario toca la pantalla por primera vez
-            init_x=event.getX();
-            return true;
-        case MotionEvent.ACTION_UP: //Cuando el usuario deja de presionar
-            float distance =init_x-event.getX();
 
-            if(distance>0)
-            {
-                 vf.setInAnimation(inFromRightAnimation());
-                 vf.setOutAnimation(outToLeftAnimation());
-                 vf.showPrevious();
-            }
 
-            if(distance<0)
-            {
-                 vf.setInAnimation(inFromLeftAnimation());
-                 vf.setOutAnimation(outToRightAnimation());
-                 vf.showNext();
-            }
-
-        default:
-            break;
-        }
-
-        return false;
-    }
-
-}
-
-private Animation inFromRightAnimation() {
-
-    Animation inFromRight = new TranslateAnimation(
-    Animation.RELATIVE_TO_PARENT,  +1.0f, Animation.RELATIVE_TO_PARENT,  0.0f,
-    Animation.RELATIVE_TO_PARENT,  0.0f, Animation.RELATIVE_TO_PARENT,   0.0f );
-
-    inFromRight.setDuration(500);
-    inFromRight.setInterpolator(new AccelerateInterpolator());
-
-    return inFromRight;
-
-}
-
-private Animation outToLeftAnimation() {
-    Animation outtoLeft = new TranslateAnimation(
-            Animation.RELATIVE_TO_PARENT, 0.0f,
-            Animation.RELATIVE_TO_PARENT, -1.0f,
-            Animation.RELATIVE_TO_PARENT, 0.0f,
-            Animation.RELATIVE_TO_PARENT, 0.0f);
-    outtoLeft.setDuration(500);
-    outtoLeft.setInterpolator(new AccelerateInterpolator());
-    return outtoLeft;
-}
-
-private Animation inFromLeftAnimation() {
-    Animation inFromLeft = new TranslateAnimation(
-            Animation.RELATIVE_TO_PARENT, -1.0f,
-            Animation.RELATIVE_TO_PARENT, 0.0f,
-            Animation.RELATIVE_TO_PARENT, 0.0f,
-            Animation.RELATIVE_TO_PARENT, 0.0f);
-    inFromLeft.setDuration(500);
-    inFromLeft.setInterpolator(new AccelerateInterpolator());
-    return inFromLeft;
-}
-
-private Animation outToRightAnimation() {
-    Animation outtoRight = new TranslateAnimation(
-            Animation.RELATIVE_TO_PARENT, 0.0f,
-            Animation.RELATIVE_TO_PARENT, +1.0f,
-            Animation.RELATIVE_TO_PARENT, 0.0f,
-            Animation.RELATIVE_TO_PARENT, 0.0f);
-    outtoRight.setDuration(500);
-    outtoRight.setInterpolator(new AccelerateInterpolator());
-    return outtoRight;
-}
 
 private void prepareListData() {
     listDataHeader = new ArrayList<String>();
