@@ -335,7 +335,7 @@ class ProfesorController extends Controller
                     }
                     \QRcode::png($codigo->getCodigo(),$ruta ,QR_ECLEVEL_H,6,4,true);
                     //array_push($lista_archivos,$ruta);
-                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo());
+                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo(),2 => $codigo->getId()->getNombre());
                     $i++;
                 }
                 //var_dump($lista_archivos);
@@ -350,13 +350,13 @@ class ProfesorController extends Controller
                 $pdf = new \FPDF();
                 $i = 0;
                 $x = 10;
-                $y = 20;
+                $y = 25;
                 $esp = 150;
                 foreach($imgCodigos as $codigo){
                     $p = ($i % 4);
                     if ($p == 0){
                         $pdf->AddPage();
-                        $pdf->SetFont('Arial','B',14); 
+                        $pdf->SetFont('Arial','B',11); 
                         self::colocarQR($pdf,$x,$y,$codigo);
                     }else if ($p == 1){
                         self::colocarQR($pdf,$x*11,$y,$codigo);
@@ -366,11 +366,7 @@ class ProfesorController extends Controller
                     }else if ($p == 3){
                         self::colocarQR($pdf,$x*11,$y+$esp+10,$codigo);
                     }
-                    $i = $i + 1;
-                    /*
-                    $pdf->Cell(40,80,$codigo);
-                    $pdf->Image($codigo,10,8,33);
-                    */                   
+                    $i = $i + 1;                
                 }
                  $ruta = self::getDireccionAbsoluta()."/web/archivos/pdfs/";
                   if($kernel->getEnvironment() === "dev"){
@@ -411,6 +407,7 @@ class ProfesorController extends Controller
             
             private function colocarQR($pdf,$x,$y,$codigo){
                 $pdf->Cell(100,10,$codigo[1]);
+                $pdf->Text($x, $y, $codigo[2]);
                 $pdf->Image($codigo[0],$x,$y,80,80);
             }
     }
