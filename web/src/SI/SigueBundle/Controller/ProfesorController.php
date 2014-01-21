@@ -231,18 +231,50 @@ class ProfesorController extends Controller
             }
                
         public function statsAction($id_asignatura){
-            /*Tengo que sacar los codigos asociados a esa asignatura 
-             * que estén usados por algún alumno, y sacar los pares alunmo, nºcodigos*/
-           $em = $this->getDoctrine()->getManager();
-           $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
+            /*Aquí se calculan las estadísticas de la parte del profesor. 
+             * 1.- Totales generados / redimidos
+             * 2.- Códigos de cada alumno
+             * 3.- Registrados por fecha
+             *          --Falta--
+             * 4.- Registrados por plataforma
+             * 
+             *     Pendientes
+             * 5.- Predicciones de nota
+             * 6.- Cálculo de los SS, AP, NT y SB
+             * 
+             */
+            $em = $this->getDoctrine()->getManager();
+            $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
+            
+            $query = $em->createQuery(
+                'SELECT count(cod)
+                FROM SISigueBundle:Codigos cod
+                WHERE cod.id = :id
+                '
+                )->setParameter('id', $id_asignatura);
+
+            $totales = $query->getResult();
+              $totales = intval($totales[0][1]);
+            
+            
+            $query = $em->createQuery(
+                'SELECT count(cod)
+                FROM SISigueBundle:Codigos cod
+                WHERE cod.id = :id and cod.fechaAlta is not NULL
+                '
+                )->setParameter('id', $id_asignatura);
+
+            $redimidos = $query->getResult();
+            $redimidos = intval($redimidos[0][1]);
+            //Codigo por cada alumno//           
            $alumnos = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findByIdAsignatura($asignatura);
            $exito = "stats_".$asignatura->getId();
-           //var_dump($alumnos);
-          // die();
+          
            
            $asignaturas = self::getAsignaturas();
-           $array = ["exito" => $exito, "alumnos" =>$alumnos ];           
-           return $this->indexAction($array);
+           $array = ["exito" => $exito, "alumnos" =>$alumnos, "totales" =>$totales, "redimidos" => $redimidos ];           
+           //return   $this->indexAction($array);
+           return $this->render('SISigueBundle:Profesor:stats.html.php',$array);
         }
         
         public function actividadAction($id_asignatura){            
