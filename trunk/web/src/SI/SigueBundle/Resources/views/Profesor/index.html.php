@@ -23,7 +23,7 @@
                                     <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asignatura->getId() ));?>" onclick="ver_stats_codigo(<?php echo $asignatura->getId();?>)">Ver estadísticas de los Códigos</a>
                                     </li>
                                     <li>
-                                    <a href="actividad/<?php echo $asignatura->getId();?>" >Gestionar actividades</a>                                   
+                                    <a href="<?php echo $view['router']->generate('si_sigue_actividad_profesor', array("id_asignatura" =>$asignatura->getId()));?>" >Gestionar actividades</a>                                   
                                     </li>
                                      <li>
                                     <a href="#" onclick="">Ver lista de calificaciones</a>
@@ -133,7 +133,7 @@
             
             
 
-
+<!--
             <?php if(isset($alumnos) && !is_null($alumnos)): ?>
             <div id="stats_codigos_<?php $asignatura->getId() ;?>" <?php if ($exito!="stats_".$asignatura->getId()) : ?>class="hiddenStructure" <?php else: ?>style="margin-left:750px;" <?php endif;?>>                
                 <h3><?php echo $asignatura->getNombre() ;?></h3>
@@ -153,7 +153,7 @@
     
             </div>
             <?php endif ?>
-
+-->
          <?php endforeach; ?>                                   
     <?php endforeach; ?>
 <?php endif; ?>
