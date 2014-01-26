@@ -34,7 +34,12 @@
             <h3>Ver estadísticas</h3>
                 <div>
                     <ul>
-                        <li><a href="<?php echo $view['router']->generate('si_sigue_alumno_estadisticas', array('id' => $alumno->getIdalumno(),'asig'=>$asignatura->getId()),true); ?>"> Mis TOKENS </a> </li>
+                        <li><a href="<?php echo $view['router']->generate('si_sigue_alumno_estadisticas', array('id' => $alumno->getIdalumno(),'asig'=>$asignatura->getId()),true); ?>"> Mis TOKENS </a> 
+                            <ul>
+                                <li><a href="javascript:void(0);" onclick="mostrarGraficaPorcentaje();"> Gráfica Porcentaje de alumnos con mas/menos tokens </a></li>
+                                <li><a href="javascript:void(0);" onclick="mostrarGraficaAlumnosTokens();"> Gráfica Alumnos-Tokens </a></li>
+                            </ul>    
+                        </li>
                     </ul>
                 </div>
         </div>
@@ -71,13 +76,51 @@
                                        'is3D':true};
                         var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
                         chart.draw(data, options);
+                        
+                        
                         }
                 </script>
                 <?php else:?>
                 <p><strong>No tienes ningún token....PONTE LAS PILAS!!!</strong></p>
                 <?php endif;?>
             <?php endif;?>
+                
+            <?php if(isset($estAlumnos) and $estAlumnos !== NULL): ?>
+            <script type="text/javascript">
+                    google.load('visualization', '1.0', {'packages':['corechart']});
+                    google.setOnLoadCallback(drawBarChart);
+                    function drawBarChart() {
+                        var nom = '<?php echo $alumno->getNombre();?>';
+                        var yo = <?php echo $alumno->getIdalumno();?>;
+                        var p =  <?php echo count($estAlumnos);?>;
+                        var array = new Array(p+1);
+                        array[0] = ['Alumno','Tokens'];
+                        var i = 1;
+                        <?php foreach ($estAlumnos as $e): ?>
+                            var aux = <?php echo $e->getIdAlumno()->getIdalumno();?>;
+                            var n = <?php echo $e->getNum();?>;
+                            if(aux === yo){
+                                array[i] = [nom,n];
+                            }else{
+                                array[i] = ['A',n];
+                            }
+                            i = i + 1;
+                        <?php endforeach; ?>
+                        var data = new google.visualization.arrayToDataTable(array);    
+                        var options = {'title':'Alumnos-Tokens',
+                                       'width':400,
+                                       'height':300,
+                                       'backgroundColor': '#ceecf5',
+                                       'legend.position': 'bottom',
+                                       'fontName': 'Comic Sans MS'};
+                        var chart = new google.visualization.BarChart(document.getElementById('bar_3d'));
+                        chart.draw(data, options);
+                        }
+            </script>
+            <?php endif; ?>
+            
             <div id="piechart_3d"></div>
+            <div id="bar_3d" class="hiddenStructure"></div>
         </div>
     </td>
     </tr>
@@ -117,8 +160,18 @@
                 if (!$("#bRegistrar").validationEngine('validate')) return false;
                 return true;
         }
+        
+        
     });
-    
+    function mostrarGraficaPorcentaje(){
+        $("#piechart_3d").removeClass("hiddenStructure");
+        $("#bar_3d").addClass("hiddenStructure");
+    }
+        
+    function mostrarGraficaAlumnosTokens(){
+        $("#piechart_3d").addClass("hiddenStructure");
+        $("#bar_3d").removeClass("hiddenStructure");
+    }
     
 </script>
 <?php $view['slots']->stop(); ?>
