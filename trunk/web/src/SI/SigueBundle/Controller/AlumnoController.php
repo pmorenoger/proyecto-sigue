@@ -1,5 +1,4 @@
 <?php
-
 namespace SI\SigueBundle\Controller;
 
 use SI\SigueBundle\Entity\Alumnos;
@@ -41,7 +40,6 @@ class AlumnoController extends Controller
         }
         
         $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
-        
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total,'actividades' => $actividades));
     }
     
@@ -110,6 +108,7 @@ class AlumnoController extends Controller
     
     public function estadisticasAction($id,$asig){
         $est = NULL;
+        $estAlumnos = NULL;
         $em = $this->getDoctrine()->getEntityManager();
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
@@ -118,9 +117,10 @@ class AlumnoController extends Controller
             if($a){
                 $array = self::numTotalToken($asig,$em,$a->getNum());
                 $est = array('num' => $a->getNum(),'total' => $array['num'],'max' => $array['max'], 'mas' => $array['mas'], 'menos' => $array['menos']); 
+                $estAlumnos = self::alumnosTokens($asig,$em);
             }
         }
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,'est'=>$est));
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,'est'=>$est,'estAlumnos'=>$estAlumnos));
     }
     
     private function numTotalToken($asig,$em,$t){
@@ -145,6 +145,18 @@ class AlumnoController extends Controller
             }
         }
         return array('num' => $num,'max' => $max,'mas' => $mas, 'menos' => $menos);
+    }
+    
+    private function alumnosTokens($asig,$em){
+        //$list = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAsignatura'=>$asig));
+        $query = $em->createQuery(  'SELECT T
+                                    FROM SISigueBundle:AsignaturaAlumno T
+                                    WHERE T.idAsignatura = :asig
+                                    ORDER BY T.num ASC' )->setParameter('asig',$asig);
+        $list = $query->getResult();
+        if (!$list) return NULL;
+        if (count($list) == 0) return NULL;
+        return $list;
     }
 }
 ?>
