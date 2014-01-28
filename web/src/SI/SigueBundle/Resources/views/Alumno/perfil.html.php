@@ -24,8 +24,8 @@
                             <h3>Otras Opciones</h3>
                                 <div>
                                     <ul>           
-                                        <li> <a href="" onclick="mostrarActividades();"> Mostrar Actividades </a> </li>
-                                        <li> <a href=""> Otros </a> </li>
+                                        <li> <a href="javascript:void(0);" onclick="mostrarActividades();"> Mostrar Actividades </a> </li>
+                                        <li> <a href="javascript:void(0);"> Otros </a> </li>
                                     </ul>
                                  </div>
                           </div>
