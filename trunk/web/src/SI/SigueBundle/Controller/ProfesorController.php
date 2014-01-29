@@ -270,9 +270,38 @@ class ProfesorController extends Controller
            $alumnos = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findByIdAsignatura($asignatura);
            $exito = "stats_".$asignatura->getId();
           
+           //Codigos por fechas
+            $query = $em->createQuery(
+                'SELECT cod
+                FROM SISigueBundle:Codigos cod
+                WHERE cod.id = :id and cod.fechaAlta is not NULL
+                '
+                )->setParameter('id', $id_asignatura);
+
+            $fechas = $query->getResult();
+            
+            $fechas_veces = array();          
+            if(!empty($fechas)){           
+                $str_fecha = $fechas[1]->getFechaAlta()->format("Y-m-d");
            
+                $veces = 0;
+                foreach($fechas as $fecha){
+                   if($fecha->getFechaAlta()->format("Y-m-d") === $str_fecha){        
+                       $veces++;
+                   }else{
+                       array_push($fechas_veces, array("fecha"=>$str_fecha, "veces" => $veces));
+                       $veces = 1;
+                       $str_fecha = $fecha->getFechaAlta()->format("Y-m-d");
+          
+                   }
+
+               }
+                array_push($fechas_veces, array("fecha"=>$str_fecha, "veces" => $veces));
+            }
+           
+            
            $asignaturas = self::getAsignaturas();
-           $array = ["exito" => $exito, "alumnos" =>$alumnos, "totales" =>$totales, "redimidos" => $redimidos ];           
+           $array = ["asignatura" => $asignatura, "exito" => $exito, "alumnos" =>$alumnos, "totales" =>$totales, "redimidos" => $redimidos, "fechas_veces" => $fechas_veces ];           
            //return   $this->indexAction($array);
            return $this->render('SISigueBundle:Profesor:stats.html.php',$array);
         }
