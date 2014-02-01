@@ -21,6 +21,13 @@
                                     </ul>
                                  </div>
                             <?php endif; ?>
+                            <h3>Editar Perfil</h3>
+                                <div>
+                                    <ul>           
+                                        <li> <a href="javascript:void(0);" onclick="mostrarFormPassword();"> Cambiar Contraseña</a> </li>
+                                        <li> <a href="javascript:void(0);" onclick="mostrarFormCorreo();"> Añadir un correo adicional </a> </li>
+                                    </ul>
+                                 </div>
                             <h3>Otras Opciones</h3>
                                 <div>
                                     <ul>           
@@ -32,7 +39,7 @@
                         </div>
                     </td>
                     <td>
-                        <p><strong>El número total de tokens que tienes es: <?php echo $total ?></strong></p>
+                        <p><strong>El número total de tokens que tienes es: <?php echo $total; ?></strong></p>
                         <div id="codQR">
 
                         </div>
@@ -56,6 +63,37 @@
                                 </table>
                             <?php endif; ?>
                         </div>
+                        <div id="divCambiar" class="hiddenStructure">
+                            <form method="post" id="mainCambiar" action="<?php echo $view['router']->generate('si_sigue_perfil_editar', array('id' => $alumno->getIdalumno())); ?>">
+                                <label for="nueva_clave" class="labelContraseña">Nueva contraseña:</label>
+                                <input type="password" id ="nueva_clave" name="nueva_clave" placeholder="Contraseña" class='validate[required,minSize[5]]'/>
+                                <label for="verificar" class="labelContraseña">Repita contraseña:</label>
+                                <input type="password" id="verificar" name="verificar" placeholder="Contraseña" class="validate[required,funcCall[fnVerificar],minSize[5]]"/>
+                                <input type="submit" value="Cambiar" id="bCambiar" />
+                            </form>
+                        </div>
+                        <div id="divCorreoAdicional" class="hiddenStructure">
+                            <form method="post" id="mainCorreoAdicional" action="<?php echo $view['router']->generate('si_sigue_perfil_correoAdicional', array('id' => $alumno->getIdalumno())); ?>">
+                                <label for="correo_adicional" class="labelCorreo">Correo Adicional:</label>
+                                <input type="text" name="correo_adicional" placeholder="Correo Adicional" class='validate[required,custom[email]]'/>
+                                <input type="submit" value="Añadir" id="bCorreoAdicional" />
+                            </form>
+                        </div>
+                        <?php if(isset($res)): ?>
+                            <?php if($res == 1): ?>
+                                <div id="tooltip_exito">
+                                    <p>Se ha modificado correctamente tu contraseña.</p>
+                                </div>
+                            <?php elseif ($res == 2): ?>
+                                <div id="tooltip_exito">
+                                    <p>Se añadió correctamente tu correo adicional.</p>
+                                </div>
+                            <?php else: ?>
+                                <div id="tooltip_exito">
+                                    <p>La operación no se ha podido realizar.</p>
+                                </div>
+                            <?php endif;?>
+                        <?php endif;?>
                     </td>
             </tr>
         </table>
@@ -79,6 +117,29 @@
                 $( "#accordion" ).accordion( "refresh" );
             }
         });
+        
+        $( "#tooltip_exito" ).dialog({                
+                buttons: [
+                  {
+                    text: "OK",
+                    click: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+                ]
+              });
+        
+        $("#bCambiar").submit(function(event){
+            if (!$("#bCambiar").validationEngine('validate')) return false;
+            return true;
+        });
+        $("#mainCambiar").validationEngine('attach',{relative: true,promptPosition: "bottomRight"});
+        
+        $("#bCorreoAdicional").submit(function(evvent){
+            if (!$("#bCorreoAdicional").validationEngine('validate')) return false;
+            return true;
+        });
+        $("#mainCorreoAdicional").validationEngine('attach',{relative: true,promptPosition: "bottomRight"});
     });
     
     function qr(){
@@ -98,7 +159,9 @@
                 success: function(data) {
                     if (data.status){
                         $("#actividades").addClass('hiddenStructure');
-                        $("#codQR").removeClass('hiddenStructure')
+                        $('#divCambiar').addClass('hiddenStructure');
+                        $('#divCorreoAdicional').addClass('hiddenStructure');
+                        $("#codQR").removeClass('hiddenStructure');
                         $("#codQR").append("<img src='../.." + data.dir + "'>");
                         //$("#bActivar").attr("disabled", "disabled");
                     }else{
@@ -109,9 +172,30 @@
         }
     }
     
+    function fnVerificar(field, rules, i, options){
+        if ($("#nueva_clave").val() !== $("#verificar").val())
+            return "*Las contraseñas no coinciden.";
+    }
+    
     function mostrarActividades(){
         $('#codQR').addClass('hiddenStructure');
+        $('#divCambiar').addClass('hiddenStructure');
+        $('#divCorreoAdicional').addClass('hiddenStructure');
         $('#actividades').removeClass('hiddenStructure');
+    }
+    
+    function mostrarFormPassword(){
+        $('#codQR').addClass('hiddenStructure');
+        $('#actividades').addClass('hiddenStructure');
+        $('#divCorreoAdicional').addClass('hiddenStructure');
+        $('#divCambiar').removeClass('hiddenStructure');
+    }
+    
+    function mostrarFormCorreo(){
+        $('#codQR').addClass('hiddenStructure');
+        $('#actividades').addClass('hiddenStructure');
+        $('#divCambiar').addClass('hiddenStructure');
+        $('#divCorreoAdicional').removeClass('hiddenStructure');
     }
 </script>
 <?php $view['slots']->stop(); ?>

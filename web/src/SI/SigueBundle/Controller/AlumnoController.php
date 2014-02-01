@@ -43,6 +43,58 @@ class AlumnoController extends Controller
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total,'actividades' => $actividades));
     }
     
+    public function cambiarPasswordAction($id){
+        //$peticion = $this->getRequest()->getSession();
+        $request = Request::createFromGlobals();
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        //$id = $peticion->get('idalumno');//$request->request->get("id_alumno");
+        $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
+        $password = $request->request->get("verificar");
+        
+        $hash = self::hashSSHA($password);
+        $alumno->setSalt($hash["salt"]);
+        $alumno->setPassword($hash["encrypted"]);
+        $em->persist($alumno);
+        $em->flush();
+        
+        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
+        $asig = array();
+        $total = 0;
+        foreach ($asignaturas as $a){
+            array_push($asig, $a->getIdAsignatura());
+            $total = $total + $a->getNum();
+        }
+        
+        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total,'actividades' => $actividades,'res' => 1));
+    }
+    
+    public function correoAdicionalAction($id){
+        //$peticion = $this->getRequest()->getSession();
+        $request = Request::createFromGlobals();
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        //$id = $peticion->get('idalumno');
+        $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
+        
+        $correoAdicional = $request->request->get("correo_adicional");
+        $alumno->setCorreoAdicional($correoAdicional);
+        $em->persist($alumno);
+        $em->flush();
+        
+        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
+        $asig = array();
+        $total = 0;
+        foreach ($asignaturas as $a){
+            array_push($asig, $a->getIdAsignatura());
+            $total = $total + $a->getNum();
+        }
+        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total,'actividades' => $actividades,'res' =>2));
+    
+    }
+    
     public function registrarAction($id,$asig){
         //obtenenos el alumno y la asignatura con que realziaremos las diferentes opciones
         $em = $this->getDoctrine()->getEntityManager();
@@ -158,5 +210,13 @@ class AlumnoController extends Controller
         if (count($list) == 0) return NULL;
         return $list;
     }
+    
+    private function hashSSHA($password) {
+        $salt = sha1(rand());
+        $salt = substr($salt, 0, 10);
+        $encrypted = base64_encode(sha1($password . $salt, true) . $salt);
+        $hash = array("salt" => $salt, "encrypted" => $encrypted);
+        return $hash;     
+   }
 }
 ?>
