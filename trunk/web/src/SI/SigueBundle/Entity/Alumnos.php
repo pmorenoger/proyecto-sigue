@@ -29,7 +29,12 @@ class Alumnos
      * @var string
      */
     private $correo;
-
+    
+    /**
+     * @var string
+     */
+    private $correoadicional;
+    
     /**
      * @var string
      */
@@ -141,6 +146,29 @@ class Alumnos
     public function getCorreo()
     {
         return $this->correo;
+    }
+    
+    /**
+     * Set correoadicional
+     *
+     * @param string $correoadicional
+     * @return Alumnos
+     */
+    public function setCorreoAdicional($correoadicional)
+    {
+        $this->correoadicional = $correoadicional;
+    
+        return $this;
+    }
+
+    /**
+     * Get correoadicional
+     *
+     * @return string 
+     */
+    public function getCorreoAdicional()
+    {
+        return $this->correoadicional;
     }
 
     /**
