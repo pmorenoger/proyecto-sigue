@@ -211,11 +211,66 @@ class AlumnoController extends Controller
         return $list;
     }
     
+    public function prediccionNotaOpcion1($em,$id,$asig,$peso){
+        $query = $em->createQuery(  'SELECT T.num
+                                    FROM SISigueBundle:AsignaturaAlumno T
+                                    WHERE T.idAsignatura = :asig AND T.idAlumno = :id'
+                                    )->setParameter(array('asig'=>$asig, 'id'=>$id));
+        $num = intval($query->getResult()[0][1]);
+        $valor = $num*$peso;
+        if ($valor > 10) return 10;
+        return $valor;
+    }
+    
+    public function prediccionNotaOpcion2($em,$id,$asig,$tolerancia,$descartes){
+        $queryMax = $em->createQuery(  'SELECT T
+                                    FROM SISigueBundle:AsignaturaAlumno T
+                                    WHERE T.idAsignatura = :asig
+                                    ORDER BY num DESC'
+                                    )->setParameter('asig',$asig);
+        $list = $queryMax->getResult();
+        if(!$list || count($list)<1) return 0;
+        $max = $list[0]->getNum();
+        if($descartes < count($list))
+            $max = $list[$descartes]->getNum();
+        $limite = $max*$tolerancia/100;
+        $query = $em->createQuery(  'SELECT T.num
+                                    FROM SISigueBundle:AsignaturaAlumno T
+                                    WHERE T.idAsignatura = :asig AND T.idAlumno = :id'
+                                    )->setParameter(array('asig'=>$asig, 'id'=>$id));
+        $num = intval($query->getResult()[0][1]);
+        if ($num >= $limite) return 10;
+        return $num*10/16;
+        
+    }
+    
+    public function prediccionNotaOpcion3($em,$id,$asig,$n,$x){
+        $queryNum = $em->createQuery(  'SELECT COUNT (*)
+                                        FROM SISigueBundle:Codigos T
+                                        WHERE T.id = :asig
+                                        GROUP BY id'
+                                        )->setParameter('asig',$asig);
+        $numTokens = intval($queryNum->getResult()[0][1]);
+        $queryN = $em->createQuery(  'SELECT COUNT (*)
+                                    FROM SISigueBundle:AsignaturaAlumno T
+                                    WHERE T.idAsignatura = :asig AND T.num >= :n'
+                                    )->setParameter('asig',$asig);
+        $numAl = intval($queryN->getResult()[0][1]);
+        $numX = $numTokens/$numAl;
+        $query = $em->createQuery(  'SELECT T.num
+                                    FROM SISigueBundle:AsignaturaAlumno T
+                                    WHERE T.idAsignatura = :asig AND T.idAlumno = :id'
+                                    )->setParameter(array('asig'=>$asig, 'id'=>$id));
+        $num = intval($query->getResult()[0][1]);
+        if ($num == $numX) return $x;
+        return $num*$x/$numX;
+    }
+    
     private function hashSSHA($password) {
         $salt = sha1(rand());
-        $salt = substr($salt, 0, 10);
-        $encrypted = base64_encode(sha1($password . $salt, true) . $salt);
-        $hash = array("salt" => $salt, "encrypted" => $encrypted);
+        $salt2 = substr($salt, 0, 10);
+        $encrypted = base64_encode(sha1($password . $salt2, true) . $salt2);
+        $hash = array("salt" => $salt2, "encrypted" => $encrypted);
         return $hash;     
    }
 }
