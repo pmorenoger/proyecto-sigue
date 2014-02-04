@@ -172,7 +172,12 @@ class AlumnoController extends Controller
                 $estAlumnos = self::alumnosTokens($asig,$em);
             }
         }
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,'est'=>$est,'estAlumnos'=>$estAlumnos));
+        $opcion1 = self::prediccionNotaOpcion1($em,$id,$asig,0.25);
+        $opcion2 = self::prediccionNotaOpcion2($em,$id,$asig,80,0);
+        $opcion3 = self::prediccionNotaOpcion3($em,$id,$asig,6,7.5);
+        $predicciones = array($opcion1,$opcion2,$opcion3);
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,
+                            'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones));
     }
     
     private function numTotalToken($asig,$em,$t){
@@ -211,22 +216,19 @@ class AlumnoController extends Controller
         return $list;
     }
     
-    public function prediccionNotaOpcion1($em,$id,$asig,$peso){
-        $query = $em->createQuery(  'SELECT T.num
-                                    FROM SISigueBundle:AsignaturaAlumno T
-                                    WHERE T.idAsignatura = :asig AND T.idAlumno = :id'
-                                    )->setParameter(array('asig'=>$asig, 'id'=>$id));
-        $num = intval($query->getResult()[0][1]);
+    private function prediccionNotaOpcion1($em,$id,$asig,$peso){
+        $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
+        $num = $query->getNum();
         $valor = $num*$peso;
         if ($valor > 10) return 10;
         return $valor;
     }
     
-    public function prediccionNotaOpcion2($em,$id,$asig,$tolerancia,$descartes){
+    private function prediccionNotaOpcion2($em,$id,$asig,$tolerancia,$descartes){
         $queryMax = $em->createQuery(  'SELECT T
                                     FROM SISigueBundle:AsignaturaAlumno T
                                     WHERE T.idAsignatura = :asig
-                                    ORDER BY num DESC'
+                                    ORDER BY T.num DESC'
                                     )->setParameter('asig',$asig);
         $list = $queryMax->getResult();
         if(!$list || count($list)<1) return 0;
@@ -234,34 +236,30 @@ class AlumnoController extends Controller
         if($descartes < count($list))
             $max = $list[$descartes]->getNum();
         $limite = $max*$tolerancia/100;
-        $query = $em->createQuery(  'SELECT T.num
-                                    FROM SISigueBundle:AsignaturaAlumno T
-                                    WHERE T.idAsignatura = :asig AND T.idAlumno = :id'
-                                    )->setParameter(array('asig'=>$asig, 'id'=>$id));
-        $num = intval($query->getResult()[0][1]);
+        $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
+        $num = $query->getNum();
         if ($num >= $limite) return 10;
         return $num*10/16;
         
     }
     
-    public function prediccionNotaOpcion3($em,$id,$asig,$n,$x){
-        $queryNum = $em->createQuery(  'SELECT COUNT (*)
+    private function prediccionNotaOpcion3($em,$id,$asig,$n,$x){
+        $queryNum = $em->createQuery(  'SELECT COUNT (T)
                                         FROM SISigueBundle:Codigos T
                                         WHERE T.id = :asig
-                                        GROUP BY id'
+                                        GROUP BY T.id'
                                         )->setParameter('asig',$asig);
         $numTokens = intval($queryNum->getResult()[0][1]);
-        $queryN = $em->createQuery(  'SELECT COUNT (*)
+        $queryN = $em->createQuery(  'SELECT COUNT (T)
                                     FROM SISigueBundle:AsignaturaAlumno T
                                     WHERE T.idAsignatura = :asig AND T.num >= :n'
-                                    )->setParameter('asig',$asig);
+                                    )->setParameter('asig',$asig)
+                                     ->setParameter('n',$n);
         $numAl = intval($queryN->getResult()[0][1]);
+        
         $numX = $numTokens/$numAl;
-        $query = $em->createQuery(  'SELECT T.num
-                                    FROM SISigueBundle:AsignaturaAlumno T
-                                    WHERE T.idAsignatura = :asig AND T.idAlumno = :id'
-                                    )->setParameter(array('asig'=>$asig, 'id'=>$id));
-        $num = intval($query->getResult()[0][1]);
+        $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
+        $num = $query->getNum();
         if ($num == $numX) return $x;
         return $num*$x/$numX;
     }

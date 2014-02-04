@@ -40,6 +40,9 @@
                                 <li><a href="javascript:void(0);" onclick="mostrarGraficaAlumnosTokens();"> Gráfica Alumnos-Tokens </a></li>
                             </ul>    
                         </li>
+                        <li>
+                            <a href="javascript:void(0);" onclick="mostrarPredicciones();"> Predicción de la nota </a>
+                        </li>
                     </ul>
                 </div>
         </div>
@@ -49,9 +52,11 @@
         <div id="estadisticasAlumnoAsignatura">
             <?php if ($est !== NULL): ?>
                 <?php if ($est['total'] > 0 and $est['num']>0): ?>
-                <p>Número total de TOKENS de esta asignatura es: <?php echo $est['total'];?></p>
-                <p>Tu número de TOKENS de esta asignatura es: <?php echo $est['num'];?></p>
-                <p>Los máximos TOKENS obtenidos de esta asignatura es: <?php echo $est['max'];?></p>
+                <div id="general" class="hiddenStructure">
+                    <p>Número total de TOKENS de esta asignatura es: <?php echo $est['total'];?></p>
+                    <p>Tu número de TOKENS de esta asignatura es: <?php echo $est['num'];?></p>
+                    <p>Los máximos TOKENS obtenidos de esta asignatura es: <?php echo $est['max'];?></p>
+                </div>
                 <script type="text/javascript">
                     google.load('visualization', '1.0', {'packages':['corechart']});
                     google.setOnLoadCallback(drawChart);
@@ -121,6 +126,16 @@
             
             <div id="piechart_3d"></div>
             <div id="bar_3d" class="hiddenStructure"></div>
+            <div id="prediccion" class="hiddenStructure">
+                <?php if(isset($predicciones) && count($predicciones)>0): ?>
+                    <p>Predicciones de la nota (a fecha de hoy)</p>
+                    <ul>
+                        <li><p>Opción 1 : <?php echo $predicciones[0] ;?></p></li>
+                        <li><p>Opción 2 : <?php echo $predicciones[1] ;?></p></li>
+                        <li><p>Opción 3 : <?php echo $predicciones[2] ;?></p></li>
+                    </ul>
+                <?php endif; ?>
+            </div>
         </div>
     </td>
     </tr>
@@ -131,6 +146,7 @@
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
     $(document).ready(function(){
+        mostrarGeneral();
         $("#accordion").accordion({
             heightStyle: "fill"
         });
@@ -163,14 +179,33 @@
         
         
     });
+    
     function mostrarGraficaPorcentaje(){
+        $("#general").addClass("hiddenStructure");
         $("#piechart_3d").removeClass("hiddenStructure");
         $("#bar_3d").addClass("hiddenStructure");
+        $("#prediccion").addClass("hiddenStructure");
     }
         
     function mostrarGraficaAlumnosTokens(){
+        $("#general").addClass("hiddenStructure");
+        $("#prediccion").addClass("hiddenStructure");
         $("#piechart_3d").addClass("hiddenStructure");
         $("#bar_3d").removeClass("hiddenStructure");
+    }
+    
+    function mostrarPredicciones(){
+        $("#general").addClass("hiddenStructure");
+        $("#piechart_3d").addClass("hiddenStructure");
+        $("#bar_3d").addClass("hiddenStructure");
+        $("#prediccion").removeClass("hiddenStructure");
+    }
+    
+    function mostrarGeneral(){
+        $("#general").removeClass("hiddenStructure");
+        $("#piechart_3d").addClass("hiddenStructure");
+        $("#bar_3d").addClass("hiddenStructure");
+        $("#prediccion").addClass("hiddenStructure");
     }
     
 </script>
