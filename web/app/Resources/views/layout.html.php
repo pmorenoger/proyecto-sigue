@@ -15,6 +15,8 @@
             <text class="encabezado2"> <?php $view['slots']->output('rol') ?></text>       
         </a>
     </div>
+    <?php $logout = $view['router']->generate('si_sigue_logout'); ?>
+    <div id="logout"><a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >Salir</a></div>
 </div>
 
 <div id="content">

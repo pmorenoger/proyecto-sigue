@@ -40,6 +40,13 @@ body {
        width:1200px;
 }
 
+#logout{
+    float:right;
+    margin-right:10%;
+    margin-top:-10%;
+}
+
+
 #content {
     margin-left:15px;  
     width:100%;
