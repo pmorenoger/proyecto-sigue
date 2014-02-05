@@ -110,7 +110,22 @@ public class MenuPrincipal extends Activity {
         userFunction = new UserFunctions();
 
         if(userFunction.isUserLoggedIn(getApplicationContext())){
+        	DataBaseHandler db = new DataBaseHandler(this);
+        	
+        	HashMap<String, String> usuario = db.getUserDetails();
+        	if(usuario.get("profesor").equals("1")){
+        		 // user is not logged in show login screen
 
+                Intent login = new Intent(getApplicationContext(), MenuPrincipalProfesor.class);
+
+                login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                startActivity(login);
+
+                // Closing dashboard screen
+
+                finish();
+        	}else{
         
 
        // user already logged in show databoard
@@ -163,16 +178,14 @@ public class MenuPrincipal extends Activity {
         	
         	setTabColor(tabs);
         	
-        	DataBaseHandler db = new DataBaseHandler(this);
         	
-        	HashMap<String, String> usuario = db.getUserDetails();
         	
         	uid = usuario.get("uid");
         	if(!change){
         		new Asincrono2().execute(userFunction);   
         	}
         	
-        	 //vf = (ViewFlipper) findViewById(R.id.viewFlipper);
+        	}
              
             
         	}else{

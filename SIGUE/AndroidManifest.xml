@@ -57,6 +57,10 @@
             android:name="com.example.sigue.MainActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.example.sigue.MenuPrincipalProfesor"
+            android:label="@string/app_name" >
+        </activity>
        
     </application>
 

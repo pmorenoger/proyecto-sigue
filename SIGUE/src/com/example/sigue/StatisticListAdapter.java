@@ -34,24 +34,14 @@ public class StatisticListAdapter extends BaseExpandableListAdapter {
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, ArrayList<String>> _listDataChild;
-    private PieChart mySimpleXYPlot;
+    private PieChart mySimplePiePlot;
     public float init_x;
    //private ViewFlipper vf;
  
     public StatisticListAdapter(Context context, List<String> listDataHeader,
             HashMap<String, ArrayList<String>> listChildData) {
         this._context = context;
-        this._listDataHeader = listDataHeader;
-        /*ArrayList<String> prueba = new ArrayList<String>();
-        if(listChildData.size()!= 0){
-        listChildData.clear();
-        ArrayList<String> joderya = new ArrayList<String>();
-        joderya.add("cojones");
-        listChildData.put(listDataHeader.get(0), joderya);
-        listChildData.put(listDataHeader.get(1), joderya);
-        listChildData.put(listDataHeader.get(2), joderya);
-        prueba.add(listDataHeader.get(0));}*/
-        
+        this._listDataHeader = listDataHeader;       
         this._listDataChild = listChildData;
         //vf = null;
     }
@@ -137,36 +127,70 @@ public class StatisticListAdapter extends BaseExpandableListAdapter {
         		view = convertView;         
                 ((ViewHolder) view.getTag()).vf.setTag(_listDataChild.get(_listDataHeader.get(groupPosition)).get(childPosition));
         	}
-            /*LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.statistic_item, null);*/
+        //Para el grafico de barras aqui podremos usarlo!!!!!!!.
+        // Remove all current series from each plot
+        
+        /*Iterator<XYSeries> iterator1 = plot.getSeriesSet().iterator();
+        while(iterator1.hasNext()) { 
+        	XYSeries setElement = iterator1.next();
+        	plot.removeSeries(setElement);
+        }
+
+        // Setup our Series with the selected number of elements
+        series1 = new SimpleXYSeries(Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Us");
+        series2 = new SimpleXYSeries(Arrays.asList(series2Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Them");
+
+        // add a new series' to the xyplot:
+        if (series1CheckBox.isChecked()) plot.addSeries(series1, formatter1);
+        if (series2CheckBox.isChecked()) plot.addSeries(series2, formatter2); 
+
+        // Setup the BarRenderer with our selected options
+        MyBarRenderer renderer = ((MyBarRenderer)plot.getRenderer(MyBarRenderer.class));
+        renderer.setBarRenderStyle((BarRenderer.BarRenderStyle)spRenderStyle.getSelectedItem());
+        renderer.setBarWidthStyle((BarRenderer.BarWidthStyle)spWidthStyle.getSelectedItem());
+        renderer.setBarWidth(sbFixedWidth.getProgress());
+        renderer.setBarGap(sbVariableWidth.getProgress());
+        
+        if (BarRenderer.BarRenderStyle.STACKED.equals(spRenderStyle.getSelectedItem())) {
+        	plot.setRangeTopMin(15);
+        } else {
+        	plot.setRangeTopMin(0);
+        }
+	        
+        plot.redraw();
+    	
+    }  */
+            
         	ViewHolder holder = (ViewHolder)view.getTag();
-        	//holder.vf = (ViewFlipper) convertView.findViewById(R.id.viewFlipper);
-        	//holder.vf.setOnTouchListener(new ListenerTouchViewFlipper());
-     	//convertView.setTag(childHolder);
-     	//childHolder.vf.setTag(_listDataChild.get(_listDataHeader.get(groupPosition)).get(childPosition));
-        mySimpleXYPlot = (PieChart) holder.vf.findViewById(R.id.mySimpleXYPlot);
+        mySimplePiePlot = (PieChart) holder.vf.findViewById(R.id.mySimplePiePlot);
         
         final String childText = (String) getChild(groupPosition, childPosition);
         String[] arrayEstadisticas = childText.split("%&");
        
         Segment segment1 = new Segment("Yo: " + arrayEstadisticas[4], Integer.parseInt(arrayEstadisticas[4]));
+ 
         Segment segment2 = new Segment("Por encima: " + arrayEstadisticas[5], Integer.parseInt(arrayEstadisticas[5]));
+        
         Segment segment3 = new Segment("por debajo: " + arrayEstadisticas[3], Integer.parseInt(arrayEstadisticas[3]));
+        
 
         SegmentFormatter segment1Format = new SegmentFormatter(Color.rgb(0, 200, 0));
         SegmentFormatter segment2Format = new SegmentFormatter(Color.rgb(0, 0, 500));
         SegmentFormatter segment3Format = new SegmentFormatter(Color.rgb(250, 200, 100));
         new SegmentFormatter();
         // Una vez definida la serie (datos y estilo), la añadimos al panel
-        //mySimpleXYPlot.addSeries(series1, series1Format);
-        mySimpleXYPlot.addSeries(segment1, segment1Format);
-        mySimpleXYPlot.addSeries(segment2, segment2Format);
-        mySimpleXYPlot.addSeries(segment3, segment3Format);
+        //mySimplePiePlot.addSeries(series1, series1Format);
+        mySimplePiePlot.addSeries(segment1, segment1Format);
+        if (Integer.parseInt(arrayEstadisticas[5])!=0){
+        mySimplePiePlot.addSeries(segment2, segment2Format);
+        }
+        if(Integer.parseInt(arrayEstadisticas[3])!= 0){
+        mySimplePiePlot.addSeries(segment3, segment3Format);
+        }
         
  
         // Repetimos para la segunda serie
-        //mySimpleXYPlot.addSeries(series2, new LineAndPointFormatter
+        //mySimplePiePlot.addSeries(series2, new LineAndPointFormatter
 //(Color.rgb(0, 0, 200), Color.rgb(0, 0, 100), Color.rgb(150, 150, 190), null));
        
  
