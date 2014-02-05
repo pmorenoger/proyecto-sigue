@@ -55,6 +55,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_SURNAME = "surname";
 
     private static final String KEY_EMAIL = "email";
+    
+    private static final String KEY_PROF = "prof";
 
     private static final String KEY_UID = "uid";
 
@@ -97,6 +99,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 + KEY_SURNAME + " TEXT,"
 
                 + KEY_EMAIL + " TEXT UNIQUE,"
+                
+                + KEY_PROF + " INTEGER,"
 
                 + KEY_UID + " TEXT" + ")";
         
@@ -154,7 +158,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
      * */
 
-    public void addUser(String name, String email, String uid, String surname) {
+    public void addUser(String name, String email, String uid, String surname, boolean prof) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -169,6 +173,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_UID, uid); // UID
 
         values.put(KEY_SURNAME, surname); // Surname
+        
+        values.put(KEY_PROF, prof);
 
 
 
@@ -208,11 +214,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
             user.put("name", cursor.getString(1));
             
-            user.put("surname", cursor.getString(3));
+            user.put("surname", cursor.getString(2));
 
-            user.put("email", cursor.getString(4));
+            user.put("email", cursor.getString(3));
+            
+            user.put("profesor", cursor.getString(4));
 
-            user.put("uid", cursor.getString(2));
+            user.put("uid", cursor.getString(5));
 
         }
 

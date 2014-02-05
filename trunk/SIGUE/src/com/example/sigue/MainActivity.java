@@ -56,6 +56,8 @@ public class MainActivity extends Activity {
     private static String KEY_SURNAME = "surname";
 
     private static String KEY_EMAIL = "email";
+    
+    private static String KEY_PROF = "profesor";
 
     private static String KEY_CREATED_AT = "created_at";
 	@Override
@@ -173,10 +175,36 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
                     // Clear all previous data in database
 
                     userFunction.logoutUser(getApplicationContext());
+                    boolean profe;
+                    if (json_user.getString(KEY_PROF).equals("true")){
+                    	profe = true;
+                    }else{
+                    	profe=false;
+                    }
 
-                    db.addUser(json_user.getString(KEY_NAME),json_user.getString(KEY_SURNAME), json_user.getString(KEY_EMAIL), json.getString(KEY_UID));                        
+                    db.addUser(json_user.getString(KEY_NAME),json_user.getString(KEY_EMAIL), json_user.getString(KEY_UID), json_user.getString(KEY_SURNAME),profe);                        
+
+                    if (profe){
+                    	// Launch Dashboard Screen
+
+                        Intent dashboard = new Intent(getApplicationContext(), MenuPrincipalProfesor.class);
 
 
+
+                        // Close all views before launching Dashboard
+
+                        dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        startActivity(dashboard);
+
+
+
+                        // Close Login Screen
+
+                        finish();
+                        
+                    	
+                    }else{
 
                     // Launch Dashboard Screen
 
@@ -195,6 +223,7 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
                     // Close Login Screen
 
                     finish();
+                    }
 
                 }else{
 
