@@ -65,14 +65,21 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             // echo json with success = 1
 
             $response["success"] = 1;
-
-            $response["uid"] = $user["idalumno"];
+			if($user["profesor"]==="false"){
+			
+				$response["user"]["uid"] = $user["idalumno"];
+			
+			}else{
+				$response["user"]["uid"] = $user["idprofesor"];
+			}
 
             $response["user"]["name"] = $user["nombre"];
 			
 			$response["user"]["surname"] = $user["apellidos"];
 
             $response["user"]["email"] = $user["correo"];
+			
+			$response["user"]["profesor"] = $user["profesor"];
 
             echo json_encode($response);
 
@@ -202,7 +209,7 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 
                 $response["error"] = 1;
 
-                $response["error_msg"] = "Error occured in Registartion";
+                $response["error_msg"] = "Error occured obtaining the subjects";
 
                 echo json_encode($response);
 

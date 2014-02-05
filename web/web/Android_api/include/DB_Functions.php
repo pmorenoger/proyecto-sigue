@@ -147,6 +147,8 @@ class DB_Functions {
             $hash = $this->checkhashSSHA($salt, $password);
 
             // check for password equality
+			
+			$result["profesor"] = "false";
 
             if ($encrypted_password == $hash) {
 
@@ -156,11 +158,34 @@ class DB_Functions {
 
             }
 
-        } else {
+        }else{
+			$result = mysql_query("SELECT * FROM profesor WHERE correo = '$email'") or die(mysql_error());
+			$no_of_rows = mysql_num_rows($result);
+			if ($no_of_rows > 0) {
+			
+			$result = mysql_fetch_array($result);
 
-            // user not found
+            $salt = $result['salt'];
+
+            $encrypted_password = $result['password'];
+
+            $hash = $this->checkhashSSHA($salt, $password);
+			
+			$result["profesor"] = "true";
+			if ($encrypted_password == $hash) {
+
+                // user authentication details are correct
+
+                return $result;
+
+            }
+			
+			}else {
+
+				// user not found
 
             return false;
+			}
 
         }
 
