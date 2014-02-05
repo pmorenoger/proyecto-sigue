@@ -73,4 +73,12 @@ class DefaultController extends Controller
         return $hash;
 
     }
+    
+    public function logoutAction(){
+        $session = $this->getRequest()->getSession();        
+        $session->remove('idalumno');
+        $session->remove('idprofesor');
+        return $this->redirect('inicio');
+        
+    }
 }

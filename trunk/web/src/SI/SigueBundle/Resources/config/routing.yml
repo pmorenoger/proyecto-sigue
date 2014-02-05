@@ -4,6 +4,9 @@ si_sigue_homepage:
 si_sigue_login:
     pattern:  /login
     defaults: { _controller: SISigueBundle:Default:login }
+si_sigue_logout:
+    pattern:  /logout
+    defaults: { _controller: SISigueBundle:Default:logout }
 si_sigue_perfil_alumno:
     pattern:  /Alumno/inicio
     defaults:   {_controller: SISigueBundle:Alumno:perfil }
