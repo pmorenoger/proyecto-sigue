@@ -15,11 +15,12 @@ import android.widget.TextView;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     private Context _context;
-    private List<String> _listDataHeader; // header titles
+    private ArrayList<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, ArrayList<String>> _listDataChild;
+
  
-    public ExpandableListAdapter(Context context, List<String> listDataHeader,
+    public ExpandableListAdapter(Context context, ArrayList<String> listDataHeader,
             HashMap<String, ArrayList<String>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
@@ -102,4 +103,22 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+    
+    public void updateData(){
+    	
+    }
+
+	public void clear() {
+		// TODO Auto-generated method stub
+		_listDataHeader.clear();
+		_listDataChild.clear();
+	}
+
+	public void addAll(ArrayList<String> listDataHeader,
+			HashMap<String, ArrayList<String>> listDataChild) {
+		// TODO Auto-generated method stub
+		this._listDataHeader = listDataHeader;
+        this._listDataChild = listDataChild;
+	}
+    
 }

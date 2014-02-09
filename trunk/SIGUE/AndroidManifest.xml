@@ -45,7 +45,9 @@
         
          <activity
             android:name="com.example.sigue.MenuPrincipal"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,12 +57,26 @@
         
         <activity
             android:name="com.example.sigue.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.example.sigue.MenuPrincipalProfesor"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name="com.example.sigue.AlumnosActivity"            
+            android:label="@string/app_name" 
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait">
+            
+           
+            
+        </activity>
+        
        
     </application>
 

@@ -30,19 +30,19 @@ public class UserFunctions {
 
     // Testing in localhost using wamp or xampp
 
-    // use http://10.0.2.2/ to connect to your localhost ie http://localhost/
+     //use http://10.0.2.2/ to connect to your localhost ie http://localhost/
 
-    //private static String loginURL = "http://sigue.no-ip.org/Android_api/";
+    private static String loginURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    private static String loginURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    //private static String loginURL = "http://192.168.1.122:8080/xampp/Android_api/";
 
-    //private static String registerURL = "http://sigue.no-ip.org/Android_api/";
+    private static String registerURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    private static String registerURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    //private static String registerURL = "http://192.168.1.122:8080/xampp/Android_api/";
     
-    //private static String qrURL = "http://sigue.no-ip.org/Android_api/";
+    private static String qrURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    private static String qrURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    //private static String qrURL = "http://192.168.1.122:8080/xampp/Android_api/";
 
 
     private static String login_tag = "login";
@@ -52,6 +52,10 @@ public class UserFunctions {
     private static String qr_tag = "qr_register";
     
     private static String subject_tag = "subject_tag";
+    
+    private static String subject_tag_prof = "subject_tag_prof";
+    
+    private static String alumno_tag = "alumno_tag";
 
 
 
@@ -126,8 +130,48 @@ public class UserFunctions {
         // Building Parameters
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
+        
+        params.add(new BasicNameValuePair("tag",subject_tag));
+        
+        params.add(new BasicNameValuePair("user", user));
 
-        params.add(new BasicNameValuePair("tag", subject_tag));
+        JSONObject json = jsonParser.getJSONFromUrl(qrURL, params);
+
+        
+
+        // Log.e("JSON", json.toString());
+
+        return json;
+
+    }
+    
+    public JSONObject getAlumnos(int id){
+
+        // Building Parameters
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        
+        params.add(new BasicNameValuePair("tag",alumno_tag));
+        
+        params.add(new BasicNameValuePair("user",Integer.toString(id)));
+
+        JSONObject json = jsonParser.getJSONFromUrl(qrURL, params);
+
+        
+
+        // Log.e("JSON", json.toString());
+
+        return json;
+
+    }
+    
+    public JSONObject getSubjectsProf(String user){
+
+        // Building Parameters
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        
+        params.add(new BasicNameValuePair("tag",subject_tag_prof));
         
         params.add(new BasicNameValuePair("user", user));
 
