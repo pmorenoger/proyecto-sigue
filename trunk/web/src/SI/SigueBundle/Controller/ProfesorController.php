@@ -20,18 +20,34 @@ class ProfesorController extends Controller
     {
         public function indexAction($exito)
         {     
-           $asig = self::getAsignaturas();
+            $asig = self::getAsignaturas();
+            $profesor = self::getProfesor();
+            $peticion = $this->getRequest()->getSession();
+            $p = $peticion->get('pAl');
             
+            $em = $this->getDoctrine()->getEntityManager();
+            $cod = $profesor->getCodigo();
+            if ($cod === NULL){
+                $cod = $profesor->getCorreo()."#&".$p;
+                $profesor->setCodigo($cod);
+                $em->persist($profesor);
+                $em->flush();
+                //guardamos el código generado en la BBDD
+                $codigo = new Codigos();
+                $codigo->setCodigo($profesor->getCodigo());
+                $em->persist($codigo);
+                $em->flush();
+            }
+           
            if(!is_array($exito)){                           
-               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig));
+               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig,"cod"=>$cod));
            }else{
                $asig2 = array("asignaturas" => $asig);
                if(! array_key_exists("alumnos",$exito)){
                   $exito = array_merge($exito, array("alumnos" => null)) ;
                }
                $exito = array_merge($exito,$asig2);
-               //var_dump($exito);
-              
+               //var_dump($exito)
                return $this->render('SISigueBundle:Profesor:index.html.php',$exito);
            }              
         }
@@ -464,6 +480,14 @@ class ProfesorController extends Controller
                 array_push($asig, $as);             
             }
                 return $asig;
+            }
+            
+            private function getProfesor(){
+                $peticion = $this->getRequest()->getSession();
+                $id = $peticion->get('idprofesor');
+                $em = $this->getDoctrine()->getManager();
+                $profesor = $em->getRepository('SISigueBundle:Profesor')->find($id);
+                return $profesor;
             }
             
             private function colocarQR($pdf,$x,$y,$codigo){

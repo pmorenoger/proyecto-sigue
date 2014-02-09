@@ -44,6 +44,7 @@ class DefaultController extends Controller
                 if ($encrypted_password == $hash){
                     $session = $this->getRequest()->getSession();
                     $session->set('idprofesor', $profesor->getIdprofesor());
+                    $session->set('pAl',$pass);
                     //return $this->redirect('Profesor/inicio');
                     $res = 1;
                 }

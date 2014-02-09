@@ -44,6 +44,10 @@ class Profesor
      */
     private $idprofesor;
 
+    /**
+     * @var string
+     */
+    private $codigo;
 
     /**
      * Set nombre
@@ -204,5 +208,28 @@ class Profesor
     public function getSalt()
     {
         return $this->salt;
+    }
+    
+    /**
+     * Set codigo
+     *
+     * @param string $codigo
+     * @return Profesor
+     */
+    public function setCodigo($codigo)
+    {
+        $this->codigo = $codigo;
+    
+        return $this;
+    }
+
+    /**
+     * Get codigo
+     *
+     * @return string 
+     */
+    public function getCodigo()
+    {
+        return $this->codigo;
     }
 }
