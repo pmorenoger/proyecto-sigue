@@ -67,7 +67,7 @@ public class MenuPrincipal extends Activity {
 	StatisticListAdapter listAdapter1;
 	ExpandableListView expListView;
 	ExpandableListView statisticView;
-	public static List<String> listDataHeader;
+	public static ArrayList<String> listDataHeader;
 	public static HashMap<String, ArrayList<String>> listDataChild;
 	public static HashMap<String, ArrayList<String>> listStatisticChild;
 	private static boolean change = false;
@@ -134,7 +134,7 @@ public class MenuPrincipal extends Activity {
             Typeface font = Typeface.createFromAsset(getAssets(), "ROADMOVIE TRIAL___.ttf");
             customFont= makeTabIndicator("Mis Tokens");
             customFont.setTypeface(font);
-            final TabHost tabs=(TabHost)findViewById(android.R.id.tabhost);            
+            final TabHost tabs=(TabHost)findViewById(R.id.tabhost);            
         	tabs.setup();  	        
          
         	// get the listview
@@ -293,7 +293,12 @@ private void prepareListData() {
          login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
          startActivity(login);
+         
+         change = false;
 
+         DataBaseHandler db = new DataBaseHandler(this);
+         db.resetTables();
+         
          // Closing dashboard screen
 
          finish();

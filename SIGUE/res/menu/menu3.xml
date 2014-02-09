@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <menu xmlns:android="http://schemas.android.com/apk/res/android">
+        
+        <item android:id="@+id/Actualizar3"
+            android:orderInCategory="1"
+            android:showAsAction="never"
+            android:title="Actualizar"/>
+        <item android:id="@+id/Desvincular3"
+            android:orderInCategory="1"
+            android:showAsAction="never"
+            android:title="Desvincular aplicación"/>
+        <item android:id="@+id/search"
+          android:title="@string/search_title"
+          android:showAsAction="ifRoom|collapseActionView"
+          android:actionViewClass="android.widget.SearchView" />
+    </menu>

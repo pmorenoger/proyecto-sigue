@@ -5,7 +5,7 @@
     android:background="@drawable/background"
     android:orientation="vertical" >
 
-  <TabHost android:id="@+id/tabhost"
+  <TabHost android:id="@+id/tabhost2"
      android:layout_width="match_parent"
      android:layout_height="match_parent">
  
@@ -22,28 +22,35 @@
                   android:layout_height="match_parent"
                   android:id="@android:id/tabcontent" >
  
-            <LinearLayout android:id="@+id/tab1"
+            <LinearLayout android:id="@+id/tab12"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent" >
- 
+
                 <ExpandableListView
-                android:id="@+id/lvExp"
+                android:id="@+id/lvExp2"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"/>
                 
         </LinearLayout>
  
-            <LinearLayout android:id="@+id/tab2"
+            <LinearLayout android:id="@+id/tab22"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent" >
-                
- 				<ExpandableListView
-                android:id="@+id/lvSts"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"/>
-               
+               <ViewFlipper android:id="@+id/viewFlipper2"
+			        android:layout_height="fill_parent"
+			        android:layout_width="fill_parent" 
+			        android:focusable="false">
+			 
+			        <include layout="@layout/pagina_3"/>
+			 
+			        <include layout="@layout/pagina_4"/>
+			        
+			        <include layout="@layout/pagina_5"/>
+ 
+    			</ViewFlipper> 
+ 				
         </LinearLayout>
          </FrameLayout>
     </LinearLayout>
