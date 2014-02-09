@@ -48,7 +48,7 @@
                  </div>
           </div>
     </div>
-   
+    <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
 
 <?php $view['slots']->stop(); ?>
 
@@ -56,7 +56,7 @@
 
 <?php $view['slots']->start("center"); ?>
 <!-- AQUI IRAN LAS OPCIONES QUE TENGA EL PROFESOR -->
-
+ <div id="codQR" style="margin-left:750px;"></div>
  <?php if($exito==="true"): ?>
     <div id="tooltip_exito"> 
         <p>¡La lista se ha cargado con éxito!</p>
@@ -196,6 +196,40 @@
           
        });
        
+       function qr(){
+            var id = '<?php echo $asignatura->getId();?>';
+            if ($('#codQR').has('img').length){
+                ocultar_todo();
+                $("#nueva_asignatura").addClass("hiddenStructure");
+                $("#asignatura_"+id).addClass("hiddenStructure");
+                $("#codQR").removeClass('hiddenStructure');
+            }else{
+                cod = '<?php echo $cod ?>';
+                $.ajax({
+                    type:"GET",
+                    url: "../../../vendor/generadorQR.php",
+                    async: true,
+                    data: {
+                       codigo: cod 
+                    },
+                    dataType:"json",
+                    success: function(data) {
+                        if (data.status){
+                            //$("#actividades").addClass('hiddenStructure');
+                            //$('#divCambiar').addClass('hiddenStructure');
+                            //$('#divCorreoAdicional').addClass('hiddenStructure');
+                            ocultar_todo();
+                            $("#codQR").removeClass('hiddenStructure');
+                            $("#codQR").append("<img src='../.." + data.dir + "'>");
+                            //$("#bActivar").attr("disabled", "disabled");
+                        }else{
+                            $("#bActivar").attr("disabled", "disabled");
+                        }
+                     }
+                });
+            }
+        }
+       
         function generar_qr_pop_up(id_asignatura){               
                  ocultar_todo();
                  $("#asignatura_"+id_asignatura).removeClass("hiddenStructure");
@@ -205,6 +239,7 @@
          function mostrar_opciones_asignatura(id_asignatura){    
                // ocultar_todo();
                 $("ul [id^='lista_opciones']").addClass("hiddenStructure");
+                $("#codQR").addClass("hiddenStructure");
                 $("#lista_opciones_"+id_asignatura).removeClass("hiddenStructure");
                 $("#nueva_asignatura").addClass("hiddenStructure");         
                 //console.log("Ha llegado al de la id "+id_asignatura);
@@ -214,6 +249,7 @@
          function ocultar_todo(){
             $("div [id^='asignatura_']").addClass("hiddenStructure");
             $("div [id^='stats_codigos']").addClass("hiddenStructure");
+            $("#codQR").addClass("hiddenStructure");
          }
          
          function add_asignatura(){
