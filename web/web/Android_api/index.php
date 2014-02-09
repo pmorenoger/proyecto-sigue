@@ -217,7 +217,97 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 
         
 
-    }else if ($tag == 'qr_register') {
+    }else if ($tag == 'alumno_tag') {
+
+        // Request type is Register new user
+
+        $user = $_POST['user'];
+
+            // store user
+
+            $students = $db->getStudents($user);
+
+            if ($students) {
+			$response["success"] = 1;
+			$i= 0;
+			while($row = mysql_fetch_assoc($students)){
+				$tokens = $db->getTokens($row["id_asignatura_alumno"]);
+				if($tokens){
+				$response ['Alumnos'][$i]['Alumno']['Datos'] =  $row;
+				prev($response);
+				//$statistic1 = mysql_fetch_assoc( $db->getMisTokens($row["id_asignatura_alumno"]));
+				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['MisTokens'] = $statistic1["num"];
+				//$statistic = mysql_fetch_assoc( $db->getNumTokens($row["id_asignatura"]));
+				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['AllTokens'] = $statistic["SUM(num)"];
+				//$statistic = mysql_fetch_assoc( $db->getMaxNumTokens($row["id_asignatura"]));
+				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['MaxTokens'] = $statistic["MAX(num)"];
+				//$statistic = mysql_fetch_assoc( $db->getLessTokens($row["id_asignatura"],$statistic1["num"]));
+				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['LessTokens'] = $statistic["COUNT(num)"];
+				//$statistic = mysql_fetch_assoc( $db->getEqualTokens($row["id_asignatura"],$statistic1["num"]));
+				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['EqualTokens'] = $statistic["COUNT(num)"];
+				//$statistic = mysql_fetch_assoc( $db->getMoreTokens($row["id_asignatura"],$statistic1["num"]));
+				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['MoreTokens'] = $statistic["COUNT(num)"];
+				while($column = mysql_fetch_assoc($tokens)){
+				$response ['Alumnos'][$i]['Alumno']['Tokens'][] =  $column;
+				}
+				$i = $i + 1;
+				}else{
+					$response ['Alumnos'][$i]['Alumno']['Datos'] =  $row;
+					$response ['Alumnos'][$i]['Alumno']['Tokens']=array();
+					$i = $i + 1;
+				}
+				//$response ["name"]["tokens"] = db->getTokens($subjects["id_asignatura_alumno"]);
+			}
+
+                echo json_encode($response);
+
+            } else {
+
+                // user failed to store
+
+                $response["error"] = 1;
+
+                $response["error_msg"] = "Error occured obtaining the subjects";
+
+                echo json_encode($response);
+
+            }
+			
+			}else if($tag == 'subject_tag_prof'){
+		
+		// Request type is Register new user
+
+        $user = $_POST['user'];
+
+            // store user
+
+            $subjects = $db->getSubjectsProf($user);
+
+            if ($subjects) {
+			$response["success"] = 1;
+			$i= 0;
+			while($row = mysql_fetch_assoc($subjects)){
+				
+				$response ['Asignaturas'][$i]['Datos'] =  $row;				
+				$i = $i + 1;
+				//$response ["name"]["tokens"] = db->getTokens($subjects["id_asignatura_alumno"]);
+			}
+
+                echo json_encode($response);
+
+            } else {
+
+                // user failed to store
+
+                $response["error"] = 1;
+
+                $response["error_msg"] = "Error occured obtaining the subjects";
+
+                echo json_encode($response);
+
+            }
+		
+	}else if ($tag == 'qr_register') {
 		$codigo = $_POST['codigo'];
 
         $asignatura = $_POST['asignatura'];

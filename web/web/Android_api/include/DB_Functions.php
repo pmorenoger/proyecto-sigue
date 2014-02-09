@@ -292,6 +292,50 @@ class DB_Functions {
         }
 
     }
+	
+	public function getSubjectsProf($user) {
+
+        $result = mysql_query("SELECT nombre, curso, grupo, id_asignatura FROM `asignaturas`, `profesor_asignatura` WHERE id_profesor='$user' and id_asignatura = asignaturas.id");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+    }
+	
+	public function getStudents($user) {
+
+        $result = mysql_query("SELECT nombre, apellidos, dni, id_asignatura_alumno FROM `alumnos`, `asignatura_alumno` WHERE id_asignatura='$user' and id_alumno = idalumno");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+
+    }
 
 
 	public function getTokens($asig_alumn) {
