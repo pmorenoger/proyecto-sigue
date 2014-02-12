@@ -484,25 +484,25 @@ class ProfesorController extends Controller
                 $x = 5;
                 $y = 40;
                 $esp = 150;
-                //lineas divisorias
-                $pdf->Line($x, 10, $x*$k + 100, 10);
-                $pdf->Line($x, $y+120, $x*$k + 100, $y+120);
-                $pdf->Line($x*$k,10 , $x*$k, 115);
-                $pdf->Line($x*$k, $y+120, $x*$k, $y+$esp+75);
                 //dibujar 4 pdf por hoja
                 foreach($imgCodigos as $codigo){
                     $p = ($i % 4);
                     if ($p == 0){
                         $pdf->AddPage();
-                        $pdf->SetFont('Arial','B',11); 
-                        self::colocarQR($pdf,$x,$y,$codigo,25,$dir_abs);
+                        $pdf->SetFont('Arial','B',11);
+                        //lineas divisorias
+                        $pdf->Line($x, 10, $x*$k + 100, 10);
+                        $pdf->Line($x, $y+120, $x*$k + 100, $y+120);
+                        $pdf->Line($x*$k,10 , $x*$k, 115);
+                        $pdf->Line($x*$k, $y+120, $x*$k, $y+$esp+75);
+                        self::colocarQR($pdf,$x,$y,$codigo,10,$dir_abs);
                     }else if ($p == 1){
-                        self::colocarQR($pdf,$x*$k,$y,$codigo,25,$dir_abs);
+                        self::colocarQR($pdf,$x*$k,$y,$codigo,10,$dir_abs);
                         $pdf->Ln($esp);
                     }else if ($p == 2){
-                        self::colocarQR($pdf,$x,$y+$esp,$codigo,175,$dir_abs);
+                        self::colocarQR($pdf,$x,$y+$esp,$codigo,160,$dir_abs);
                     }else if ($p == 3){
-                        self::colocarQR($pdf,$x*$k,$y+$esp,$codigo,175,$dir_abs);
+                        self::colocarQR($pdf,$x*$k,$y+$esp,$codigo,160,$dir_abs);
                     }
                     $i = $i + 1;                
                 }
@@ -555,7 +555,7 @@ class ProfesorController extends Controller
             private function colocarQR($pdf,$x,$y,$codigo,$j,$dir_abs){
                 //cabecera
                 $pdf->Image($dir_abs.'/web/img/cabecera.jpg',$x,$j,80,10);
-                $pdf->setXY($x + 5,$j);
+                $pdf->setXY($x + 5,$j+15);
                 //contenido
                 $pdf->Cell(100,10,$codigo[1]);
                 $pdf->Text($x + 5, $y, $codigo[2]);
