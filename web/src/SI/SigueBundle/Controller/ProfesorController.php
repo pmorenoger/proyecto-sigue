@@ -23,7 +23,7 @@ class ProfesorController extends Controller
             $asig = self::getAsignaturas();
             $profesor = self::getProfesor();
             $peticion = $this->getRequest()->getSession();
-            $p = $peticion->get('pAl');
+            $p = $peticion->get('pProf');
             
             //TODO Redigir si no hay login.
             $em = $this->getDoctrine()->getEntityManager();
@@ -466,7 +466,7 @@ class ProfesorController extends Controller
                     }
                     \QRcode::png($codigo->getCodigo(),$ruta ,QR_ECLEVEL_H,6,4,true);
                     //array_push($lista_archivos,$ruta);
-                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo(),2 => $codigo->getId()->getNombre());
+                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo(),2 => $codigo->getId());
                     $i++;
                 }
                 //var_dump($lista_archivos);
@@ -484,17 +484,13 @@ class ProfesorController extends Controller
                 $x = 5;
                 $y = 40;
                 $esp = 150;
+                $length = count($imgCodigos);
                 //dibujar 4 pdf por hoja
                 foreach($imgCodigos as $codigo){
                     $p = ($i % 4);
                     if ($p == 0){
                         $pdf->AddPage();
                         $pdf->SetFont('Arial','B',11);
-                        //lineas divisorias
-                        $pdf->Line($x, 10, $x*$k + 100, 10);
-                        $pdf->Line($x, $y+120, $x*$k + 100, $y+120);
-                        $pdf->Line($x*$k,10 , $x*$k, 115);
-                        $pdf->Line($x*$k, $y+120, $x*$k, $y+$esp+75);
                         self::colocarQR($pdf,$x,$y,$codigo,10,$dir_abs);
                     }else if ($p == 1){
                         self::colocarQR($pdf,$x*$k,$y,$codigo,10,$dir_abs);
@@ -502,8 +498,10 @@ class ProfesorController extends Controller
                     }else if ($p == 2){
                         self::colocarQR($pdf,$x,$y+$esp,$codigo,160,$dir_abs);
                     }else if ($p == 3){
-                        self::colocarQR($pdf,$x*$k,$y+$esp,$codigo,160,$dir_abs);
+                        self::colocarQR($pdf,$x*$k,$y+$esp,$codigo,160,$dir_abs); 
+                        self::colocarLineas($pdf,5,40,21,150);
                     }
+                    if($length-1 == i) self::colocarLineas($pdf,5,40,21,150);
                     $i = $i + 1;                
                 }
                  $ruta = self::getDireccionAbsoluta()."/web/archivos/pdfs/";
@@ -558,10 +556,19 @@ class ProfesorController extends Controller
                 $pdf->setXY($x + 5,$j+15);
                 //contenido
                 $pdf->Cell(100,10,$codigo[1]);
-                $pdf->Text($x + 5, $y, $codigo[2]);
-                $pdf->Image($codigo[0],$x,$y,80,80);
+                $asig = $codigo[2]->getNombre().', grupo '.$codigo[2]->getGrupo().', curso '.$codigo[2]->getCurso();
+                $pdf->Text($x + 5, $y, $asig);
+                $pdf->Image($codigo[0],$x,$y,65,65);
                 //pie de pagina
                 $pdf->Image($dir_abs.'/web/img/linea.jpg',$x,$y+75,100,2);
+            }
+            
+            private function colocarLineas($pdf,$x,$y,$k,$esp){
+                //lineas divisorias
+                $pdf->Line($x, 10, $x*$k + 100, 10);
+                $pdf->Line($x, $y+120, $x*$k + 100, $y+120);
+                $pdf->Line($x*$k,10 , $x*$k, 115);
+                $pdf->Line($x*$k, $y+120, $x*$k, $y+$esp+75);
             }
     }
   
