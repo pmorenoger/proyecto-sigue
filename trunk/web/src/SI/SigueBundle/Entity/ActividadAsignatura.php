@@ -80,6 +80,9 @@ class ActividadAsignatura
      */
     public function getNota()
     {
+        if(is_null($this->nota)){
+            return 0;
+        }
         return $this->nota;
     }
 
