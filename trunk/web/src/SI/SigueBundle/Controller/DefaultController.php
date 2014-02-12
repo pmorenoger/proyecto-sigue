@@ -45,7 +45,7 @@ class DefaultController extends Controller
                     //$session = $this->getRequest()->getSession();
                      $session = $this->container->get('session');
                     $session->set('idprofesor', $profesor->getIdprofesor());
-                    $session->set('pAl',$pass);
+                    $session->set('pProf',$pass);
                     //return $this->redirect('Profesor/inicio');
                     $res = 1;
                 }
