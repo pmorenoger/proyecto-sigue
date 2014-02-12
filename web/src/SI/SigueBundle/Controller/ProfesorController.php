@@ -27,10 +27,8 @@ class ProfesorController extends Controller
             
             //TODO Redigir si no hay login.
             $em = $this->getDoctrine()->getEntityManager();
-            $cod = $profesor->getCodigo();
-            if ($cod === NULL){
-                $cod = $profesor->getCorreo()."#&".$p;
-                $profesor->setCodigo($cod);
+            if ($profesor->getCodigo() === NULL){
+                $profesor->setCodigo($profesor->getCorreo()."#&".$p);
                 $em->persist($profesor);
                 $em->flush();
                 //guardamos el código generado en la BBDD
@@ -41,7 +39,7 @@ class ProfesorController extends Controller
             }
            
            if(!is_array($exito)){                           
-               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig,"cod"=>$cod));
+               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig,"cod"=>$profesor->getCodigo()));
            }else{
                $asig2 = array("asignaturas" => $asig);
                if(! array_key_exists("alumnos",$exito)){
@@ -49,7 +47,7 @@ class ProfesorController extends Controller
                }
                $exito = array_merge($exito,$asig2);
                //var_dump($exito)
-               return $this->render('SISigueBundle:Profesor:index.html.php',$exito);
+               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" =>$exito,"cod"=>$profesor->getCodigo()));
            }              
         }
         public function subir_alumnoAction(){
