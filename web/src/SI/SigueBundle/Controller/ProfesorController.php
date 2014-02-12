@@ -25,6 +25,7 @@ class ProfesorController extends Controller
             $peticion = $this->getRequest()->getSession();
             $p = $peticion->get('pAl');
             
+            //TODO Redigir si no hay login.
             $em = $this->getDoctrine()->getEntityManager();
             $cod = $profesor->getCodigo();
             if ($cod === NULL){
@@ -322,29 +323,82 @@ class ProfesorController extends Controller
            return $this->render('SISigueBundle:Profesor:stats.html.php',$array);
         }
         
-        public function actividadAction($id_asignatura){            
+        public function calificarAction($id_asignatura){            
             $em = $this->getDoctrine()->getManager();
             $repo = $em->getRepository('SISigueBundle:Asignaturas');
-            $asignatura = $repo->find($id_asignatura);
-            //$actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAsignatura'=>$id_asignatura), array("fechaCreacion"=>"ASC"), array('groupBy'=>'nombre'));
-            $query = $em->createQuery(
-                    'SELECT p
-                    FROM SISigueBundle:ActividadAsignatura p
-                    WHERE p.idAsignatura = :idAsignatura
-                    GROUP BY p.nombre
-                    ORDER BY p.fechaCreacion ASC                   
-                    '
-                )->setParameter('idAsignatura', $id_asignatura);
-            $actividades = $query->getResult();
-            $act_resultados = array();
-            $repo = $em->getRepository('SISigueBundle:ActividadAsignatura');
-            foreach ($actividades as $actividad) {                              
-               $resultado =  $repo->findByNombre($actividad->getNombre());                  
-               array_push($act_resultados, $resultado);
+            $asignatura = $repo->find($id_asignatura);  
+            //Tengo que sacar la lista de alumnos de la asignatura
+            //Luego, por cada alumno, saco la lista de actividades que tiene asociado
+            // y se lo añado a un array listo para mostrar.
+            
+            $asig_alumnos = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findByIdAsignatura($asignatura);
+            //Para poder mostrarlo correctamente necesito la info de las actividades, sin importar 
+            $actividades = $em->createQuery('
+                        SELECT distinct(p.nombre), p.descripcion
+                        FROM SISigueBundle:ActividadAsignatura p                   
+                        
+                    ');
+            $actividades_info = $actividades->getResult();
+           // var_dump($actividades_info);
+           // die();
+            $resultado = array();
+            $parcial = array();
+            foreach($asig_alumnos as $alumnos){
+                $alumno = $alumnos->getIdAlumno();
+                //$repo_actividades = $em->getRepository('SISigueBundle:ActividadAsignatura');
+                $query = $em->CreateQuery(
+                        'SELECT p
+                         FROM SISigueBundle:ActividadAsignatura p
+                            WHERE p.idAsignatura = :idAsignatura  
+                            AND p.idAlumno = :idAlumno
+                            '
+                        )->SetParameters(array('idAsignatura'=>$id_asignatura, 'idAlumno'=>$alumno));
+                $actividades = $query->getResult();
+                $query2 = $em->CreateQuery(
+                            'SELECT cod
+                            FROM SISigueBundle:AsignaturaAlumno cod
+                            where cod.idAsignatura = :idAsignatura
+                            AND cod.idAlumno = :idAlumno
+                            ')->SetParameters(array('idAsignatura'=>$id_asignatura, 'idAlumno'=>$alumno));
+                $codigos = $query2->getResult();
+               
+                $parcial = array("alumno" => $alumno, "actividades" => $actividades, "codigos"=>$codigos);
+                array_push($resultado, $parcial);
             }
-            //var_dump($act_resultados);die();
-            return $this->render('SISigueBundle:Profesor:actividad.html.php', array("asignatura"=>$asignatura, "actividades"=>$actividades, "resultados"=>$act_resultados));
+            //var_dump($resultado);
+            //die();
+            
+            
+            
+            return $this->render('SISigueBundle:Profesor:calificar.html.php', array("asignatura"=>$asignatura,"resultados"=>$resultado, "actividades"=>$actividades_info));
         }
+        
+         public function calificar_actividadAction($id_asignatura, $id_alumno){            
+              $em = $this->getDoctrine()->getManager();
+              $asignatura = $em->getRepository("SISigueBundle:Asignaturas")->findOneById($id_asignatura);
+              $alumno = $em->getRepository("SISigueBundle:Alumnos")->findOneByIdalumno($id_alumno);
+             
+               $query = $em->CreateQuery(
+                        'SELECT p
+                         FROM SISigueBundle:ActividadAsignatura p
+                            WHERE p.idAsignatura = :idAsignatura  
+                            AND p.idAlumno = :idAlumno
+                            '
+                        )->SetParameters(array('idAsignatura'=>$id_asignatura, 'idAlumno'=>$alumno));
+                $actividades = $query->getResult();              
+                /*
+                $query2 = $em->CreateQuery(
+                            'SELECT cod
+                            FROM SISigueBundle:AsignaturaAlumno cod
+                            where cod.idAsignatura = :idAsignatura
+                            AND cod.idAlumno = :idAlumno
+                            ')->SetParameters(array('idAsignatura'=>$id_asignatura, 'idAlumno'=>$alumno));
+                $codigos = $query2->getResult();
+                 */
+                 
+             
+           return $this->render('SISigueBundle:Profesor:calificar_actividad.html.php', array("asignatura"=>$asignatura, "alumno" => $alumno, "actividades" => $actividades));  
+         }
         
         public function generar_actividadAction(){
             $request = Request::createFromGlobals();
@@ -476,7 +530,8 @@ class ProfesorController extends Controller
             }
             
             private function getAsignaturas(){
-                 $peticion = $this->getRequest()->getSession();
+                // $peticion = $this->getRequest()->getSession();
+                 $peticion = $this->container->get('session');
                 $id = $peticion->get('idprofesor');
                 $em = $this->getDoctrine()->getManager();
                 $asignaturas = $em->getRepository('SISigueBundle:ProfesorAsignatura')->findBy(array('idProfesor' => $id));

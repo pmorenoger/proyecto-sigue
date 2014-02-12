@@ -23,14 +23,8 @@
                                     <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asignatura->getId() ));?>" onclick="ver_stats_codigo(<?php echo $asignatura->getId();?>)">Ver estadísticas de los Códigos</a>
                                     </li>
                                     <li>
-                                    <a href="<?php echo $view['router']->generate('si_sigue_actividad_profesor', array("id_asignatura" =>$asignatura->getId()));?>" >Gestionar actividades</a>                                   
-                                    </li>
-                                     <li>
-                                    <a href="#" onclick="">Ver lista de calificaciones</a>
-                                    </li>
-                                     <li>
-                                    <a href="#" onclick="">Exportar lista de notas</a>
-                                    </li>
+                                    <a href="<?php echo $view['router']->generate('si_sigue_calificar_profesor', array("id_asignatura" =>$asignatura->getId()));?>" >Gestionar calificaciones</a>                                   
+                                    </li>                                                                        
                                 </ul>
                                 
                              <?php endforeach; ?>                            
@@ -204,7 +198,7 @@
                 $("#asignatura_"+id).addClass("hiddenStructure");
                 $("#codQR").removeClass('hiddenStructure');
             }else{
-                cod = '<?php echo $cod ?>';
+                cod = '<?php if(isset($cod)){ echo $cod; } else{ echo ""; };?>';
                 $.ajax({
                     type:"GET",
                     url: "../../../vendor/generadorQR.php",

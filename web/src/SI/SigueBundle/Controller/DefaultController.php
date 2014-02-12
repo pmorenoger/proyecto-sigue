@@ -42,7 +42,8 @@ class DefaultController extends Controller
                 $salt = $profesor->getSalt();
                 $hash = self::checkhashSSHA($salt, $pass);
                 if ($encrypted_password == $hash){
-                    $session = $this->getRequest()->getSession();
+                    //$session = $this->getRequest()->getSession();
+                     $session = $this->container->get('session');
                     $session->set('idprofesor', $profesor->getIdprofesor());
                     $session->set('pAl',$pass);
                     //return $this->redirect('Profesor/inicio');
@@ -54,7 +55,8 @@ class DefaultController extends Controller
                 $salt = $alumno->getSalt();
                 $hash = self::checkhashSSHA($salt, $pass);
                 if ($encrypted_password == $hash){
-                    $session = $this->getRequest()->getSession();
+                    //$session = $this->getRequest()->getSession();
+                     $session = $this->container->get('session');
                     $session->set('idalumno', $alumno->getIdalumno());
                     $session->set('pAl',$pass);
                     //return $this->redirect('Alumno/inicio');
@@ -76,7 +78,8 @@ class DefaultController extends Controller
     }
     
     public function logoutAction(){
-        $session = $this->getRequest()->getSession();        
+       // $session = $this->getRequest()->getSession();        
+         $session = $this->container->get('session');
         $session->remove('idalumno');
         $session->remove('idprofesor');
         return $this->redirect('inicio');

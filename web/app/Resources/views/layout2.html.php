@@ -21,16 +21,10 @@
     <div id="logout"><a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >Salir</a></div>
 </div>
 
-<div id="content">
-    <div id="left">
-         <?php $view['slots']->output('menu_left') ?>
-    </div>
-    <div id="center" class="<?php $view['slots']->output('tipo_clase') ?>">
+<div id="content">   
+    <div>
          <?php $view['slots']->output('center') ?>
-    </div>
-    <div id="right">
-         <?php $view['slots']->output('menu_right') ?>
-    </div>
+    </div>    
 </div>
 
 <?php

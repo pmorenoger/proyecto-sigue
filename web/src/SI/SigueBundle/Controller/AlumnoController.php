@@ -12,7 +12,8 @@ class AlumnoController extends Controller
 {
     public function perfilAction()
     {  
-        $peticion = $this->getRequest()->getSession();
+        //$peticion = $this->getRequest()->getSession();
+        $peticion = $this->container->get('session');
         $id = $peticion->get('idalumno');
         $p = $peticion->get('pAl');
         $em = $this->getDoctrine()->getEntityManager();
