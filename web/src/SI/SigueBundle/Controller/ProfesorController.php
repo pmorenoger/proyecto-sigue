@@ -482,7 +482,6 @@ class ProfesorController extends Controller
                 $x = 5;
                 $y = 40;
                 $esp = 150;
-                $length = count($imgCodigos);
                 //dibujar 4 pdf por hoja
                 foreach($imgCodigos as $codigo){
                     $p = ($i % 4);
@@ -490,16 +489,18 @@ class ProfesorController extends Controller
                         $pdf->AddPage();
                         $pdf->SetFont('Arial','B',11);
                         self::colocarQR($pdf,$x,$y,$codigo,10,$dir_abs);
+                        self::margenes($pdf,$x,10);
                     }else if ($p == 1){
                         self::colocarQR($pdf,$x*$k,$y,$codigo,10,$dir_abs);
+                        self::margenes($pdf,$x*$k,10);
                         $pdf->Ln($esp);
                     }else if ($p == 2){
                         self::colocarQR($pdf,$x,$y+$esp,$codigo,160,$dir_abs);
+                        self::margenes($pdf,$x,160);
                     }else if ($p == 3){
-                        self::colocarQR($pdf,$x*$k,$y+$esp,$codigo,160,$dir_abs); 
-                        self::colocarLineas($pdf,5,40,21,150);
+                        self::colocarQR($pdf,$x*$k,$y+$esp,$codigo,160,$dir_abs);
+                        self::margenes($pdf,$x*$k,160);
                     }
-                    if($length-1 == i) self::colocarLineas($pdf,5,40,21,150);
                     $i = $i + 1;                
                 }
                  $ruta = self::getDireccionAbsoluta()."/web/archivos/pdfs/";
@@ -561,12 +562,17 @@ class ProfesorController extends Controller
                 $pdf->Image($dir_abs.'/web/img/linea.jpg',$x,$y+75,100,2);
             }
             
-            private function colocarLineas($pdf,$x,$y,$k,$esp){
+            private function margenes($pdf,$x,$j){
                 //lineas divisorias
-                $pdf->Line($x, 10, $x*$k + 100, 10);
-                $pdf->Line($x, $y+120, $x*$k + 100, $y+120);
-                $pdf->Line($x*$k,10 , $x*$k, 115);
-                $pdf->Line($x*$k, $y+120, $x*$k, $y+$esp+75);
+                $pdf->Line($x, $j, $x+100, $j);
+                $pdf->Line($x, $j+115, $x+100, $j+115);
+                $pdf->Line($x, $j, $x, $j+115);
+                $pdf->Line($x+100, $j, $x+100, $j+115);
+
+                $pdf->Line($x,$j-10,$x,$j-5);
+                $pdf->Line($x+100,$j-10,$x+100,$j-5);
+                $pdf->Line($x,$j+120,$x,$j+125);
+                $pdf->Line($x+100,$j+120,$x+100,$j+125);
             }
     }
   
