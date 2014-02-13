@@ -552,12 +552,13 @@ class ProfesorController extends Controller
             private function colocarQR($pdf,$x,$y,$codigo,$j,$dir_abs){
                 //cabecera
                 $pdf->Image($dir_abs.'/web/img/cabecera.jpg',$x,$j,80,10);
-                $pdf->setXY($x + 5,$j+15);
+                $pdf->setXY($x + 5,$j+10);
                 //contenido
                 $pdf->Cell(100,10,$codigo[1]);
-                $asig = $codigo[2]->getNombre().', grupo '.$codigo[2]->getGrupo().', curso '.$codigo[2]->getCurso();
-                $pdf->Text($x + 5, $y, $asig);
-                $pdf->Image($codigo[0],$x,$y,65,65);
+                $asig = 'Grupo '.$codigo[2]->getGrupo().', curso '.$codigo[2]->getCurso();
+                $pdf->Text($x + 5, $y-8, $codigo[2]->getNombre());
+                $pdf->Text($x + 5, $y-3, $asig);
+                $pdf->Image($codigo[0],$x+15,$y,65,65);
                 //pie de pagina
                 $pdf->Image($dir_abs.'/web/img/linea.jpg',$x,$y+75,100,2);
             }
