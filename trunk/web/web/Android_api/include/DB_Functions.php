@@ -337,6 +337,46 @@ class DB_Functions {
 
     }
 
+	public function getRedeemedTokens($asig_alumn) {
+
+        $result = mysql_query("SELECT COUNT(codigo) FROM `codigos` WHERE`fecha_alta` IS NOT null and id =$asig_alumn");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+		}
+		public function getNotRedeemedTokens($asig_alumn) {
+
+        $result = mysql_query("SELECT COUNT(codigo) FROM `codigos` WHERE`fecha_alta` IS null and id =$asig_alumn");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+		}
 
 	public function getTokens($asig_alumn) {
 
