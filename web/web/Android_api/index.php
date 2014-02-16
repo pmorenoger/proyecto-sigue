@@ -234,11 +234,7 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				$tokens = $db->getTokens($row["id_asignatura_alumno"]);
 				if($tokens){
 				$response ['Alumnos'][$i]['Alumno']['Datos'] =  $row;
-				prev($response);
-				//$statistic1 = mysql_fetch_assoc( $db->getMisTokens($row["id_asignatura_alumno"]));
-				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['MisTokens'] = $statistic1["num"];
-				//$statistic = mysql_fetch_assoc( $db->getNumTokens($row["id_asignatura"]));
-				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['AllTokens'] = $statistic["SUM(num)"];
+				prev($response);				
 				//$statistic = mysql_fetch_assoc( $db->getMaxNumTokens($row["id_asignatura"]));
 				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['MaxTokens'] = $statistic["MAX(num)"];
 				//$statistic = mysql_fetch_assoc( $db->getLessTokens($row["id_asignatura"],$statistic1["num"]));
@@ -258,7 +254,10 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				}
 				//$response ["name"]["tokens"] = db->getTokens($subjects["id_asignatura_alumno"]);
 			}
-
+				$statistic1 = mysql_fetch_assoc( $db->getRedeemedTokens($user));
+				$response ['Estadisticas']['Redeemed'] = $statistic1["COUNT(codigo)"];
+				$statistic = mysql_fetch_assoc( $db->getNotRedeemedTokens($user));
+				$response ['Estadisticas']['NotRedeemed'] = $statistic["COUNT(codigo)"];
                 echo json_encode($response);
 
             } else {
