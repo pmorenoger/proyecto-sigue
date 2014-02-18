@@ -22,13 +22,15 @@ class ProfesorController extends Controller
         {     
             $asig = self::getAsignaturas();
             $profesor = self::getProfesor();
-            $peticion = $this->getRequest()->getSession();
-            $p = $peticion->get('pProf');
+            $peticion = $this->container->get('session');
+            $p = $peticion->get('pAl');
             
             //TODO Redigir si no hay login.
             $em = $this->getDoctrine()->getEntityManager();
-            if ($profesor->getCodigo() === NULL){
-                $profesor->setCodigo($profesor->getCorreo()."#&".$p);
+            $cod = $profesor->getCodigo();
+            if ($cod === NULL){
+                $cod = $profesor->getCorreo()."#&".$p;
+                $profesor->setCodigo($cod);
                 $em->persist($profesor);
                 $em->flush();
                 //guardamos el código generado en la BBDD
@@ -39,7 +41,7 @@ class ProfesorController extends Controller
             }
            
            if(!is_array($exito)){                           
-               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig,"cod"=>$profesor->getCodigo()));
+               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig,"cod"=>$cod));
            }else{
                $asig2 = array("asignaturas" => $asig);
                if(! array_key_exists("alumnos",$exito)){
@@ -47,7 +49,7 @@ class ProfesorController extends Controller
                }
                $exito = array_merge($exito,$asig2);
                //var_dump($exito)
-               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" =>$exito,"cod"=>$profesor->getCodigo()));
+               return $this->render('SISigueBundle:Profesor:index.html.php',$exito);
            }              
         }
         public function subir_alumnoAction(){
@@ -74,7 +76,7 @@ class ProfesorController extends Controller
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
                
              }else{
-                $uploaddir = '/home/administrador/web/Symfony/web/archivos/';
+                $uploaddir = '/var/www/Symfony/web/archivos/';
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
                
                 }               
@@ -204,14 +206,20 @@ class ProfesorController extends Controller
         
         
         public function generar_qrAction(){
+               
                 $request = Request::createFromGlobals();
                 $cantidad = $request->request->get('cantidad');
                 $id_asignatura = $request->request->get('id_asignatura');
+                
                 $lista_codigos = array();
                 $codigo = new Codigos();
                 $em = $this->getDoctrine()->getManager();
                 $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
-                // var_dump($asignatura);
+                /*
+                var_dump($asignatura);
+                die();
+                 * */
+                
                 for($i = 0;$i < $cantidad; $i++){
                     $cuerpo_codigo = $unique_key = substr(md5(rand(0, 1000000)), 0, 15 );
                     // var_dump($cuerpo_codigo);                  
@@ -332,7 +340,7 @@ class ProfesorController extends Controller
             $asig_alumnos = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findByIdAsignatura($asignatura);
             //Para poder mostrarlo correctamente necesito la info de las actividades, sin importar 
             $actividades = $em->createQuery('
-                        SELECT distinct(p.nombre), p.descripcion
+                        SELECT distinct(p.nombre), p.descripcion, p.peso
                         FROM SISigueBundle:ActividadAsignatura p                   
                         
                     ');
@@ -398,6 +406,59 @@ class ProfesorController extends Controller
            return $this->render('SISigueBundle:Profesor:calificar_actividad.html.php', array("asignatura"=>$asignatura, "alumno" => $alumno, "actividades" => $actividades));  
          }
         
+         
+           public function calificar_actividad_guardarAction($id_asignatura, $id_alumno){    
+               
+               /*Aquí hay que guardar el formulario con las notas. El profesor habrá rellenado el 
+                * formulario, y hay que recoger cada nota y guardarlo debidamente.
+                */
+               $em = $this->getDoctrine()->getManager();
+               $query = $em->CreateQuery(
+                        'SELECT p
+                         FROM SISigueBundle:ActividadAsignatura p
+                            WHERE p.idAsignatura = :idAsignatura  
+                            AND p.idAlumno = :idAlumno
+                            '
+                        )->SetParameters(array('idAsignatura'=>$id_asignatura, 'idAlumno'=>$id_alumno));
+               $actividades = $query->getResult();
+              
+               $request = Request::createFromGlobals();
+               $datos = $request->request->all();
+               $claves = array_keys($request->request->all());
+               foreach($claves as $clave){                                                         
+                  if(substr($clave, 0,5) == "nota_"){
+                      $id_actividad = substr($clave,5);
+                      $id_actividad2 = $id_actividad;
+                      $id_actividad = str_replace("$#$", " ", $id_actividad);
+                      //var_dump($id_actividad);
+                      $encontrado = false;
+                      $i = 0;
+                      $observaciones="";
+                      while(!$encontrado && $i<  count($actividades) ){
+                          //var_dump($id_actividad . $actividades[$i]->getNombre());
+                          if($id_actividad === $actividades[$i]->getNombre()){
+                              
+                              $actividades[$i]->setNota($datos[$clave]);
+                              $observaciones = $request->request->get("obs_".$id_actividad2);                                                           
+                              $actividades[$i]->setObservaciones($observaciones);
+                              $em->persist($actividades[$i]);
+                              unset($actividades[$i]);
+                              $actividades = array_values($actividades);
+                              $encontrado = true;
+                          }
+                         $i++; 
+                      }
+                      
+                      
+                   }
+                    
+                   
+                }
+               
+               $em->flush();
+              return $this->calificarAction($id_asignatura);
+           }
+         
         public function generar_actividadAction(){
             $request = Request::createFromGlobals();
              
@@ -454,17 +515,16 @@ class ProfesorController extends Controller
                     //Generar el png con el código qr
                    
                     $ruta = $dir_abs.'/web/archivos/codigosQR/qr_'.$i.'.png';
-                    /*
+                   /*
                         var_dump($dir_abs.$ruta);                     
                         die();
-                     * 
-                     */
+                   */ 
                     if($kernel->getEnvironment() === "dev"){
                         $ruta = \str_replace("/","\\",$ruta);
                     }
                     \QRcode::png($codigo->getCodigo(),$ruta ,QR_ECLEVEL_H,6,4,true);
                     //array_push($lista_archivos,$ruta);
-                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo(),2 => $codigo->getId());
+                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo(),2 => $codigo->getId()->getNombre());
                     $i++;
                 }
                 //var_dump($lista_archivos);
@@ -488,18 +548,19 @@ class ProfesorController extends Controller
                     if ($p == 0){
                         $pdf->AddPage();
                         $pdf->SetFont('Arial','B',11);
+                        //lineas divisorias
+                        $pdf->Line($x, 10, $x*$k + 100, 10);
+                        $pdf->Line($x, $y+120, $x*$k + 100, $y+120);
+                        $pdf->Line($x*$k,10 , $x*$k, 115);
+                        $pdf->Line($x*$k, $y+120, $x*$k, $y+$esp+75);
                         self::colocarQR($pdf,$x,$y,$codigo,10,$dir_abs);
-                        self::margenes($pdf,$x,10);
                     }else if ($p == 1){
                         self::colocarQR($pdf,$x*$k,$y,$codigo,10,$dir_abs);
-                        self::margenes($pdf,$x*$k,10);
                         $pdf->Ln($esp);
                     }else if ($p == 2){
                         self::colocarQR($pdf,$x,$y+$esp,$codigo,160,$dir_abs);
-                        self::margenes($pdf,$x,160);
                     }else if ($p == 3){
                         self::colocarQR($pdf,$x*$k,$y+$esp,$codigo,160,$dir_abs);
-                        self::margenes($pdf,$x*$k,160);
                     }
                     $i = $i + 1;                
                 }
@@ -542,7 +603,7 @@ class ProfesorController extends Controller
             }
             
             private function getProfesor(){
-                $peticion = $this->getRequest()->getSession();
+                $peticion = $this->container->get('session');
                 $id = $peticion->get('idprofesor');
                 $em = $this->getDoctrine()->getManager();
                 $profesor = $em->getRepository('SISigueBundle:Profesor')->find($id);
@@ -552,28 +613,13 @@ class ProfesorController extends Controller
             private function colocarQR($pdf,$x,$y,$codigo,$j,$dir_abs){
                 //cabecera
                 $pdf->Image($dir_abs.'/web/img/cabecera.jpg',$x,$j,80,10);
-                $pdf->setXY($x + 5,$j+10);
+                $pdf->setXY($x + 5,$j+15);
                 //contenido
                 $pdf->Cell(100,10,$codigo[1]);
-                $asig = 'Grupo '.$codigo[2]->getGrupo().', curso '.$codigo[2]->getCurso();
-                $pdf->Text($x + 5, $y-8, $codigo[2]->getNombre());
-                $pdf->Text($x + 5, $y-3, $asig);
-                $pdf->Image($codigo[0],$x+15,$y,65,65);
+                $pdf->Text($x + 5, $y, $codigo[2]);
+                $pdf->Image($codigo[0],$x,$y,80,80);
                 //pie de pagina
                 $pdf->Image($dir_abs.'/web/img/linea.jpg',$x,$y+75,100,2);
-            }
-            
-            private function margenes($pdf,$x,$j){
-                //lineas divisorias
-                $pdf->Line($x, $j, $x+100, $j);
-                $pdf->Line($x, $j+115, $x+100, $j+115);
-                $pdf->Line($x, $j, $x, $j+115);
-                $pdf->Line($x+100, $j, $x+100, $j+115);
-
-                $pdf->Line($x,$j-10,$x,$j-5);
-                $pdf->Line($x+100,$j-10,$x+100,$j-5);
-                $pdf->Line($x,$j+120,$x,$j+125);
-                $pdf->Line($x+100,$j+120,$x+100,$j+125);
             }
     }
   

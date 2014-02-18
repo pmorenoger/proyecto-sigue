@@ -32,9 +32,7 @@
             <th>Nombre</th>
             <th>Apellidos</th>
             <?php foreach($actividades as $actividad):?>
-            <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>"><?php echo $actividad["nombre"]; ?></a></th>
-            <th>Nota</th>
-            <th>Peso(%)</th>
+            <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>"><?php echo $actividad["nombre"]; ?> (<?php echo $actividad["peso"] ; ?>)</a></th>            
             <?php endforeach; ?>
             <th>TOKENS</th>
             <th>Nota TOKENS</th>
@@ -48,9 +46,9 @@
                     <?php $array_actividades = $fila["actividades"];
                         foreach($array_actividades as $fila_actividad ):
                     ?>
-                     <td><?php echo $fila_actividad->getNombre() ; ?></td>   
+                    
                      <td><?php echo $fila_actividad->getNota() ; ?></td>
-                     <td><?php echo $fila_actividad->getPeso() ; ?></td>
+                    
                      <?php $ac_nota = $ac_nota +( $fila_actividad->getNota() *  $fila_actividad->getPeso());?>
                     <?php endforeach;
                         $codigos = $fila["codigos"];
@@ -58,7 +56,7 @@
                     ?>
                      <td><?php echo $codigos->getNum() ; ?></td>
                      <td>NotaTokens</td>
-                     <td><?php echo $ac_nota;?></td>
+                     <td><?php echo $ac_nota; $ac_nota = 0;?></td>
                      <td><a href="<?php echo $view['router']->generate('si_sigue_calificar_actividad_profesor', array("id_asignatura" =>$asignatura->getId(), "id_alumno" => $fila["alumno"]->getIdAlumno()));?>" title="Editar los resultados del alumno <?php echo $fila["alumno"]->getNombre() . " " . $fila["alumno"]->getApellidos() ; ?>">Editar</a></td>
                 </tr>                
             <?php endforeach; ?>
