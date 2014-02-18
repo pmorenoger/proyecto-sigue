@@ -5,6 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?php $view['slots']->output('title', 'Sigue') ?></title>
         <?php $view['slots']->output('stylesheets') ?>
+        <?php date_default_timezone_set("UTC")?>
         <script src="<?php echo $view['assets']->getUrl('scripts/jquery-1.9.1.js') ?>"  type="text/javascript"> </script>
         <script src="<?php echo $view['assets']->getUrl('scripts/jquery-ui-1.10.3.custom.js') ?>"  type="text/javascript" > </script>
         <script src="<?php echo $view['assets']->getUrl('scripts/jquery-ui-1.10.3.custom.min.js') ?>"  type="text/javascript" ></script>
