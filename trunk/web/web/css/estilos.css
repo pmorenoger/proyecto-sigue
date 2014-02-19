@@ -146,3 +146,19 @@ textarea{
 	color:#737373;
 	padding:0 5px;
 }
+
+a.nota_rojo{
+    color:red;
+}
+
+a.nota_naranja{
+    color:orange;
+}
+
+a.nota_verde{
+    color:green;
+}
+
+a.nota_vacia{
+    color:grey;
+}
