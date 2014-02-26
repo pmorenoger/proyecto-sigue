@@ -84,14 +84,14 @@ public class StatisticListAdapter extends BaseExpandableListAdapter {
 	                return true;
 	            case MotionEvent.ACTION_UP: //Cuando el usuario deja de presionar
 	                float distance =init_x-event.getX();
-	                if(distance>20)
+	                if(distance>100)
 	                {
 	                     childHolder.vf.setInAnimation(inFromRightAnimation());
 	                     childHolder.vf.setOutAnimation(outToLeftAnimation());
 	                     childHolder.vf.showPrevious();
 	                }
 
-	                if(distance<-20)
+	                if(distance<-100)
 	                {
 	                	childHolder.vf.setInAnimation(inFromLeftAnimation());
 	                	childHolder.vf.setOutAnimation(outToRightAnimation());

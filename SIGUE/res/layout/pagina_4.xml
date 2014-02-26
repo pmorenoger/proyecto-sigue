@@ -7,6 +7,8 @@
 				    android:id="@+id/mySimplePiePlot3"
 				    android:layout_width="fill_parent"
 				    android:layout_height="fill_parent"
+				    androidPlot.title="Tokens redimidos vs sin redimir"
+            androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
 				    android:layout_marginTop="10dp"
 				    android:layout_marginLeft="10dp"
 				    android:layout_marginRight="10dp"
