@@ -384,7 +384,7 @@ class ProfesorController extends Controller
                   if(substr($clave, 0,5) == "nota_"){
                       $id_actividad = substr($clave,5);
                       $id_actividad2 = $id_actividad;
-                      $id_actividad = str_replace("$#$", " ", $id_actividad);
+                      $id_actividad = str_replace("%/%", " ", $id_actividad);
                       //var_dump($id_actividad);
                       $encontrado = false;
                       $i = 0;
@@ -456,8 +456,10 @@ class ProfesorController extends Controller
                 
                 $kernel = $this->get('kernel');
                 $dir_abs = self::getDireccionAbsoluta();
+                 $em = $this->getDoctrine()->getManager();
                 require_once $dir_abs . '/vendor/Excel/lib/src/Classes/PHPExcel.php';
-            
+                $repo = $em->getRepository('SISigueBundle:Asignaturas');
+                $asignatura = $repo->find($id_asignatura);  
                 // Create new PHPExcel object
                
                $objPHPExcel = new \PHPExcel();
@@ -547,13 +549,13 @@ class ProfesorController extends Controller
 
                // Rename worksheet
              
-               $objPHPExcel->getActiveSheet()->setTitle('Calificador automatico'.$id_asignatura);
+               $objPHPExcel->getActiveSheet()->setTitle($asignatura->getNombre());
                $objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddHeader('&L&G&C&HPlease treat this document as confidential!');
                $objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddFooter('&L&B' . $objPHPExcel->getProperties()->getTitle() . '&RPage &P of &N');
                
                // Set active sheet index to the first sheet, so Excel opens this as the first sheet
                
-               $nombre_fichero =  "calificaciones".$id_asignatura.".xlsx";
+               $nombre_fichero =  "calificaciones ".$asignatura->getNombre().".xlsx";
                $nombre_ruta = $dir_abs."/web/archivos/lista_calificaciones/".$nombre_fichero;
                $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
                $path = self::getDireccionAbsoluta() ."/web/archivos/lista_calificaciones/". $nombre_fichero;
@@ -821,10 +823,11 @@ class ProfesorController extends Controller
                 $asig_alumnos = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findByIdAsignatura($asignatura);
                 //Para poder mostrarlo correctamente necesito la info de las actividades, sin importar 
                 $actividades = $em->createQuery('
-                            SELECT distinct(p.nombre), p.descripcion, p.peso
-                            FROM SISigueBundle:ActividadAsignatura p                   
+                            SELECT distinct(p.nombre) as nombre, p.descripcion, p.peso
+                            FROM SISigueBundle:ActividadAsignatura p     
+                            WHERE p.idAsignatura = :idAsignatura   
 
-                        ');
+                        ')->setParameter('idAsignatura', $id_asignatura);
                 $actividades_info = $actividades->getResult();
                // var_dump($actividades_info);
                // die();

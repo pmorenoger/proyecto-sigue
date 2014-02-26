@@ -36,7 +36,7 @@
     </div>
     <div id="importar" class="hiddenStructure">
         <h3>Importar/Exportar</h3>
-        <form enctype="multipart/form-data" id="importar" name="importar" action="" method="POST">
+        <form enctype="multipart/form-data" id="importar" name="importar" action="<?php echo $view['router']->generate('si_sigue_exportar_calificaciones', array("id_asignatura" => $asignatura->getId()));?>" method="POST">
              <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
             <fieldset>
                 <legend>Importar</legend>
@@ -80,7 +80,7 @@
             
             <th>Nombre</th>
             <th>Apellidos</th>
-            <?php foreach($actividades as $actividad):?>
+            <?php foreach($actividades as $actividad):?>            
             <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>"><?php echo $actividad["nombre"]; ?> (<?php echo $actividad["peso"] ; ?>)</a></th>            
             <?php endforeach; ?>
             <th>TOKENS</th>
