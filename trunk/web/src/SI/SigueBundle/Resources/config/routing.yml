@@ -55,6 +55,12 @@ si_sigue_calificar_actividad_profesor:
 si_sigue_calificar_actividad_guardar:
     pattern:  /Profesor/calificar/{id_asignatura}/{id_alumno}/ok
     defaults:   {_controller: SISigueBundle:Profesor:calificar_actividad_guardar}  
+si_sigue_guardar_calificaciones:
+    pattern:  /Profesor/guardar_calificaciones/{id_asignatura}
+    defaults:   {_controller: SISigueBundle:Profesor:guardar_calificaciones}   
+si_sigue_exportar_calificaciones:
+    pattern:  /Profesor/exportar_calificaciones/{id_asignatura}
+    defaults:   {_controller: SISigueBundle:Profesor:exportar_calificaciones}   
 si_sigue_generar_actividad_profesor:
     pattern:  /Profesor/generar_actividad
     defaults:   {_controller: SISigueBundle:Profesor:generar_actividad}   

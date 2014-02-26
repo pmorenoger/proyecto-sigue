@@ -36,24 +36,20 @@
     </div>
     <div id="importar" class="hiddenStructure">
         <h3>Importar/Exportar</h3>
-        <form  enctype="multipart/form-data" id="importar" name="importar" action="" method="POST">
+        <form enctype="multipart/form-data" id="importar" name="importar" action="" method="POST">
              <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
             <fieldset>
                 <legend>Importar</legend>
                 <label for="fichero">Fichero a importar</label>
                 <input id="fichero" name="userfile" type="file" />
             </fieldset>
-             <br />
-             <br />
+        </form>
+         <form  enctype="multipart/form-data" id="exportar" name="exportar" action="<?php echo $view['router']->generate('si_sigue_exportar_calificaciones', array("id_asignatura" => $asignatura->getId()));?>" method="POST">
              <fieldset>
                  <legend>Exportar</legend>
                  <p>Se recomienda exportar primero si no se tiene la plantilla incial.</p>
-                 <input type="button" id="exportar" name="exportar" value="Exportar" />
-                 
-             </fieldset>
-            
-            
-            
+                 <input type="button" id="exportar" name="exportar" value="Exportar"  />                 
+             </fieldset>                                    
         </form>   
                 
     </div>
@@ -69,10 +65,12 @@
             </span>
     </div>
     
-    <div id="formulario_oculto" class="hiddenStructure">
-        <form id="form_oculto" name="form_oculto" method="POST" action="">
-            
-            
+    <div id="formulario_oculto">
+        <form id="form_oculto" name="form_oculto" method="POST" action="<?php echo $view['router']->generate('si_sigue_guardar_calificaciones', array("id_asignatura"=>$asignatura->getId()) );?>">            
+            <input type="button" id="actualizar" name="actualizar" class="hiddenStructure" value="Actualizar"/>
+            <div id="campos_ocultos" class="hiddenStructure">
+                
+            </div>
         </form>
         
     </div>
@@ -89,9 +87,12 @@
             <th>Nota TOKENS</th>
             <th>Nota Total</th>
             <th>Editar</th>
-            <?php $ac_nota = 0; ?>
+            <?php $ac_nota = 0; 
+                $x  = 0;
+            ?>
             <?php foreach($resultados as $fila):?>
                 <tr>
+                    <?php $y = 0; ?>
                     <td><?php echo $fila["alumno"]->getNombre(); ?></td>
                     <td><?php echo $fila["alumno"]->getApellidos() ; ?></td>   
                     <?php $array_actividades = $fila["actividades"];
@@ -113,16 +114,17 @@
                         //Variables de control del input
                         $valor= $fila_actividad->getNota();
                         $id_asignatura2 = $asignatura->getId();
-                        $nombre_actividad = str_replace(" ", "$#$",$fila_actividad->getNombre());
+                        $nombre_actividad = str_replace(" ", "%/%",$fila_actividad->getNombre());
                         $observaciones = $fila_actividad->getObservaciones();
                         $id_alumno = $fila_actividad->getIdAlumno()->getIdAlumno();
                         
                  
                        
                         ?>
-                     <td><a href="#" onclick="add(<?php echo $valor.",'".$observaciones."',".$id_asignatura2.",".$id_alumno.",'".$nombre_actividad."'" ;?>)" class="<?php echo $color;?>" title="<?php echo $observaciones; ?>"><?php echo $valor; ?></a></td>
+                    <td><a href="#"  onclick="add(<?php echo $valor.",'".$observaciones."',".$id_asignatura2.",".$id_alumno.",'".$nombre_actividad."'".",".$x.",".$y ;?>)" class="<?php echo $color;?>" title="<?php echo $observaciones; ?>"><?php echo $valor; ?><span id="<?php echo $x."_".$y ?>" class="hiddenStructure">&nbsp;*</span></a></td>
                     
                      <?php $ac_nota = $ac_nota +( $valor *  $fila_actividad->getPeso());?>
+                    <?php $y++;?>
                     <?php endforeach;
                         $codigos = $fila["codigos"];
                          $codigos = $codigos[0];
@@ -131,7 +133,8 @@
                      <td>NotaTokens</td>
                      <td><?php echo $ac_nota; $ac_nota = 0;?></td>
                      <td><a href="<?php echo $view['router']->generate('si_sigue_calificar_actividad_profesor', array("id_asignatura" =>$asignatura->getId(), "id_alumno" => $fila["alumno"]->getIdAlumno()));?>" title="Editar los resultados del alumno <?php echo $fila["alumno"]->getNombre() . " " . $fila["alumno"]->getApellidos() ; ?>">Editar</a></td>
-                </tr>                
+                </tr>           
+                <?php $x++;?>
             <?php endforeach; ?>
           
                                                 
@@ -222,7 +225,7 @@ function cancelar(){
            
            
 //Añade dinámicamente campos editables para las notas//
-function add(valor,valor2,id_asignatura,id_alumno,actividad) {
+function add(valor,valor2,id_asignatura,id_alumno,actividad, x,y) {
  
     //Create an input type dynamically.
     var nota = document.createElement("input");
@@ -231,7 +234,8 @@ function add(valor,valor2,id_asignatura,id_alumno,actividad) {
     nota.setAttribute("type", "text");
     nota.setAttribute("value", valor);
     nota.setAttribute("name", "nota_"+id_asignatura+"_"+id_alumno+"_"+actividad);
-    nota.setAttribute("id", "nota_"+id_asignatura+"_"+id_alumno+"_"+actividad);
+    var actividad_remplazado = jq2(actividad);
+    nota.setAttribute("id", "nota_"+id_asignatura+"_"+id_alumno+"_"+actividad_remplazado);
  
     var foo = document.getElementById("nota_dinamica");
  
@@ -245,7 +249,7 @@ function add(valor,valor2,id_asignatura,id_alumno,actividad) {
     obs.setAttribute("cols", "30");
     obs.setAttribute("rows", "40");  
     obs.setAttribute("name", "obs_"+id_asignatura+"_"+id_alumno+"_"+actividad);
-    obs.setAttribute("id", "obs_"+id_asignatura+"_"+id_alumno+"_"+actividad);
+    obs.setAttribute("id", "obs_"+id_asignatura+"_"+id_alumno+"_"+actividad_remplazado);
    
     obs.value=valor2;
  
@@ -253,6 +257,9 @@ function add(valor,valor2,id_asignatura,id_alumno,actividad) {
  
     //Append the element in page (in span).
     foo2.appendChild(obs);
+    //Muestro el *;
+    var id_td = "td_"+id_asignatura+"_"+id_alumno+"_"+actividad_remplazado;
+    $("#"+x+"_"+y).removeClass("hiddenStructure");
     abrir_dialog();
     
     
@@ -265,51 +272,81 @@ function abrir_dialog(){
         height:450,
          buttons: {
             Guardar: function() {
-          copiar_y_borrar();
-          $( this ).dialog( "close" );
+                copiar_y_borrar();
+                mostrar_actualizar();
+                $( this ).dialog( "close" );
         },
         Cancelar:function(){
+             borrar();   
              $( this ).dialog( "close" );
         }
         
     },
-     close: function(){
-            alert(0);
-            borrar();
+     close: function(){           
+            
      }
         
     });
 }
 
+
+function mostrar_actualizar(){
+    $("#actualizar").removeClass("hiddenStructure");
+    $("#actualizar").addClass("mostrarActualizar");
+    
+
+}
+
 function borrar(){
     var nota = document.getElementById("nota_dinamica").children[0];
     var obs = document.getElementById("obs_dinamica").children[0];
-   nota.parentNode.removeChild(nota); 
-   obs.parentNode.removeChild(obs);
+    nota.parentNode.removeChild(nota); 
+    obs.parentNode.removeChild(obs);
+}
+function borrar_ocultos(id_nota, id_obs){
+    var nota = document.getElementById(id_nota);
+    var obs = document.getElementById(id_obs);
+    if(nota && obs){
+        nota.parentNode.removeChild(nota);
+        obs.parentNode.removeChild(obs);
+    }
 }
 
 function copiar_y_borrar(){
 //Cojo todo lo del formulario dinamico y lo copio en el formulario final.
 //Tengo que tener en cuenta lo de los repetidos.
 var nota = document.getElementById("nota_dinamica").children[0];
+nota.id = jq2(nota.id);
 
-
-console.log(nota.getAtribute("value"));
 var obs = document.getElementById("obs_dinamica").children[0];
+obs.id = jq2(obs.id);
 
-var id_nota = document.getElementById(nota.id);
+var id_nota = document.getElementById("f_"+nota.id);
+var id_obs = document.getElementById("f_"+obs.id);
 if(id_nota){
-   nota.parentNode.removeChild(nota); 
-   obs.parentNode.removeChild(obs);
+    borrar_ocultos(id_nota.id, id_obs.id );  
 }
 
-var form_oculto =  document.getElementById("form_oculto");
+var form_oculto =  document.getElementById("campos_ocultos");
+nota.id = "f_"+nota.id;
+obs.id = "f_"+obs.id;
 form_oculto.appendChild(nota);
 form_oculto.appendChild(obs);
-
-
-
-
 }
+
+function jq( myid ) {
+    return "#" + myid.replace( /(:|\%\/\%|\[|\])/g, "---" );
+}
+function jq2( myid ) {
+    return myid.replace( /(:|\%\/\%|\[|\])/g, "---" );
+}
+
+$("#actualizar").click(function(){
+    document.form_oculto.submit();    
+});
+
+$("#exportar").click(function(){
+    document.exportar.submit();
+});
 </script>
 <?php $view['slots']->stop(); ?>

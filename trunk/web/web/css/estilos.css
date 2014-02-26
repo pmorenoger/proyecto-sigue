@@ -146,7 +146,10 @@ textarea{
 	color:#737373;
 	padding:0 5px;
 }
-
+#Formulario_oculto #form_oculto .mostrarAcualizar{
+   display:block;
+   margin-left: 500px; 
+}
 a.nota_rojo{
     color:red;
 }
