@@ -205,7 +205,7 @@ public class AlumnosActivity extends Activity {
 			 for(int j=0;j<i;j++){
 				 aux = asig.getJSONObject(j).getJSONObject("Alumno").getJSONObject("Datos");				 
 				 tok = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Tokens");
-				 act = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Activities");
+				 act = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Actividades");
 				 aux1 = aux.getString("nombre")+" " + aux.getString("apellidos") + " DNI:" + aux.getString("dni");
 				 listDataHeader.add(aux1);	 
 				 

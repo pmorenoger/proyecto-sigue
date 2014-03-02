@@ -32,17 +32,17 @@ public class UserFunctions {
 
      //use http://10.0.2.2/ to connect to your localhost ie http://localhost/
 
-    //private static String loginURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
+    private static String loginURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    private static String loginURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    //private static String loginURL = "http://192.168.1.122:8080/xampp/Android_api/";
 
-    //private static String registerURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
+    private static String registerURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    private static String registerURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    //private static String registerURL = "http://192.168.1.122:8080/xampp/Android_api/";
     
-    //private static String qrURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
+    private static String qrURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    private static String qrURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    //private static String qrURL = "http://192.168.1.122:8080/xampp/Android_api/";
 
 
     private static String login_tag = "login";
