@@ -6,4 +6,6 @@
     <string name="title_activity_menu_principal">Menu Principal</string>
     <string name="search_title">Busqueda</string>
 	<string name="search_hint">Introduzca un nombre...</string>
+	<string name="aceptar">Aceptar</string>
+	<string name="cancelar">Cancelar</string>
 </resources>

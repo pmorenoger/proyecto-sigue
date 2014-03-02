@@ -9,7 +9,8 @@
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
@@ -42,42 +43,39 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
-         <activity
+        <activity
             android:name="com.example.sigue.MenuPrincipal"
-            android:label="@string/app_name" 
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="com.example.sigue.MainActivity"
-            android:label="@string/app_name" 
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.example.sigue.MenuPrincipalProfesor"
-            android:label="@string/app_name" 
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.example.sigue.AlumnosActivity"            
-            android:label="@string/app_name" 
+            android:name="com.example.sigue.AlumnosActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
-            
-           
-            
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
-        
-       
+        <activity
+            android:name="com.example.sigue.ActividadesActivity"
+            android:label="@string/title_activity_actividades" >
+        </activity>
     </application>
 
 </manifest>

@@ -32,17 +32,17 @@ public class UserFunctions {
 
      //use http://10.0.2.2/ to connect to your localhost ie http://localhost/
 
-    private static String loginURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
+    //private static String loginURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    //private static String loginURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    private static String loginURL = "http://192.168.1.122:8080/xampp/Android_api/";
 
-    private static String registerURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
+    //private static String registerURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    //private static String registerURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    private static String registerURL = "http://192.168.1.122:8080/xampp/Android_api/";
     
-    private static String qrURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
+    //private static String qrURL = "http://ssii2013.e-ucm.es/Symfony/web/Android_api/";
     
-    //private static String qrURL = "http://192.168.1.122:8080/xampp/Android_api/";
+    private static String qrURL = "http://192.168.1.122:8080/xampp/Android_api/";
 
 
     private static String login_tag = "login";
@@ -56,6 +56,8 @@ public class UserFunctions {
     private static String subject_tag_prof = "subject_tag_prof";
     
     private static String alumno_tag = "alumno_tag";
+    
+    private static String act_tag = "act_tag";
 
 
 
@@ -254,7 +256,29 @@ public class UserFunctions {
     }
 
 
+    public JSONObject modifyActivity(String nota, String observaciones,int id){
 
+        // Building Parameters
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("tag", act_tag));
+
+        params.add(new BasicNameValuePair("nota", nota));
+
+        params.add(new BasicNameValuePair("observaciones", observaciones));
+        
+        params.add(new BasicNameValuePair("id", Integer.toString(id)));
+
+        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+
+        
+
+        // Log.e("JSON", json.toString());
+
+        return json;
+
+    }
     /**
 
      * Function to logout user

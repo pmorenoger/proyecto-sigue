@@ -9,12 +9,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+
 import com.example.sigue.library.DataBaseHandler;
 import com.example.sigue.library.UserFunctions;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,6 +30,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MenuPrincipalProfesor extends Activity  {
@@ -108,7 +112,12 @@ public class MenuPrincipalProfesor extends Activity  {
 				 
 
 			 }
-		} catch (JSONException e) {
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			Toast.makeText(MenuPrincipalProfesor.this, "Sin Resultados",
+		            Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -183,6 +192,12 @@ private class Asincrono extends AsyncTask<UserFunctions, Void, JSONObject> {
         
         protected void onPreExecute() {
             this.dialog.setMessage("LOADING.................");
+            this.dialog.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    Asincrono.this.cancel(true);
+                }
+            });
             this.dialog.setCancelable(true);
             this.dialog.show();
         }
@@ -202,6 +217,12 @@ private class Asincrono extends AsyncTask<UserFunctions, Void, JSONObject> {
             this.dialog.dismiss();
         }
 	    }
+	
+	@Override
+    protected void onCancelled() {
+        Toast.makeText(MenuPrincipalProfesor.this, "Tarea cancelada!",
+            Toast.LENGTH_SHORT).show();
+    }
 
 	
 	}
