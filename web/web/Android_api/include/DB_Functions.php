@@ -94,6 +94,15 @@ class DB_Functions {
 
     }
 	
+	public function updateActivity($nota, $observaciones, $id) {
+
+        $result = mysql_query("update actividad_asignatura set Nota = '$nota', Observaciones = '$observaciones'  where id = '$id'");
+
+        // check for successful store
+
+
+    }
+	
 	public function activateCode($idcodigo) {
 
         $result = mysql_query("update codigos set fecha_alta = now() where idcodigos = '$idcodigo'");
@@ -317,7 +326,7 @@ class DB_Functions {
 	
 	public function getStudents($user) {
 
-        $result = mysql_query("SELECT nombre, apellidos, dni, id_asignatura_alumno FROM `alumnos`, `asignatura_alumno` WHERE id_asignatura='$user' and id_alumno = idalumno");
+        $result = mysql_query("SELECT nombre, apellidos, dni, id_asignatura_alumno, id_alumno FROM `alumnos`, `asignatura_alumno` WHERE id_asignatura='$user' and id_alumno = idalumno");
 
         $no_of_rows = mysql_num_rows($result);
 
@@ -381,6 +390,48 @@ class DB_Functions {
 	public function getTokens($asig_alumn) {
 
         $result = mysql_query("SELECT codigo, fecha_alta FROM `codigos`, `asignatura_codigo` WHERE id_asignatura_alumno='$asig_alumn' and id_codigo = idcodigos");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+		}
+		
+		public function getActivities($alumn, $asig) {
+
+        $result = mysql_query("SELECT Nombre, Descripcion, Nota, Peso, id, Observaciones FROM `actividad_asignatura` WHERE Id_Alumno='$alumn' and Id_Asignatura='$asig'");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // code existed
+
+            return $result;
+
+        } else {
+
+            // code not existed
+
+            return false;
+
+        }
+		}
+		
+		public function getDetails($alumn) {
+
+        $result = mysql_query("SELECT correo, correoAdicional FROM `alumnos` WHERE idalumno='$alumn'");
 
         $no_of_rows = mysql_num_rows($result);
 
