@@ -234,32 +234,29 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				$tokens = $db->getTokens($row["id_asignatura_alumno"]);
 				$activities = $db->getActivities($row["id_alumno"],$asig);
 				$details = $db->getdetails($row["id_alumno"]);
-				if($tokens){
 				$response ['Alumnos'][$i]['Alumno']['Datos'] =  $row;
 				$response ['Alumnos'][$i]['Alumno']['Details'] =  mysql_fetch_assoc($details);
-				prev($response);				
-				//$statistic = mysql_fetch_assoc( $db->getMaxNumTokens($row["id_asignatura"]));
-				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['MaxTokens'] = $statistic["MAX(num)"];
-				//$statistic = mysql_fetch_assoc( $db->getLessTokens($row["id_asignatura"],$statistic1["num"]));
-				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['LessTokens'] = $statistic["COUNT(num)"];
-				//$statistic = mysql_fetch_assoc( $db->getEqualTokens($row["id_asignatura"],$statistic1["num"]));
-				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['EqualTokens'] = $statistic["COUNT(num)"];
-				//$statistic = mysql_fetch_assoc( $db->getMoreTokens($row["id_asignatura"],$statistic1["num"]));
-				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['MoreTokens'] = $statistic["COUNT(num)"];
+				if($tokens){				
+				prev($response);
+				
 				while($column = mysql_fetch_assoc($tokens)){
 				$response ['Alumnos'][$i]['Alumno']['Tokens'][] =  $column;
+				}				
+				
+				}else{
+					
+					$response ['Alumnos'][$i]['Alumno']['Tokens']=array();				
 				}
+				if($tokens){								
 				while($column = mysql_fetch_assoc($activities)){
-				$response ['Alumnos'][$i]['Alumno']['Activities'][] =  $column;
+				$response ['Alumnos'][$i]['Alumno']['Actividades'][] =  $column;
+				}
+				
+				}else{
+					$response ['Alumnos'][$i]['Alumno']['Actividades']=array();					
+					
 				}
 				$i = $i + 1;
-				}else{
-					$response ['Alumnos'][$i]['Alumno']['Datos'] =  $row;
-					$response ['Alumnos'][$i]['Alumno']['Tokens']=array();
-					$response ['Alumnos'][$i]['Alumno']['Actividades']=array();
-					$response ['Alumnos'][$i]['Alumno']['Details'] =  $row;
-					$i = $i + 1;
-				}
 				//$response ["name"]["tokens"] = db->getTokens($subjects["id_asignatura_alumno"]);
 			}
 				$statistic1 = mysql_fetch_assoc( $db->getRedeemedTokens($asig));
