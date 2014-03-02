@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.Gravity;
@@ -21,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -108,12 +110,16 @@ public class MainActivity extends Activity {
 	            String [] parametros = contenido.split("#&");
 	            	email = parametros[0];
 	            	contrasena = parametros[1];
+	            	userFunction = new UserFunctions();
+					new Asincrono1().execute(userFunction);
+	            }catch(ArrayIndexOutOfBoundsException e){
+	            	Toast toast = Toast.makeText(this, "Codigo QR no válido", Toast.LENGTH_SHORT);
+	                toast.show();
 	            }catch(NullPointerException e){
 	            	Toast toast = Toast.makeText(this, "Codigo QR no válido", Toast.LENGTH_SHORT);
 	                toast.show();
 	            }
-	            userFunction = new UserFunctions();
-				new Asincrono1().execute(userFunction);
+	            
 	  
 
 	        } else if (resultCode == RESULT_CANCELED) {
@@ -135,6 +141,12 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
         
         protected void onPreExecute() {
             this.dialog.setMessage("LOADING.................");
+            this.dialog.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    Asincrono1.this.cancel(true);
+                }
+            });
             this.dialog.setCancelable(true);
             this.dialog.show();
         }
@@ -235,13 +247,23 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
 
             }
 
-        } catch (JSONException e) {
+        }catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			Toast.makeText(MainActivity.this, "Sin Resultados",
+		            Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		} catch (JSONException e) {
 
             e.printStackTrace();
 
         }
 	    }
 
+	@Override
+    protected void onCancelled() {
+        Toast.makeText(MainActivity.this, "Tarea cancelada!",
+            Toast.LENGTH_SHORT).show();
+    }
 	
 	}
 	

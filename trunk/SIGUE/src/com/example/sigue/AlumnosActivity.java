@@ -18,6 +18,8 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -73,14 +75,15 @@ public class AlumnosActivity extends Activity {
 	int id;
 	ExpandableListAdapter listAdapter;
 	ExpandableListView expListView;
-	public static ArrayList<String> listDataHeader;
-	public static HashMap<String, ArrayList<String>> listDataChild;
-	public static ArrayList<String> listDataHeaderPermanent;
-	public static HashMap<String, ArrayList<String>> listDataChildPermanent;
+	private static ArrayList<String> listDataHeader;
+	private static HashMap<String, ArrayList<String>> listDataChild;
+	private static HashMap<String, ActividadesLista> listActividades;
+	private static ArrayList<String> listDataHeaderPermanent;
+	private static HashMap<String, ArrayList<String>> listDataChildPermanent;
 	private static boolean change = false;
 	UserFunctions userFunction;
 	private ViewFlipper vf;
-	public float init_x;
+	private float init_x;
 	private PieChart mySimplePiePlot;
 	private XYPlot plot;
 	private XYPlot plot1;
@@ -91,17 +94,13 @@ public class AlumnosActivity extends Activity {
 	private HashMap<String, Integer> registros;
 	private ArrayList<Integer> seriesRegistros;
 	private MyBarFormatter formatter1;
-
     private MyBarFormatter selectionFormatter;
-
     private TextLabelWidget selectionWidget;
-
-    private Pair<Integer, XYSeries> selection;
-    
-    ArrayList<String> statistics;
-    
+    private Pair<Integer, XYSeries> selection;    
+    ArrayList<String> statistics;    
     private String[] MenuItems = {"Detalles", "Actividades"};
-	
+    
+    
 	public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -187,10 +186,13 @@ public class AlumnosActivity extends Activity {
 	private void prepareListData(JSONObject json) {
 	    listDataHeader = new ArrayList<String>();
 	    listDataChild = new HashMap<String, ArrayList<String>>();
+	    listActividades = new HashMap<String, ActividadesLista>();
 	    //listStatisticChild = new HashMap<String, ArrayList<String>>();
 	    ArrayList<String> tokens = new ArrayList<String>();
+	    ActividadesLista actividades = new ActividadesLista();
 	    JSONArray asig = null;
 	    JSONArray tok = null;
+	    JSONArray act = null;
 	    JSONObject sts = null;
 	    JSONObject aux = null;
 	    String aux1 = null;
@@ -201,9 +203,9 @@ public class AlumnosActivity extends Activity {
 			 int i = asig.length();
 			 statistics.clear();
 			 for(int j=0;j<i;j++){
-				 aux = asig.getJSONObject(j).getJSONObject("Alumno").getJSONObject("Datos");
-				 
+				 aux = asig.getJSONObject(j).getJSONObject("Alumno").getJSONObject("Datos");				 
 				 tok = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Tokens");
+				 act = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Activities");
 				 aux1 = aux.getString("nombre")+" " + aux.getString("apellidos") + " DNI:" + aux.getString("dni");
 				 listDataHeader.add(aux1);	 
 				 
@@ -256,7 +258,31 @@ public class AlumnosActivity extends Activity {
 				 }
 				 listDataChild.put(listDataHeader.get(j),(ArrayList<String>) tokens.clone() );
 				 tokens.clear();
+				 
+				 k = act.length();
+				 String nombre;
+				 String descripcion;
+				 String nota;
+				 String peso;
+				 String observaciones;
+				 int id;
+				 Actividad act2;
+				 JSONObject actaux;
+				 for (int z=0;z<k;z++){
+					actaux = act.getJSONObject(z);
+					nombre = actaux.getString("Nombre");
+					descripcion = actaux.getString("Descripcion");
+					nota = actaux.getString("Nota");
+					peso = actaux.getString("Peso");
+					observaciones = actaux.getString("Observaciones");
+					id = actaux.getInt("id");
+					act2 = new Actividad(nombre,descripcion,nota,peso,observaciones,id);
+					actividades.add(act2);
+				 }
+				 listActividades.put(listDataHeader.get(j), (ActividadesLista) actividades.clone());
+				 actividades.clear();
 			 }
+			 
 			 sts= json.getJSONObject("Estadisticas");
 			 //aux1 = sts.getString("Redeemed")+ "%&" + sts.getString("NotRedeemed");
 			 //+ "%&" + sts.getString("LessTokens") + "%&" + sts.getString("EqualTokens") + "%&" + sts.getString("MoreTokens");
@@ -265,7 +291,12 @@ public class AlumnosActivity extends Activity {
 			 //listStatisticChild.put(listDataHeader.get(j), (ArrayList<String>)statistics.clone());
 			 listDataHeaderPermanent = (ArrayList<String>) listDataHeader.clone();
 			 listDataChildPermanent = (HashMap<String, ArrayList<String>>) listDataChild.clone();
-		} catch (JSONException e) {
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			Toast.makeText(AlumnosActivity.this, "Sin Resultados",
+		            Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -395,12 +426,27 @@ public class AlumnosActivity extends Activity {
     public boolean onContextItemSelected(MenuItem item) 
     {
         ExpandableListView.ExpandableListContextMenuInfo info =(ExpandableListView.ExpandableListContextMenuInfo)item.getMenuInfo();
-      
+        //
         // Getting the Id
         int menuItemIndex = item.getItemId();
-        Toast.makeText(AlumnosActivity.this, "Clicked Item Position :"+expListView.getPackedPositionGroup(info.packedPosition)+"\n"+"Seleted Option Id :"+menuItemIndex, Toast.LENGTH_SHORT).show();        
+        if (menuItemIndex==0){
+        Toast.makeText(AlumnosActivity.this, "Clicked Item Position :"+expListView.getPackedPositionGroup(info.packedPosition)+"\n"+"Seleted Option Id :"+menuItemIndex, Toast.LENGTH_SHORT).show();
+        }else{
+        //creamos el intento y le pasamos la clase a mostrar
+        Intent intent=new Intent(this,ActividadesActivity.class);
+          Bundle contenedor=new Bundle();
+       //le cargamos al bundle un objeto parcelable que se almacenara
+          int user = expListView.getPackedPositionGroup(info.packedPosition);
+         //bajo la key "array" y contendrá nuestra lista de libros
+        contenedor.putParcelable("array",this.listActividades.get(listDataHeader.get(user)));
+          //cargamos el intento con el bundle
+        intent.putExtras(contenedor);
+        intent.putExtra("usuario", user);
+          //lanzamos el intento
+        startActivity(intent);}
         return true;
     }
+    
     protected void filtrarDatos(String text) {
 		// TODO Auto-generated method stub
     	String frase;
@@ -473,8 +519,15 @@ private void seriesTiempo(){
 	 mySimplePiePlot = (PieChart) vf.findViewById(id);
 	 mySimplePiePlot.clear();
 	 int totales = Integer.parseInt(statistics.get(1))+Integer.parseInt(statistics.get(0));
-	 int redimidos = (Integer.parseInt(statistics.get(0))/totales)*100;
-	 int noredimidos = (Integer.parseInt(statistics.get(1))/totales)*100;
+	 int redimidos;
+	 int noredimidos;
+	 if (totales != 0){
+		 redimidos = (Integer.parseInt(statistics.get(0))/totales)*100;
+		 noredimidos = (Integer.parseInt(statistics.get(1))/totales)*100;
+	 }else{
+		 redimidos=0;
+		 noredimidos=0;
+	 }
      Segment segment1 = new Segment("Sin redimir: " + Integer.toString(noredimidos)+"%", Integer.parseInt(statistics.get(1)));
 
      Segment segment2 = new Segment("Redimidos: " + Integer.toString(redimidos)+"%",Integer.parseInt(statistics.get(0)));
@@ -787,12 +840,19 @@ private class Asincrono2 extends AsyncTask<UserFunctions, Void, JSONObject> {
         
         protected void onPreExecute() {
             this.dialog.setMessage("LOADING.................");
-            this.dialog.setCancelable(true);
+            //this.dialog.setCancelable(true);
+            this.dialog.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    Asincrono2.this.cancel(true);
+                }
+            });
             this.dialog.show();
         }
         @Override
     	protected JSONObject doInBackground(UserFunctions... userfunction) {
         	JSONObject json = userFunction.getAlumnos(id);
+        	       
     		return json;
     	}
         
@@ -806,9 +866,19 @@ private class Asincrono2 extends AsyncTask<UserFunctions, Void, JSONObject> {
             this.dialog.dismiss();
         }
 	    }
+	
+	@Override
+    protected void onCancelled() {
+        Toast.makeText(AlumnosActivity.this, "Tarea cancelada!",
+            Toast.LENGTH_SHORT).show();
+    }
 
 	
 	}
+public static void modActividades(int user, int pos, Actividad act){
+	String aux = listDataHeader.get(user);
+	listActividades.get(aux).set(pos, act);
+}
 private class ListenerTouchViewFlipper implements View.OnTouchListener{
 	 
     @Override

@@ -12,7 +12,9 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
@@ -243,7 +245,12 @@ private void prepareListData(JSONObject json) {
 			 listDataChild.put(listDataHeader.get(j),(ArrayList<String>) tokens.clone() );
 			 tokens.clear();
 		 }
-	} catch (JSONException e) {
+	} catch (NullPointerException e) {
+		// TODO Auto-generated catch block
+		Toast.makeText(MenuPrincipal.this, "Sin Resultados",
+	            Toast.LENGTH_SHORT).show();
+		e.printStackTrace();
+	}catch (JSONException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
@@ -387,6 +394,12 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
         
         protected void onPreExecute() {
             this.dialog.setMessage("LOADING.................");
+            this.dialog.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    Asincrono1.this.cancel(true);
+                }
+            });
             this.dialog.setCancelable(true);
             this.dialog.show();
         }
@@ -406,6 +419,12 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
 
         
 	    }
+	
+	@Override
+    protected void onCancelled() {
+        Toast.makeText(MenuPrincipal.this, "Tarea cancelada!",
+            Toast.LENGTH_SHORT).show();
+    }
 	}	
 private class Asincrono2 extends AsyncTask<UserFunctions, Void, JSONObject> {
     	
@@ -414,6 +433,12 @@ private class Asincrono2 extends AsyncTask<UserFunctions, Void, JSONObject> {
         
         protected void onPreExecute() {
             this.dialog.setMessage("LOADING.................");
+            this.dialog.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    Asincrono2.this.cancel(true);
+                }
+            });
             this.dialog.setCancelable(true);
             this.dialog.show();
         }
@@ -434,7 +459,11 @@ private class Asincrono2 extends AsyncTask<UserFunctions, Void, JSONObject> {
         }
 	    }
 
-	
+	@Override
+    protected void onCancelled() {
+        Toast.makeText(MenuPrincipal.this, "Tarea cancelada!",
+            Toast.LENGTH_SHORT).show();
+    }
 	}
     
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="#30000000"
+    tools:context=".ActividadesActivity" >
+
+    <TextView
+        android:id="@+id/nombreAct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="5dp"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/pesoAct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nombreAct"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="5dp"
+        android:textSize="13sp"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/notaAct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/pesoAct"
+        android:layout_alignTop="@+id/notaAct"
+        android:layout_marginLeft="45dp"
+        android:layout_toRightOf="@+id/pesoAct"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/edit" />
+
+</RelativeLayout>
