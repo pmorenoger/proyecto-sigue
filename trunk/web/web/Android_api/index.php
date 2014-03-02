@@ -221,19 +221,22 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 
         // Request type is Register new user
 
-        $user = $_POST['user'];
+        $asig = $_POST['user'];
 
             // store user
 
-            $students = $db->getStudents($user);
+            $students = $db->getStudents($asig);
 
             if ($students) {
 			$response["success"] = 1;
 			$i= 0;
 			while($row = mysql_fetch_assoc($students)){
 				$tokens = $db->getTokens($row["id_asignatura_alumno"]);
+				$activities = $db->getActivities($row["id_alumno"],$asig);
+				$details = $db->getdetails($row["id_alumno"]);
 				if($tokens){
 				$response ['Alumnos'][$i]['Alumno']['Datos'] =  $row;
+				$response ['Alumnos'][$i]['Alumno']['Details'] =  mysql_fetch_assoc($details);
 				prev($response);				
 				//$statistic = mysql_fetch_assoc( $db->getMaxNumTokens($row["id_asignatura"]));
 				//$response ['Alumnos'][$i]['Alumno']['Estadisticas']['MaxTokens'] = $statistic["MAX(num)"];
@@ -246,17 +249,22 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				while($column = mysql_fetch_assoc($tokens)){
 				$response ['Alumnos'][$i]['Alumno']['Tokens'][] =  $column;
 				}
+				while($column = mysql_fetch_assoc($activities)){
+				$response ['Alumnos'][$i]['Alumno']['Activities'][] =  $column;
+				}
 				$i = $i + 1;
 				}else{
 					$response ['Alumnos'][$i]['Alumno']['Datos'] =  $row;
 					$response ['Alumnos'][$i]['Alumno']['Tokens']=array();
+					$response ['Alumnos'][$i]['Alumno']['Actividades']=array();
+					$response ['Alumnos'][$i]['Alumno']['Details'] =  $row;
 					$i = $i + 1;
 				}
 				//$response ["name"]["tokens"] = db->getTokens($subjects["id_asignatura_alumno"]);
 			}
-				$statistic1 = mysql_fetch_assoc( $db->getRedeemedTokens($user));
+				$statistic1 = mysql_fetch_assoc( $db->getRedeemedTokens($asig));
 				$response ['Estadisticas']['Redeemed'] = $statistic1["COUNT(codigo)"];
-				$statistic = mysql_fetch_assoc( $db->getNotRedeemedTokens($user));
+				$statistic = mysql_fetch_assoc( $db->getNotRedeemedTokens($asig));
 				$response ['Estadisticas']['NotRedeemed'] = $statistic["COUNT(codigo)"];
                 echo json_encode($response);
 
@@ -350,6 +358,27 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             $response["error_msg"] = "User Not Signed Up on that subject";
 	}	
 		echo json_encode($response);
+		
+	}else if ($tag == 'act_tag') {
+		$nota = $_POST['nota'];
+
+        $observaciones = $_POST['observaciones'];	
+			
+		$id = $_POST['id'];
+				
+				$db->updateActivity($nota, $observaciones, $id);
+				
+				
+				
+				$response["success"] = 1;
+
+				
+		 
+		   
+
+        
+		echo json_encode($response);
+		
 	}else {
 
         echo "Invalid Request";
