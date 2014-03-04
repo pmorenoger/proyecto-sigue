@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_container"
+    android:orientation="vertical" >
+ 
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/black"
+        android:layout_weight="0"/>
+ 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/dialog_divider" />
+ 
+    <ScrollView
+        android:id="@+id/cuerpo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+  		<LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+	        <TextView
+	            android:id="@+id/email"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="5dp"
+	            android:textAppearance="?android:attr/textAppearanceMedium"
+	            android:textColor="@android:color/black" />
+	       
+	        <TextView
+	            android:id="@+id/altEmail"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="5dp"
+	            android:textAppearance="?android:attr/textAppearanceMedium"
+	            android:textColor="@android:color/black" />
+	        
+	        <TextView
+	            android:id="@+id/notaProv"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="5dp"
+	            android:textAppearance="?android:attr/textAppearanceMedium"
+	            android:textColor="@android:color/black" />
+	        
+        </LinearLayout>
+        
+    </ScrollView>
+ 
+    <LinearLayout
+        android:id="@+id/botonera"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0">
+ 
+        <Button
+            android:id="@+id/aceptar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/dialog_button_selector"
+            android:text="@string/aceptar"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+ 
+</LinearLayout>
