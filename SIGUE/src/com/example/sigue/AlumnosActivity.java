@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -38,7 +39,10 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -47,6 +51,7 @@ import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.Toast;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ViewFlipper;
 
@@ -77,6 +82,7 @@ public class AlumnosActivity extends Activity {
 	ExpandableListView expListView;
 	private static ArrayList<String> listDataHeader;
 	private static HashMap<String, ArrayList<String>> listDataChild;
+	private static HashMap<String, String> listDetalles;
 	private static HashMap<String, ActividadesLista> listActividades;
 	private static ArrayList<String> listDataHeaderPermanent;
 	private static HashMap<String, ArrayList<String>> listDataChildPermanent;
@@ -99,6 +105,7 @@ public class AlumnosActivity extends Activity {
     private Pair<Integer, XYSeries> selection;    
     ArrayList<String> statistics;    
     private String[] MenuItems = {"Detalles", "Actividades"};
+    Dialog customDialog = null;
     
     
 	public void onCreate(Bundle savedInstanceState) {
@@ -187,6 +194,7 @@ public class AlumnosActivity extends Activity {
 	    listDataHeader = new ArrayList<String>();
 	    listDataChild = new HashMap<String, ArrayList<String>>();
 	    listActividades = new HashMap<String, ActividadesLista>();
+	    listDetalles = new HashMap<String, String>();
 	    //listStatisticChild = new HashMap<String, ArrayList<String>>();
 	    ArrayList<String> tokens = new ArrayList<String>();
 	    ActividadesLista actividades = new ActividadesLista();
@@ -195,7 +203,9 @@ public class AlumnosActivity extends Activity {
 	    JSONArray act = null;
 	    JSONObject sts = null;
 	    JSONObject aux = null;
+	    JSONObject details = null;
 	    String aux1 = null;
+	    String aux2 = null;
 	    fechas.clear();
 	    registros.clear();
 	    try {
@@ -206,10 +216,11 @@ public class AlumnosActivity extends Activity {
 				 aux = asig.getJSONObject(j).getJSONObject("Alumno").getJSONObject("Datos");				 
 				 tok = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Tokens");
 				 act = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Actividades");
+				 details =asig.getJSONObject(j).getJSONObject("Alumno").getJSONObject("Details");
 				 aux1 = aux.getString("nombre")+" " + aux.getString("apellidos") + " DNI:" + aux.getString("dni");
 				 listDataHeader.add(aux1);	 
-				 
-				
+				 aux2 = details.getString("correo")+ "#&" +details.getString("correoAdicional");
+				 listDetalles.put(aux1, aux2);
 				 int k = tok.length();
 				 String f;
 				 String faux;
@@ -413,7 +424,7 @@ public class AlumnosActivity extends Activity {
     {
         if (v.getId()==R.id.lvExp2) 
         {            
-            menu.setHeaderTitle("CONTEXT MENU");
+            menu.setHeaderTitle("OPCIONES");
             for (int i = 0; i< MenuItems.length; i++) 
             {
                 menu.add(Menu.NONE, i, i, MenuItems[i]);
@@ -426,11 +437,13 @@ public class AlumnosActivity extends Activity {
     public boolean onContextItemSelected(MenuItem item) 
     {
         ExpandableListView.ExpandableListContextMenuInfo info =(ExpandableListView.ExpandableListContextMenuInfo)item.getMenuInfo();
+        int posicion = expListView.getPackedPositionGroup(info.packedPosition);
         //
         // Getting the Id
         int menuItemIndex = item.getItemId();
         if (menuItemIndex==0){
-        Toast.makeText(AlumnosActivity.this, "Clicked Item Position :"+expListView.getPackedPositionGroup(info.packedPosition)+"\n"+"Seleted Option Id :"+menuItemIndex, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(AlumnosActivity.this, "Clicked Item Position :"+expListView.getPackedPositionGroup(info.packedPosition)+"\n"+"Seleted Option Id :"+menuItemIndex, Toast.LENGTH_SHORT).show();
+        mostrar(posicion);
         }else{
         //creamos el intento y le pasamos la clase a mostrar
         Intent intent=new Intent(this,ActividadesActivity.class);
@@ -445,6 +458,54 @@ public class AlumnosActivity extends Activity {
           //lanzamos el intento
         startActivity(intent);}
         return true;
+    }
+    
+    public void mostrar(int posicion)
+    {
+        // con este tema personalizado evitamos los bordes por defecto
+        customDialog = new Dialog(AlumnosActivity.this,R.style.Theme_Dialog_Translucent);
+        //deshabilitamos el título por defecto
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //obligamos al usuario a pulsar los botones para cerrarlo
+        customDialog.setCancelable(false);
+        //establecemos el contenido de nuestro dialog
+        customDialog.setContentView(R.layout.dialog2);
+        
+        String usr = listDataHeaderPermanent.get(posicion);
+        String usrDet = listDetalles.get(usr);
+        String[] detalles = usrDet.split("#&");
+        TextView titulo = (TextView) customDialog.findViewById(R.id.titulo);
+        titulo.setText("Detalles");
+        float nota = calculaProv(usr);
+        TextView email = (TextView) customDialog.findViewById(R.id.email);
+        email.setText("Email: "+detalles[0]);
+        TextView altEmail = (TextView) customDialog.findViewById(R.id.altEmail);
+        altEmail.setText("Email alternativo: "+detalles[1]);
+        TextView notaProv = (TextView) customDialog.findViewById(R.id.notaProv);
+        notaProv.setText("Nota provisional: "+nota);
+        
+        ((Button) customDialog.findViewById(R.id.aceptar)).setOnClickListener(new OnClickListener() {
+             
+            @Override
+            public void onClick(View view)
+            {
+                customDialog.dismiss();
+                
+                
+            }
+        });
+         
+        customDialog.show();
+    }
+    
+    public float calculaProv(String usr){
+    	float nota = 0;
+    	ActividadesLista act = listActividades.get(usr);
+    	int i = act.size();
+    	for (int j=0;j<i;j++){
+    		nota = nota + Float.parseFloat(act.get(j).getNota())*Float.parseFloat(act.get(j).getPeso());
+    	}
+		return nota;    	
     }
     
     protected void filtrarDatos(String text) {
