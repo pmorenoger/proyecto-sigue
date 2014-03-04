@@ -3,10 +3,13 @@
 <div id="top">    
    <div class="titles"> 
        <?php $rol =  $view['slots']->get('rol'); 
+       $logged = false;
         if($rol === "Profesor"){
             $rol = $view['router']->generate('si_sigue_perfil_profesor');
+             $logged = true;
         }else if(substr($rol, 0,6)==="Alumno"){           
             $rol = $view['router']->generate('si_sigue_perfil_alumno');
+             $logged = true;
         }else{            
             $rol = $view['router']->generate('si_sigue_homepage');
         }
@@ -18,7 +21,9 @@
         </a>
     </div>
     <?php $logout = $view['router']->generate('si_sigue_logout'); ?>
-    <div id="logout"><a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >Salir</a></div>
+    <?php if($logged): ?>
+        <div id="logout"><a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >Salir</a></div>
+    <?php endif; ?>
 </div>
 
 <div id="content">
