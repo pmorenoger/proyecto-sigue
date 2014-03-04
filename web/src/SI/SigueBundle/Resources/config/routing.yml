@@ -60,7 +60,10 @@ si_sigue_guardar_calificaciones:
     defaults:   {_controller: SISigueBundle:Profesor:guardar_calificaciones}   
 si_sigue_exportar_calificaciones:
     pattern:  /Profesor/exportar_calificaciones/{id_asignatura}
-    defaults:   {_controller: SISigueBundle:Profesor:exportar_calificaciones}   
+    defaults:   {_controller: SISigueBundle:Profesor:exportar_calificaciones} 
+si_sigue_importar_calificaciones:
+    pattern:  /Profesor/importar_calificaciones
+    defaults:   {_controller: SISigueBundle:Profesor:importar_calificaciones} 
 si_sigue_generar_actividad_profesor:
     pattern:  /Profesor/generar_actividad
     defaults:   {_controller: SISigueBundle:Profesor:generar_actividad}   

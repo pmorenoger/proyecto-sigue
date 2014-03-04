@@ -2,30 +2,71 @@
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
+<?php $view['slots']->start("menu_left"); ?>  
+   <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
+    <div id="accordion-resizer" class="ui-widget-content">
+         <div id="accordion">                   
+            <h3>Curso 2013/2014 .</h3>
+                 <div>
+                    <ul>                        
+                        <li>                            
+                                <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="ocultar_todo();"><?php echo $asignatura->getNombre();?> </div>
+                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="lista_opciones">
+                                    <li>
+                                    <a href="#" onclick="nueva_actividad();">Nueva Actividad </a> 
+                                    </li>
+                                    <li>
+                                    <a href="#" id="boton_importar" >Importar/Exportar</a>
+                                    </li>
+                                    <li>
+                                    <a href="#" id="mas_info">+info</a>                                   
+                                    </li>                                                                        
+                                </ul>                 
+                        </li>
+                        
+                    </ul>
+                 </div>
+          
+         </div>  
+    </div>
+    
+
+<?php $view['slots']->stop(); ?>
 
 
 
 
 <?php $view['slots']->start("center"); ?>
+   <div id="centro_tabla" class="ancho_horizontal">
        <h2>Actividades de <?php echo $asignatura->getNombre(); ?></h2>
 <!-- Formulario para crear una nueva actividad. -->
 <div>                        
-    <div id="actividad_asignatura" class="hiddenStructure">
+    <div id="actividad_asignatura" class="hiddenStructure" >
         <form id="factividad_form" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_actividad_profesor' );?>">
             <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
-            <span>Crear una nueva Actividad en <h3><?php echo $asignatura->getNombre();?> </h3></span>
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" value="" />
-            <label for="peso">Peso en nota final (en %):</label>
-            <input type="text" style="width:40px;" id="peso" name="peso" value="" />      
-            <label for="descripcion">Descripción:</label>
-            <textarea cols="30" rows="4" id="descripcion" name="descripcion" value=""></textarea>
+            <input type="hidden" name="nueva" value="si" />
+            <input type="hidden" name="nombre_antiguo" value="" />
+            <span>Detalles de Actividad en <h3><?php echo $asignatura->getNombre();?> </h3></span>
+            <label for="nombre_nueva_actividad">Nombre:</label>
+            <input type="text" id="nombre_nueva_actividad" name="nombre" value="" />
+            <label for="peso_nueva_actividad">Peso en nota final (en %):</label>
+            <input type="text" style="width:40px;" id="peso_nueva_actividad" name="peso" value="" />      
+            <label for="descripcion_nueva_actividad">Descripción:</label>
+            <textarea cols="30" rows="4" id="descripcion_nueva_actividad" name="descripcion" value=""></textarea>
 
             <input type="submit" value="Crear" />
             <input type="button" value="Cancelar" onclick="cancelar();return false;"
         </form>
     </div> 
     <div id="info" class="hiddenStructure">
+        <h3>Calificar</h3>
+        <p>Para calificar, pulse sobre la nota para cambiarla individualmente. 
+            También puede calificar todas las actividades de un alumno pulsando sobre el botón editar</p>
+        <h3>Editar/Crear Actividades</h3>
+        <p>Puede crear nuevas actividades pulsando sobre el botón "Nueva Actividad".
+            También puede editar actividades pulsando sobre el nombre de cada una. Puede modificar su nombre
+            y su peso sobre la nota final.
+        </p>
         <h3>Importar/Exportar</h3>
         <p>La función de exportar/importar sirve para hacer más fácil la gestión de las calificaciones a partir
             de ficheros Excel. Para importar los datos, lo mejor es descargar primero la plantilla vacía (exportar)
@@ -34,24 +75,27 @@
         </p>
         
     </div>
-    <div id="importar" class="hiddenStructure">
+    <div id="importar_div" class="hiddenStructure">
         <h3>Importar/Exportar</h3>
-        <form enctype="multipart/form-data" id="importar" name="importar" action="<?php echo $view['router']->generate('si_sigue_exportar_calificaciones', array("id_asignatura" => $asignatura->getId()));?>" method="POST">
-             <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
-            <fieldset>
-                <legend>Importar</legend>
-                <label for="fichero">Fichero a importar</label>
-                <input id="fichero" name="userfile" type="file" />
-            </fieldset>
-        </form>
-         <form  enctype="multipart/form-data" id="exportar" name="exportar" action="<?php echo $view['router']->generate('si_sigue_exportar_calificaciones', array("id_asignatura" => $asignatura->getId()));?>" method="POST">
+        
+        
+         <form  enctype="multipart/form-data" id="exportar_form" name="exportar_form" action="<?php echo $view['router']->generate('si_sigue_exportar_calificaciones', array("id_asignatura" => $asignatura->getId()));?>" method="POST">
              <fieldset>
                  <legend>Exportar</legend>
                  <p>Se recomienda exportar primero si no se tiene la plantilla incial.</p>
                  <input type="button" id="exportar" name="exportar" value="Exportar"  />                 
              </fieldset>                                    
         </form>   
-                
+          <form  enctype="multipart/form-data" id="importar_form" name="importar_form" action="<?php echo $view['router']->generate('si_sigue_importar_calificaciones');?>" method="POST">
+             <fieldset> 
+                <input type="hidden" name="MAX_FILE_SIZE" value="300000" />           
+                <legend>Importar</legend>
+                <label for="fichero">Fichero a importar</label>
+                <input type="hidden" name="id_asignatura" id="id_asignatura_form" value="<?php echo $asignatura->getId();?>" />
+                <input id="fichero" name="userfile" type="file" />
+                <input type="button" id="importar" value="Enviar" />
+            </fieldset>
+        </form>         
     </div>
     
     <div id="dinamic_form" class="hiddenStructure">
@@ -75,13 +119,13 @@
         
     </div>
     
-    <div id="actividad_" >
-        <table border="1" style='text-align: center;'>
+    <div id="calificador" class="tabla_horizontal">
+        <table id="tabla_actividades" border="1" style='text-align: center;'>
             
             <th>Nombre</th>
             <th>Apellidos</th>
             <?php foreach($actividades as $actividad):?>            
-            <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>"><?php echo $actividad["nombre"]; ?> (<?php echo $actividad["peso"] ; ?>)</a></th>            
+            <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>" onclick="editar_actividad(<?php echo "'".$actividad["nombre"]."','".$actividad["peso"]."','".$actividad["descripcion"]."'" ; ?>)"><?php echo $actividad["nombre"]; ?> (<?php echo $actividad["peso"] ; ?>)</a></th>            
             <?php endforeach; ?>
             <th>TOKENS</th>
             <th>Nota TOKENS</th>
@@ -91,7 +135,7 @@
                 $x  = 0;
             ?>
             <?php foreach($resultados as $fila):?>
-                <tr>
+                <tr class="fila_calificaciones">
                     <?php $y = 0; ?>
                     <td><?php echo $fila["alumno"]->getNombre(); ?></td>
                     <td><?php echo $fila["alumno"]->getApellidos() ; ?></td>   
@@ -145,14 +189,9 @@
     </div>
    
 </div>
- <div id="Nueva_actividad">
-        <form >
-            <input type="submit" value="Nueva Actividad" onclick="nueva_actividad(); return false;" />
-            
-            <input type="button" id="boton_importar" name="importar" value="Importar/Exportar" title="Importe o exporte listas de calificaciones de la asignatura mediante ficheros Excel."/>
-            <a href="#" id="mas_info" title="Más información" >+info</a>
-        </form>
-    </div>
+   
+</div>
+
 <?php $view['slots']->stop(); ?>
 
 <?php $view['slots']->start("menu_right"); ?> 
@@ -163,7 +202,7 @@
 <script type="text/javascript">
  $(document).ready(function(){
            $("#accordion").accordion({
-               heightStyle: "fill"
+               heightStyle: "fill"              
            });
            $( "#accordion-resizer" ).resizable({
                minHeight: 140,
@@ -184,7 +223,7 @@
         }
     }
     });
-    $( "#importar" ).dialog({
+    $( "#importar_div" ).dialog({
          autoOpen: false,
          height: 500,
          width : 600,
@@ -198,8 +237,16 @@
         $( "#info" ).dialog( "open" );
   });
   $("#boton_importar").click(function() {
-        $( "#importar" ).dialog( "open" );
+        $( "#importar_div" ).dialog( "open" );
   });
+
+
+function mostrar_tabla(){
+    $("#tabla_actividades").removeClass("hiddenStructure");
+}
+function ocultar_tabla(){
+     $("#tabla_actividades").addClass("hiddenStructure");
+}
 
 function ocultar_todo(){
     $("#actividad_asignatura").addClass("hiddenStructure");
@@ -208,7 +255,7 @@ function ocultar_todo(){
            
 function nueva_actividad(){
     ocultar_todo();
-   
+    ocultar_tabla();
     $("#actividad_asignatura").removeClass("hiddenStructure");
 }
 
@@ -219,7 +266,12 @@ function mostrar_actividad(id_actividad){
 }
 function cancelar(){
      ocultar_todo();
-     $("#actividad_").removeClass("hiddenStructure");
+     $("#nombre_nueva_actividad").val("");
+    $("#nombre_antiguo").val("");
+    $("#peso_nueva_actividad").val("");
+    $("#descripcion_nueva_actividad").val("");
+    $("#nueva").val("si");
+     mostrar_tabla();
 }
            
            
@@ -346,7 +398,20 @@ $("#actualizar").click(function(){
 });
 
 $("#exportar").click(function(){
-    document.exportar.submit();
+    document.exportar_form.submit();
 });
+$("#importar").click(function(){
+    document.importar_form.submit();
+});
+
+function editar_actividad(nombre,peso, descripcion){
+    $("#nombre_nueva_actividad").val(nombre);
+    $("#nombre_antiguo").val(nombre);
+    $("#peso_nueva_actividad").val(peso);
+    $("#descripcion_nueva_actividad").val(descripcion);
+    $("#nueva").val("no");
+    nueva_actividad();
+}
+
 </script>
 <?php $view['slots']->stop(); ?>

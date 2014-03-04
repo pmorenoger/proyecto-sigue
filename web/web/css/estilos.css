@@ -42,7 +42,7 @@ body {
 
 #logout{
     float:right;
-    margin-right:10%;
+   
     margin-top:-10%;
 }
 
@@ -164,4 +164,31 @@ a.nota_verde{
 
 a.nota_vacia{
     color:grey;
+}
+#actividad_{
+  
+}
+#actividad_ #tabla_actividades{
+    float:left;
+}
+#actividad_ #tabla_actividades th,td{
+   
+    width: auto;
+    white-space: nowrap;
+    
+}
+.ancho_horizontal{
+   padding-left: 41%;
+   padding-right: 5%;
+   margin-right: 5%;
+}
+.menu_left2{
+    float:left;
+}
+.calificaciones_horizantales{
+    float:left;
+    height: auto;
+}
+.fila_calificaciones{
+      overflow-x: scroll;
 }

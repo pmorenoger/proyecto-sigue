@@ -565,13 +565,9 @@ class ProfesorController extends Controller
                $response = new Response();
                $response->headers->set('Content-Type', 'file/xlsx');
                $response->headers->set('Content-Disposition', 'attachment; filename='.$nombre_fichero);
-                $response->setContent($content);
-               
-              
-
-               return $response;
-               
-               //return $nombre_fichero;
+               $response->setContent($content);
+                             
+               return $response;                             
         }
         
          public function importar_calificacionesAction(){
@@ -591,11 +587,11 @@ class ProfesorController extends Controller
              if( $kernel->getEnvironment() === "dev" ){
                  /*Si quereis que funcione en vuestro desarrollo localhost cambiad esta ruta.*/                                               
                  //DIEGO:
-                 $uploaddir = self::getDireccionAbsoluta()."/web/archivos/";
+                $uploaddir = self::getDireccionAbsoluta()."/web/archivos/";
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
                
              }else{
-                $uploaddir = '/var/www/Symfony/web/archivos/';
+                $uploaddir = self::getDireccionAbsoluta().'/web/archivos/';
                 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
                
                 }               
@@ -615,47 +611,126 @@ class ProfesorController extends Controller
                     $objPHPExcel = $objReader->load($inputFileName);
 
                     $objWorksheet = $objPHPExcel->getActiveSheet();
-                    /*Recogemos todos los datos del formulario de creación de asignaturas.*/
-                    $nombre_asignatura = $request->request->get('nombre_asignatura', 'default');
+                    
+                    //////////////////////////////////////////////////////////////////////////
+                    /*A partir de aqui debemos leer todos los datos.*/
+                    $id_asignatura = $request->request->get('id_asignatura', 'default');
 
-                    $curso = $request->request->get('curso', '1');
-                    $grupo = $request->request->get('grupo', 'A');
+                    
 
                     $session = $this->get("session");
                     $idprofesor =$session->get('idprofesor');
-                    /*Generamos la asignatura donde deben ser insertados los alumnos*/
-                    $em = $this->getDoctrine()->getManager();
-                    $asignatura = new Asignaturas();
-                    $asignatura->setCurso($curso);
-                    $asignatura->setGrupo($grupo);
-                    $asignatura->setNombre($nombre_asignatura);
-                    $em->persist($asignatura);
-                    $em->flush();
+                  
                     
                     foreach ($objWorksheet->getRowIterator() as $row) {                        
 
                         $cellIterator = $row->getCellIterator();
-                        $cellIterator->setIterateOnlyExistingCells(true); // This loops all cells iterated.                       
-                        self::subir_alumno($cellIterator, $asignatura);                    
+                        $cellIterator->setIterateOnlyExistingCells(true); // This loops all cells iterated.                        
+                        self::subir_calificacion($cellIterator, $id_asignatura, $objPHPExcel);                    
                     }
-                   $profesor = $em->getRepository('SISigueBundle:Profesor')->find($idprofesor);
-                   $profesor_asignatura = new ProfesorAsignatura();
-                   $profesor_asignatura->setIdAsignatura($asignatura->getId());
-                   $profesor_asignatura->setIdProfesor($profesor);
-                   $em->persist($profesor_asignatura);
-                   $em->flush(); 
-                   return $this->indexAction("true");
-                
+                   
+                   return $this->calificarAction($id_asignatura);
         }
         
+         public function subir_calificacion($fila, $id_asignatura, $objPHPExcel ){
+            $em = $this->getDoctrine()->getManager();            
+            $alumno = new Alumnos();
+            $actividad = new ActividadAsignatura();
+            foreach($fila as $celda){               
+                //echo "FILAS " . var_dump($celda->getRow());
+                if($celda->getRow() > 2){
+                    //echo "COLMUNAS " . var_dump($celda->getColumn());
+                    switch ($celda->getColumn()){
+                        case "A":
+                                //Esta debe ser la id del alumno
+                                if(!$alumno->getIdalumno()){
+                                    $alumno = $em->getRepository("SISigueBundle:Alumnos")->findOneByIdalumno($celda->getValue());
+                                    //var_dump($alumno);
+                                }
+                                break;
+                        case "B":
+                                //Nombre
+                                
+                                break;
+                        case "C":
+                                //Apellidos
+                                
+                                break;                        
+                        default: 
+                            $celda_cabecera = $celda->getColumn()."1";
+                            $celda_peso = $celda->getColumn()."2";
+                            $nombre_actividad = $objPHPExcel->getActiveSheet()->getCell($celda_cabecera)->getValue();
+                            $peso_actividad = $objPHPExcel->getActiveSheet()->getCell($celda_peso)->getValue();
+                            //var_dump($nombre_actividad);
+                            if(is_null($nombre_actividad) || $nombre_actividad === ""){
+                                //fin de las actividades
+                            }else{
+                               //tenemos nombre, y alumno al que tratar. 
+                                //1º Averiguar si la actividad ya existe
+                                //2º Si no existe se crea
+                                //3º Se asigna nota a ese alumno
+                                $actividad = $em->getRepository("SISigueBundle:ActividadAsignatura")->findOneBy(array("nombre" => $nombre_actividad, "idAlumno" => $alumno->getidalumno()));
+                                //var_dump($actividad);
+                                if(!is_null($actividad) && $actividad->getNombre()){
+                                    $actividad->setNota($celda->getValue());
+                                    $actividad->setPeso($peso_actividad);
+
+                                }else{
+                                    //Si es una actividad nueva: Tengo que crearla.
+                                    self::nueva_actividad($id_asignatura,$nombre_actividad,$peso_actividad,"");
+                                    $actividad = $em->getRepository("SISigueBundle:ActividadAsignatura")->findOneBy(array("nombre" => $nombre_actividad, "idAlumno" => $alumno->getidalumno()));
+                                    $actividad->setNota($celda->getValue());
+                                    $actividad->setPeso($peso_actividad);
+                                    
+                                }
+
+                            }
+                            break;
+                    }
+                }else{
+                   
+                    return;
+                }
+                
+                if($actividad->getNombre()){
+                    
+                    $em->persist($actividad);
+                   
+                }
+                
+           }
+           
+           $em->flush();
+           return true;
+        }
         
         public function generar_actividadAction(){
             $request = Request::createFromGlobals();
-             
+            $em = $this->getDoctrine()->getManager(); 
             $id_asignatura = $request->request->get("id_asignatura");
             $nombre = $request->request->get("nombre");
             $pesoStr = $request->request->get("peso");
             $descripcion = $request->request->get("descripcion");
+            $nueva = $request->request->get("nueva");
+            $nombre_antiguo = $request->request->get("nombre_antiguo");
+            if($nueva ==="si"){
+                self::nueva_actividad($id_asignatura,$nombre,$pesoStr,$descripcion);            
+            }else{
+                $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array("nombre" =>$nombre_antiguo, "IdAsignatura"=>$id_asignatura));
+                foreach($actividades as $actividad){
+                    $actividad->setNombre($nombre);
+                    $actividad->setPeso(intval($pesoStr)/100);
+                    $actividad->setDescripcion($descripcion);
+                    $em->perisis($actividad);
+                }
+                $em->flush();
+            }
+            return $this->calificarAction($id_asignatura);
+             //return $this->render('SISigueBundle:Profesor:actividad.html.php');
+        }
+            
+        
+        private function nueva_actividad($id_asignatura,$nombre,$pesoStr,$descripcion){
             $peso = intval($pesoStr)/100;            
             $date_time = new \DateTime();
             $em = $this->getDoctrine()->getManager();            
@@ -681,11 +756,9 @@ class ProfesorController extends Controller
              }
              //die();
              $em->flush();
-            return $this->actividadAction($id_asignatura);
-             //return $this->render('SISigueBundle:Profesor:actividad.html.php');
+            
         }
-            
-            
+        
         private function hashSSHA($password) {
         $salt = sha1(rand());
         $salt = substr($salt, 0, 10);
