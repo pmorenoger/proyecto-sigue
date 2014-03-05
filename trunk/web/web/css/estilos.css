@@ -192,3 +192,7 @@ a.nota_vacia{
 .fila_calificaciones{
       overflow-x: scroll;
 }
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}

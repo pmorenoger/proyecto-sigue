@@ -225,7 +225,8 @@ class ProfesorController extends Controller
                         $codigo = new Codigos();
                         $codigo->setCodigo($cuerpo_codigo);
                         $codigo->setId($asignatura);
-                        $date_time = new \DateTime();
+                        $date_time_zone = new \DateTimeZone("Europe/Madrid");
+                        $date_time = new \DateTime("now",$date_time_zone);
                         $codigo->setFechaCreacion($date_time);
                         $em->persist($codigo);
                         array_push($lista_codigos,$codigo);
@@ -732,8 +733,9 @@ class ProfesorController extends Controller
             
         
         private function nueva_actividad($id_asignatura,$nombre,$pesoStr,$descripcion){
-            $peso = intval($pesoStr)/100;            
-            $date_time = new \DateTime();
+            $peso = intval($pesoStr)/100;    
+            $date_time_zone = new \DateTimeZone("Europe/Madrid");
+            $date_time = new \DateTime("now",$date_time_zone);
             $em = $this->getDoctrine()->getManager();            
             $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
             //var_dump($asignatura);
@@ -832,7 +834,8 @@ class ProfesorController extends Controller
                   if($kernel->getEnvironment() === "dev"){
                         $ruta = \str_replace("/","\\",$ruta);
                     }
-                $date_time = new \DateTime();
+                 $date_time_zone = new \DateTimeZone("Europe/Madrid");
+                 $date_time = new \DateTime("now",$date_time_zone);                
                  $fichero = "lista_codigos".$date_time->getTimestamp().".pdf";
                  $ruta2 = $ruta . $fichero;
                 

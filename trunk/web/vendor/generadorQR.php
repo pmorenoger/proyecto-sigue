@@ -1,11 +1,15 @@
 <?php
     include ('../vendor/PHPqrcode/phpqrcode.php');
     
-    $data = $_GET['codigo'];
+    $data = $_GET['codigo'];  
+    $nombre = explode("@", $data);
+    $nombre = $nombre[0];
+   	$nombre = 'qr'.$nombre.'.png';
+    $dir =  '../web/img/'.$nombre;
     
-    QRcode::png($data, '../web/img/qr.png',QR_ECLEVEL_H,6);
+    QRcode::png($data, $dir,QR_ECLEVEL_H,6);
     
-    $json = array('status' => true, 'dir' => '/img/qr.png');
+    $json = array('status' => true, 'dir' => '/img/'.$nombre);
     
     echo json_encode($json);
 ?>
