@@ -796,7 +796,7 @@ class ProfesorController extends Controller
                     }
                     \QRcode::png($codigo->getCodigo(),$ruta ,QR_ECLEVEL_H,6,4,true);
                     //array_push($lista_archivos,$ruta);
-                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo(),2 => $codigo->getId()->getNombre());
+                    $lista_archivos[$i] = array(0 => $ruta,1 => $codigo->getCodigo(),2 => $codigo->getId());
                     $i++;
                 }
                 //var_dump($lista_archivos);
@@ -821,18 +821,18 @@ class ProfesorController extends Controller
                         $pdf->AddPage();
                         $pdf->SetFont('Arial','B',11);
                         //lineas divisorias
-                        $pdf->Line($x, 10, $x*$k + 100, 10);
-                        $pdf->Line($x, $y+120, $x*$k + 100, $y+120);
-                        $pdf->Line($x*$k,10 , $x*$k, 115);
-                        $pdf->Line($x*$k, $y+120, $x*$k, $y+$esp+75);
                         self::colocarQR($pdf,$x,$y,$codigo,10,$dir_abs);
+                        self::margenes($pdf,$x,10);
                     }else if ($p == 1){
                         self::colocarQR($pdf,$x*$k,$y,$codigo,10,$dir_abs);
+                        self::margenes($pdf,$x*$k,10);
                         $pdf->Ln($esp);
                     }else if ($p == 2){
                         self::colocarQR($pdf,$x,$y+$esp,$codigo,160,$dir_abs);
+                        self::margenes($pdf,$x,160);
                     }else if ($p == 3){
                         self::colocarQR($pdf,$x*$k,$y+$esp,$codigo,160,$dir_abs);
+                        self::margenes($pdf,$x*$k,160);
                     }
                     $i = $i + 1;                
                 }
@@ -889,11 +889,13 @@ class ProfesorController extends Controller
             private function colocarQR($pdf,$x,$y,$codigo,$j,$dir_abs){
                 //cabecera
                 $pdf->Image($dir_abs.'/web/img/cabecera.jpg',$x,$j,80,10);
-                $pdf->setXY($x + 5,$j+15);
+                $pdf->setXY($x + 5,$j+10);
                 //contenido
                 $pdf->Cell(100,10,$codigo[1]);
-                $pdf->Text($x + 5, $y, $codigo[2]);
-                $pdf->Image($codigo[0],$x,$y,80,80);
+                $asig = 'Grupo '.$codigo[2]->getGrupo().', curso '.$codigo[2]->getCurso();
+                $pdf->Text($x + 5, $y-8, $codigo[2]->getNombre());
+                $pdf->Text($x + 5, $y-3, $asig);
+                $pdf->Image($codigo[0],$x+15,$y,65,65);
                 //pie de pagina
                 $pdf->Image($dir_abs.'/web/img/linea.jpg',$x,$y+75,100,2);
             }
@@ -942,6 +944,18 @@ class ProfesorController extends Controller
                     array_push($resultado, $parcial);
                 }
                 return array("asignatura"=>$asignatura,"resultados"=>$resultado, "actividades"=>$actividades_info);
+            }
+            
+            private function margenes($pdf,$x,$j){
+                $pdf->Line($x, $j, $x+100, $j);
+                $pdf->Line($x, $j+115, $x+100, $j+115);
+                $pdf->Line($x, $j, $x, $j+115);
+                $pdf->Line($x+100, $j, $x+100, $j+115);
+
+                $pdf->Line($x,$j-10,$x,$j-5);
+	        $pdf->Line($x+100,$j-10,$x+100,$j-5);
+	        $pdf->Line($x,$j+120,$x,$j+125);
+                $pdf->Line($x+100,$j+120,$x+100,$j+125);
             }
     }
   
