@@ -323,7 +323,8 @@ function add(valor,valor2,id_asignatura,id_alumno,actividad, x,y) {
 }
 
 function abrir_dialog(){
-    $("#dinamic_form").dialog({   
+    $("#dinamic_form").dialog({  
+        dialogClass: "no-close",
         width:400,
         height:450,
          buttons: {
