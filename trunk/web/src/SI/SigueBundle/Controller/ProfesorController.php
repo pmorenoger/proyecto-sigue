@@ -22,6 +22,12 @@ class ProfesorController extends Controller
         {     
             $asig = self::getAsignaturas();
             $profesor = self::getProfesor();
+            if($profesor === "session_lost"){
+               $session = $this->container->get('session');
+                $session->remove('idalumno');
+                $session->remove('idprofesor');
+                return $this->redirect('inicio');
+            }
             $peticion = $this->container->get('session');
             $p = $peticion->get('pAl');
             
@@ -718,12 +724,12 @@ class ProfesorController extends Controller
             if($nueva ==="si"){
                 self::nueva_actividad($id_asignatura,$nombre,$pesoStr,$descripcion);            
             }else{
-                $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array("nombre" =>$nombre_antiguo, "IdAsignatura"=>$id_asignatura));
+                $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array("nombre" =>$nombre_antiguo, "idAsignatura"=>$id_asignatura));
                 foreach($actividades as $actividad){
                     $actividad->setNombre($nombre);
                     $actividad->setPeso(intval($pesoStr)/100);
                     $actividad->setDescripcion($descripcion);
-                    $em->perisis($actividad);
+                    $em->persist($actividad);
                 }
                 $em->flush();
             }
@@ -872,8 +878,11 @@ class ProfesorController extends Controller
             private function getProfesor(){
                 $peticion = $this->container->get('session');
                 $id = $peticion->get('idprofesor');
+                if(!isset($id) || is_null($id)){
+                    return "session_lost";
+                }
                 $em = $this->getDoctrine()->getManager();
-                $profesor = $em->getRepository('SISigueBundle:Profesor')->find($id);
+                $profesor = $em->getRepository('SISigueBundle:Profesor')->findOneByIdprofesor($id);
                 return $profesor;
             }
             
