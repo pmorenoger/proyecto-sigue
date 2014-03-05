@@ -713,6 +713,7 @@ class ProfesorController extends Controller
             $descripcion = $request->request->get("descripcion");
             $nueva = $request->request->get("nueva");
             $nombre_antiguo = $request->request->get("nombre_antiguo");
+           
             if($nueva ==="si"){
                 self::nueva_actividad($id_asignatura,$nombre,$pesoStr,$descripcion);            
             }else{
