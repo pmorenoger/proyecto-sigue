@@ -34,14 +34,12 @@ class AlumnoController extends Controller
         
         $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
         $asig = array();
-        $total = 0;
         foreach ($asignaturas as $a){
             array_push($asig, $a->getIdAsignatura());
-            $total = $total + $a->getNum();
         }
         
         $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total,'actividades' => $actividades));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades));
     }
     
     public function cambiarPasswordAction($id){
@@ -61,14 +59,12 @@ class AlumnoController extends Controller
         
         $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
         $asig = array();
-        $total = 0;
         foreach ($asignaturas as $a){
             array_push($asig, $a->getIdAsignatura());
-            $total = $total + $a->getNum();
         }
         
         $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total,'actividades' => $actividades,'res' => 1));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' => 1));
     }
     
     public function correoAdicionalAction($id){
@@ -86,13 +82,11 @@ class AlumnoController extends Controller
         
         $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
         $asig = array();
-        $total = 0;
         foreach ($asignaturas as $a){
             array_push($asig, $a->getIdAsignatura());
-            $total = $total + $a->getNum();
         }
         $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig, 'total' => $total,'actividades' => $actividades,'res' =>2));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' =>2));
     
     }
     
@@ -102,7 +96,7 @@ class AlumnoController extends Controller
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
         
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,'est'=>NULL));
+        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0));
     }
     
     public function tokenAction($id,$asig){
@@ -135,15 +129,24 @@ class AlumnoController extends Controller
                 $em->persist($a);
                 $em->flush();
                 //resultado positivo
-                $res = 2;
+                $res = 4;
             }else{
-                $res = 1;
+                $res = 3;
             }   
         }else{
-            $res = 1;
+            $res = 3;
         }
         
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>$res,'est'=>NULL));
+        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
+        $as = array();
+        foreach ($asignaturas as $a){
+            array_push($as, $a->getIdAsignatura());
+        }
+        
+        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'res' => $res,'selected'=>$asig));
+        
+        //return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>$res,'est'=>NULL));
     }
     
     private function tokenValido($em,$token,$asignatura){
@@ -177,8 +180,20 @@ class AlumnoController extends Controller
         $opcion2 = self::prediccionNotaOpcion2($em,$id,$asig,80,0);
         $opcion3 = self::prediccionNotaOpcion3($em,$id,$asig,6,7.5);
         $predicciones = array($opcion1,$opcion2,$opcion3);
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,
-                            'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones));
+        
+        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
+        $as = array();
+        foreach ($asignaturas as $a){
+            array_push($as, $a->getIdAsignatura());
+        }
+        
+        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,
+                                                                        'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones,'selected'=>$asig));
+        
+        //return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,
+          //                  'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones));
+        
     }
     
     private function numTotalToken($asig,$em,$t){
