@@ -261,10 +261,8 @@ class Alumnos
     
         return $this;
     }
-    /**
-     * @var string
-     */
-    private $codigoId;
-
-
+    
+    public function getCodigoCifrado(){
+        return $this->codigo_id;
+    }
 }

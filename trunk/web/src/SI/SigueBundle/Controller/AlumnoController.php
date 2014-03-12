@@ -32,13 +32,10 @@ class AlumnoController extends Controller
             $em2->flush();
         }
         
-        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
-        $asig = array();
-        foreach ($asignaturas as $a){
-            array_push($asig, $a->getIdAsignatura());
-        }
+        $asig = self::getAsignaturas($em,$id);
         
-        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        $actividades = self::getActividades($em,$alumno);
+        
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades));
     }
     
@@ -51,19 +48,34 @@ class AlumnoController extends Controller
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         $password = $request->request->get("verificar");
         
+        
+        /*$codigo = $em->getRepository('SISigueBundle:Codigos')->findOneBy(array('codigo' => $oldCod));
+        if (!is_null($codigo)){
+            $codigo->setCodigo($alumno->getCorreo()."#&".$password);
+            $em->persist($codigo);
+        }*/
+        $oldCod = $alumno->getCodigo_id(); 
+        $query = $em->createQuery(  "SELECT T
+                                    FROM SISigueBundle:Codigos T
+                                    WHERE T.codigo = :cod" )->setParameter('cod',$oldCod);
+        $list = $query->getResult();
+        if(!is_null($list) && count($list)== 1){
+            $codigo = $list[0];
+            $codigo->setCodigo($alumno->getCorreo()."#&".$password);
+            $em->persist($codigo);
+        }
+        
         $hash = self::hashSSHA($password);
         $alumno->setSalt($hash["salt"]);
         $alumno->setPassword($hash["encrypted"]);
+        $alumno->setCodigo_id($alumno->getCorreo()."#&".$password);
         $em->persist($alumno);
         $em->flush();
         
-        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
-        $asig = array();
-        foreach ($asignaturas as $a){
-            array_push($asig, $a->getIdAsignatura());
-        }
+        $asig = self::getAsignaturas($em,$id);
         
-        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        $actividades = self::getActividades($em,$alumno);
+        
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' => 1));
     }
     
@@ -80,14 +92,11 @@ class AlumnoController extends Controller
         $em->persist($alumno);
         $em->flush();
         
-        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
-        $asig = array();
-        foreach ($asignaturas as $a){
-            array_push($asig, $a->getIdAsignatura());
-        }
-        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        $asig = self::getAsignaturas($em,$id);
+        
+        $actividades = self::getActividades($em,$alumno);
+        
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' =>2));
-    
     }
     
     public function registrarAction($id,$asig){
@@ -137,16 +146,11 @@ class AlumnoController extends Controller
             $res = 3;
         }
         
-        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
-        $as = array();
-        foreach ($asignaturas as $a){
-            array_push($as, $a->getIdAsignatura());
-        }
+        $as = self::getAsignaturas($em,$id);
         
-        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        $actividades = self::getActividades($em,$alumno);
+        
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'res' => $res,'selected'=>$asig));
-        
-        //return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>$res,'est'=>NULL));
     }
     
     private function tokenValido($em,$token,$asignatura){
@@ -181,19 +185,12 @@ class AlumnoController extends Controller
         $opcion3 = self::prediccionNotaOpcion3($em,$id,$asig,6,7.5);
         $predicciones = array($opcion1,$opcion2,$opcion3);
         
-        $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
-        $as = array();
-        foreach ($asignaturas as $a){
-            array_push($as, $a->getIdAsignatura());
-        }
+        $as = self::getAsignaturas($em,$id);
         
-        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+        $actividades = self::getActividades($em,$alumno);
+        
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,
-                                                                        'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones,'selected'=>$asig));
-        
-        //return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0,
-          //                  'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones));
-        
+                                                                        'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones,'selected'=>$asig));    
     }
     
     private function numTotalToken($asig,$em,$t){
@@ -286,6 +283,20 @@ class AlumnoController extends Controller
         $encrypted = base64_encode(sha1($password . $salt2, true) . $salt2);
         $hash = array("salt" => $salt2, "encrypted" => $encrypted);
         return $hash;     
+   }
+   
+   private function getAsignaturas($em,$id){
+       $asignaturas = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findBy(array('idAlumno' => $id));
+       $as = array();
+       foreach ($asignaturas as $a){
+           array_push($as, $a->getIdAsignatura());
+       }
+       return $as;
+   }
+   
+   private function getActividades($em,$alumno){
+       $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
+       return $actividades;
    }
 }
 ?>
