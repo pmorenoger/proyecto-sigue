@@ -281,14 +281,15 @@
             $('#divCambiar').addClass('hiddenStructure');
             $('#divCorreoAdicional').addClass('hiddenStructure');
             $("#codQR").removeClass('hiddenStructure');
-        }else{
-            var cod = '<?php echo $alumno->getCodigo_id(); ?>';
+        }else{         
+            var cod = '<?php echo $alumno->getCodigoCifrado(); ?>';
+            var url = '<?php echo "http://".$_SERVER['HTTP_HOST']. "/web/"; ?>';
             $.ajax({
                 type:"GET",
-                url: "../../../vendor/generadorQR.php",
+                url: url + "vendor/generadorQR.php",
                 async: true,
                 data: {
-                   codigo: cod 
+                   codigo: cod
                 },
                 dataType:"json",
                 success: function(data) {
@@ -299,7 +300,7 @@
                         $('#divCambiar').addClass('hiddenStructure');
                         $('#divCorreoAdicional').addClass('hiddenStructure');
                         $("#codQR").removeClass('hiddenStructure');
-                        $("#codQR").append("<img src='../.." + data.dir + "'>");
+                        $("#codQR").append("<img src='" + url + data.dir + "'>");
                         //$("#bActivar").attr("disabled", "disabled");
                     }else{
                         $("#bActivar").attr("disabled", "disabled");

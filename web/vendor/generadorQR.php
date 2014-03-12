@@ -9,7 +9,7 @@
     
     QRcode::png($data, $dir,QR_ECLEVEL_H,6);
     
-    $json = array('status' => true, 'dir' => '/img/'.$nombre);
+    $json = array('status' => true, 'dir' => 'web/img/'.$nombre);
     
     echo json_encode($json);
 ?>
