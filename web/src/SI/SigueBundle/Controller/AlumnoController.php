@@ -262,7 +262,12 @@ class AlumnoController extends Controller
                                         WHERE T.id = :asig
                                         GROUP BY T.id'
                                         )->setParameter('asig',$asig);
-        $numTokens = intval($queryNum->getResult()[0][1]);
+        $numTokens = 0;
+        if(count($queryNum->getResult())>0){
+            $numTokens = intval($queryNum->getResult()[0][1]);
+        }else{
+            return 0;
+        }
         $queryN = $em->createQuery(  'SELECT COUNT (T)
                                     FROM SISigueBundle:AsignaturaAlumno T
                                     WHERE T.idAsignatura = :asig AND T.num >= :n'
