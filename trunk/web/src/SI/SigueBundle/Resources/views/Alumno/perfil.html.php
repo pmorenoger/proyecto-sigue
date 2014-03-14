@@ -19,7 +19,7 @@
                                         <li><a href="javascript:void(0);" onclick="mostrarMenuAsignatura(<?php echo $as->getId(); ?>);"><?php echo $as->getNombre();?></a> </li>
                                              <ul id="opciones_<?php echo $as->getId(); ?>" class="hiddenStructure">
                                                 <li><a href="javascript:void(0);" onclick="mostrarRegistrar(<?php echo $as->getId(); ?>);">Registrar un token</a></li>
-                                                <li><a id="li_est" href="<?php echo $view['router']->generate('si_sigue_alumno_estadisticas', array('id' => $alumno->getIdalumno(),'asig'=>$as->getId()),true); ?>"> Mis Estadísticas </a></li>
+                                                <li><a id="li_est_<?php echo $as->getId(); ?>" href="<?php echo $view['router']->generate('si_sigue_alumno_estadisticas', array('id' => $alumno->getIdalumno(),'asig'=>$as->getId()),true); ?>"> Mis Estadísticas </a></li>
                                             </ul>    
                                         <?php endforeach; ?>
                                     </ul>
@@ -222,8 +222,8 @@
         
          <?php if (isset($selected)): ?>
                  var s = <?php echo $selected; ?>;
-                $("#li_est").attr('href','javascript:void(0);');
-                $("#li_est").attr('onClick',"mostrarEstadisticas(" + s +");");
+                //$("#li_est").attr('href','javascript:void(0);');
+                $("#li_est_" + s).attr('onClick',"mostrarEstadisticas(" + s +");");
                 mostrarMenuAsignatura(s);
          <?php endif; ?>        
         
