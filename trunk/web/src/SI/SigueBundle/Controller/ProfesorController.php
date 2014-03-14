@@ -687,7 +687,7 @@ class ProfesorController extends Controller
                                     self::nueva_actividad($id_asignatura,$nombre_actividad,$peso_actividad,"");
                                     $actividad = $em->getRepository("SISigueBundle:ActividadAsignatura")->findOneBy(array("nombre" => $nombre_actividad, "idAlumno" => $alumno->getidalumno()));
                                     $actividad->setNota($celda->getValue());
-                                    $actividad->setPeso($peso_actividad);
+                                    //$actividad->setPeso($peso_actividad);
                                     
                                 }
 
@@ -722,7 +722,8 @@ class ProfesorController extends Controller
             $nombre_antiguo = $request->request->get("nombre_antiguo");
            
             if($nueva ==="si"){
-                self::nueva_actividad($id_asignatura,$nombre,$pesoStr,$descripcion);            
+                $peso = intval($pesoStr)/100;   
+                self::nueva_actividad($id_asignatura,$nombre,$peso,$descripcion);            
             }else{
                 $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array("nombre" =>$nombre_antiguo, "idAsignatura"=>$id_asignatura));
                 foreach($actividades as $actividad){
@@ -738,8 +739,8 @@ class ProfesorController extends Controller
         }
             
         
-        private function nueva_actividad($id_asignatura,$nombre,$pesoStr,$descripcion){
-            $peso = intval($pesoStr)/100;    
+        private function nueva_actividad($id_asignatura,$nombre,$peso,$descripcion){
+             
             $date_time_zone = new \DateTimeZone("Europe/Madrid");
             $date_time = new \DateTime("now",$date_time_zone);
             $em = $this->getDoctrine()->getManager();            
