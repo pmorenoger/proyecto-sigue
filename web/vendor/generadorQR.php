@@ -1,10 +1,17 @@
 <?php
     include ('../vendor/PHPqrcode/phpqrcode.php');
-    
-    //desencriptación del código
-    $Key = "sigue";
-    $input = $_GET['codigo'];
-    $data = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($Key), base64_decode($input), MCRYPT_MODE_CBC, md5(md5($Key))), "\0");
+
+    $key = "sigue";
+    $result = $_GET['codigo'];
+    $res = "";
+    $string = base64_decode($result);
+    for($i=0; $i<strlen($string); $i++) {
+        $char = substr($string, $i, 1);
+        $keychar = substr($key, ($i % strlen($key))-1, 1);
+        $char = chr(ord($char)-ord($keychar));
+        $res .= $char;
+    }
+    $data = $res;
     //tratamos el código QR
     $nombre = explode("@", $data);
     $nombre = $nombre[0];

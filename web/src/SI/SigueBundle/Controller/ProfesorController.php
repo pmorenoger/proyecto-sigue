@@ -960,10 +960,16 @@ class ProfesorController extends Controller
             }
             
             private function getCodigoEncriptado($profesor){
-                $Key = "sigue";
-                $input = $profesor->getCodigo();
-                $output = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($Key), $input, MCRYPT_MODE_CBC, md5(md5($Key))));
-                return $output;
+                $key = "sigue";
+                $string = $profesor->getCodigo();
+                $result = ""; 
+                for($i=0; $i<strlen($string); $i++) {
+                    $char = substr($string, $i, 1);
+                    $keychar = substr($key, ($i % strlen($key))-1, 1);
+                    $char = chr(ord($char)+ord($keychar));
+                    $result .= $char;
+                }
+                return base64_encode($result);
             }
     }
   
