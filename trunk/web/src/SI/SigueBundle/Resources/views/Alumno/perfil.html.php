@@ -282,7 +282,7 @@
             $('#divCorreoAdicional').addClass('hiddenStructure');
             $("#codQR").removeClass('hiddenStructure');
         }else{         
-            var cod = '<?php echo $alumno->getCodigoCifrado(); ?>';
+            var cod = '<?php echo $cod; ?>';
             var url = '<?php echo "http://".$_SERVER['HTTP_HOST']. "/web/"; ?>';
             $.ajax({
                 type:"GET",

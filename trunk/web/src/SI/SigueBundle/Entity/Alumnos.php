@@ -261,11 +261,4 @@ class Alumnos
     
         return $this;
     }
-    
-    public function getCodigoCifrado(){
-        $Key = "sigue";
-        $input = $this->codigo_id;
-        $output = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($Key), $input, MCRYPT_MODE_CBC, md5(md5($Key))));
-        return $output;
-    }
 }
