@@ -44,7 +44,7 @@ class ProfesorController extends Controller
                 $em->persist($codigo);
                 $em->flush();
             }
-            $miCodigo = $profesor->getCodigoCifrado();
+            $miCodigo = self::getCodigoEncriptado($profesor);
            
            if(!is_array($exito)){                           
                return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig,"cod"=>$miCodigo));
@@ -957,6 +957,13 @@ class ProfesorController extends Controller
 	        $pdf->Line($x+100,$j-10,$x+100,$j-5);
 	        $pdf->Line($x,$j+120,$x,$j+125);
                 $pdf->Line($x+100,$j+120,$x+100,$j+125);
+            }
+            
+            private function getCodigoEncriptado($profesor){
+                $Key = "sigue";
+                $input = $profesor->getCodigo();
+                $output = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($Key), $input, MCRYPT_MODE_CBC, md5(md5($Key))));
+                return $output;
             }
     }
   

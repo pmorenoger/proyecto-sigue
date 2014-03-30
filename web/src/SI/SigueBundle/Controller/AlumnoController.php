@@ -32,11 +32,13 @@ class AlumnoController extends Controller
             $em2->flush();
         }
         
+        $cod = self::getCodigoCifrado($alumno);
+        
         $asig = self::getAsignaturas($em,$id);
         
         $actividades = self::getActividades($em,$alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'cod' => $cod));
     }
     
     public function cambiarPasswordAction($id){
@@ -70,7 +72,9 @@ class AlumnoController extends Controller
         
         $actividades = self::getActividades($em,$alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' => 1));
+        $cod = self::getCodigoCifrado($alumno);
+        
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'cod' => $cod,'res' => 1));
     }
     
     public function correoAdicionalAction($id){
@@ -90,7 +94,9 @@ class AlumnoController extends Controller
         
         $actividades = self::getActividades($em,$alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' =>2));
+        $cod = self::getCodigoCifrado($alumno);
+        
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'cod' => $cod,'res' =>2));
     }
     
     public function registrarAction($id,$asig){
@@ -144,7 +150,9 @@ class AlumnoController extends Controller
         
         $actividades = self::getActividades($em,$alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'res' => $res,'selected'=>$asig));
+        $cod = self::getCodigoCifrado($alumno);
+        
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'cod' => $cod,'res' => $res,'selected'=>$asig));
     }
     
     private function tokenValido($em,$token,$asignatura){
@@ -183,7 +191,9 @@ class AlumnoController extends Controller
         
         $actividades = self::getActividades($em,$alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,
+        $cod = self::getCodigoCifrado($alumno);
+        
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'cod' => $cod,
                                                                         'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones,'selected'=>$asig));    
     }
     
@@ -297,5 +307,12 @@ class AlumnoController extends Controller
        $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array('idAlumno' => $alumno));
        return $actividades;
    }
+   
+   private function getCodigoCifrado($alumno){
+        $Key = "sigue";
+        $input = $alumno->getCodigo_id();
+        $output = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($Key), $input, MCRYPT_MODE_CBC, md5(md5($Key))));
+        return $output;
+    }
 }
 ?>
