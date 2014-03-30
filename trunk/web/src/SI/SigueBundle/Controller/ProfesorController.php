@@ -33,8 +33,7 @@ class ProfesorController extends Controller
             
             //TODO Redigir si no hay login.
             $em = $this->getDoctrine()->getEntityManager();
-            $cod = $profesor->getCodigo();
-            if ($cod === NULL){
+            if ($profesor->getCodigo() === NULL){
                 $cod = $profesor->getCorreo()."#&".$p;
                 $profesor->setCodigo($cod);
                 $em->persist($profesor);
@@ -45,9 +44,10 @@ class ProfesorController extends Controller
                 $em->persist($codigo);
                 $em->flush();
             }
+            $miCodigo = $profesor->getCodigoCifrado();
            
            if(!is_array($exito)){                           
-               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig,"cod"=>$cod));
+               return $this->render('SISigueBundle:Profesor:index.html.php',array("exito" => $exito,'asignaturas' =>$asig,"cod"=>$miCodigo));
            }else{
                $asig2 = array("asignaturas" => $asig);
                if(! array_key_exists("alumnos",$exito)){

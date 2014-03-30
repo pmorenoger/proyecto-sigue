@@ -48,12 +48,6 @@ class AlumnoController extends Controller
         $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
         $password = $request->request->get("verificar");
         
-        
-        /*$codigo = $em->getRepository('SISigueBundle:Codigos')->findOneBy(array('codigo' => $oldCod));
-        if (!is_null($codigo)){
-            $codigo->setCodigo($alumno->getCorreo()."#&".$password);
-            $em->persist($codigo);
-        }*/
         $oldCod = $alumno->getCodigo_id(); 
         $query = $em->createQuery(  "SELECT T
                                     FROM SISigueBundle:Codigos T
