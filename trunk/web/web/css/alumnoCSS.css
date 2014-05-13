@@ -1,7 +1,7 @@
 .login {
   background:#F0F8FF;
   font-size:62.5%;
-	font-family:Arial, "Helvetica Neue", Verdana, Sans-serif;
+	font-family:Comic Sanz, "Helvetica Neue", Verdana, Sans-serif;
 }
 
 .perfil {
@@ -47,7 +47,10 @@ a {text-decoration:none; color:#3e9c8f;}
 
 #main{
 	padding:35px 25px 35px 25px;
-	background:#B0E0E6;
+        background-image: url("../img/fondoLogin.jpg");
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+        background-size: cover;
 	width:330px;
 	max-width:940px;
 	height:auto;
