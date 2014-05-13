@@ -23,7 +23,6 @@
                 <label for="password" class="labelContraseña">Contraseña:</label>
                 <input type="password" name="password" placeholder="Contraseña" class="validate[required]"/>
                 <input type="submit" value="Entrar" id="bEntrar" />
-                <p class="perder"><a href="#">¿Has olvidado tu contraseña?</a> </p>
             </form>
         </div>
     </div>
