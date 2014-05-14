@@ -206,7 +206,39 @@ class ProfesorController extends Controller
             return $response;
         }
         
-        
+        public function cambiar_metodoAction($id_asignatura){
+            /*Aqui debo asignar el método de evaluación*/            
+            /*Dependiendo del metodo, debo guardar los parametros*/
+            $request = Request::createFromGlobals();
+            $metodo = $request->request->get('metodo');
+            $metodo_int = intval($metodo);
+            $params = "";
+            if($metodo === "1"){
+                $param1 = $request->request->get('valor_absoluto');
+                $params = $params . "valor_absoluto=".$param1;
+            }else if($metodo === "2"){
+                 $param1 = $request->request->get('margen_tolerancia');
+                $params = $params . "margen_tolerancia=".$param1;
+                $param2 = $request->request->get('num_notas_descartar');
+                 $params = $params . "##margen_tolerancia=".$param2;
+            }else{
+                $param1 = $request->request->get('nota_referencia');
+                $params = $params . "nota_referencia=".$param1;
+                $param2 = $request->request->get('minimo_tokens');
+                $params = $params . "##minimo_tokens=".$param2;                
+            }            
+             $em = $this->getDoctrine()->getManager();
+             $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
+             $metodo_eval = $em->getRepository('SISigueBundle:MetodosEvaluacion')->findOneByIdeval($metodo_int);
+             $asignatura->setIdEval($metodo_eval);
+             $asignatura->setParameval($params);
+             $em->persist($asignatura);
+             $em->flush();
+                
+            //var_dump($metodo);die();
+            
+            return $this->indexAction(array("exito" => "true3"));
+        }
         
         public function generar_qrAction(){
                

@@ -67,4 +67,7 @@ si_sigue_importar_calificaciones:
 si_sigue_generar_actividad_profesor:
     pattern:  /Profesor/generar_actividad
     defaults:   {_controller: SISigueBundle:Profesor:generar_actividad}   
+si_sigue_cambiar_metodo_evaluacion:
+    pattern:  /Profesor/cambiar_metodo/{id_asignatura}
+    defaults:   {_controller: SISigueBundle:Profesor:cambiar_metodo}   
     

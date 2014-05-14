@@ -11,14 +11,14 @@
     <field name="observaciones" type="text" column="Observaciones" nullable="true"/>
     <field name="fechaCreacion" type="datetime" column="Fecha_creacion" nullable="true"/>
     <field name="fechaLimite" type="datetime" column="Fecha_limite" nullable="true"/>
-    <many-to-one field="idAlumno" target-entity="Alumnos">
-      <join-columns>
-        <join-column name="Id_Alumno" referenced-column-name="idalumno"/>
-      </join-columns>
-    </many-to-one>
     <many-to-one field="idAsignatura" target-entity="Asignaturas">
       <join-columns>
         <join-column name="Id_Asignatura" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idAlumno" target-entity="Alumnos">
+      <join-columns>
+        <join-column name="Id_Alumno" referenced-column-name="idalumno"/>
       </join-columns>
     </many-to-one>
   </entity>

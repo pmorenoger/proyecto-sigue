@@ -108,4 +108,60 @@ class Asignaturas
     {
         return $this->id;
     }
+    /**
+     * @var \SI\SigueBundle\Entity\MetodosEvaluacion
+     */
+    private $ideval;
+
+
+    /**
+     * Set ideval
+     *
+     * @param \SI\SigueBundle\Entity\MetodosEvaluacion $ideval
+     * @return Asignaturas
+     */
+    public function setIdeval(\SI\SigueBundle\Entity\MetodosEvaluacion $ideval = null)
+    {
+        $this->ideval = $ideval;
+    
+        return $this;
+    }
+
+    /**
+     * Get ideval
+     *
+     * @return \SI\SigueBundle\Entity\MetodosEvaluacion 
+     */
+    public function getIdeval()
+    {
+        return $this->ideval;
+    }
+    /**
+     * @var string
+     */
+    private $parameval;
+
+
+    /**
+     * Set parameval
+     *
+     * @param string $parameval
+     * @return Asignaturas
+     */
+    public function setParameval($parameval)
+    {
+        $this->parameval = $parameval;
+    
+        return $this;
+    }
+
+    /**
+     * Get parameval
+     *
+     * @return string 
+     */
+    public function getParameval()
+    {
+        return $this->parameval;
+    }
 }
