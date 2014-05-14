@@ -148,28 +148,9 @@ class Alumnos
         return $this->correo;
     }
     
-    /**
-     * Set correoadicional
-     *
-     * @param string $correoadicional
-     * @return Alumnos
-     */
-    public function setCorreoAdicional($correoadicional)
-    {
-        $this->correoadicional = $correoadicional;
-    
-        return $this;
-    }
+   
 
-    /**
-     * Get correoadicional
-     *
-     * @return string 
-     */
-    public function getCorreoAdicional()
-    {
-        return $this->correoadicional;
-    }
+  
 
     /**
      * Set password
@@ -260,5 +241,51 @@ class Alumnos
         $this->idalumno = $idalumno;
     
         return $this;
+    }
+
+    /**
+     * Set correoadicional
+     *
+     * @param string $correoadicional
+     * @return Alumnos
+     */
+    public function setCorreoadicional($correoadicional)
+    {
+        $this->correoadicional = $correoadicional;
+    
+        return $this;
+    }
+
+    /**
+     * Get correoadicional
+     *
+     * @return string 
+     */
+    public function getCorreoadicional()
+    {
+        return $this->correoadicional;
+    }
+
+    /**
+     * Set codigo_id
+     *
+     * @param string $codigoId
+     * @return Alumnos
+     */
+    public function setCodigoId($codigoId)
+    {
+        $this->codigo_id = $codigoId;
+    
+        return $this;
+    }
+
+    /**
+     * Get codigo_id
+     *
+     * @return string 
+     */
+    public function getCodigoId()
+    {
+        return $this->codigo_id;
     }
 }

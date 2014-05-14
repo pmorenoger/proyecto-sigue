@@ -7,5 +7,11 @@
     <field name="curso" type="string" column="curso" length="45" nullable="true"/>
     <field name="grupo" type="string" column="grupo" length="45" nullable="true"/>
     <field name="nombre" type="string" column="nombre" length="255" nullable="true"/>
+    <field name="parameval" type="string" column="paramEval" length="255" nullable="true"/>
+    <many-to-one field="ideval" target-entity="MetodosEvaluacion">
+      <join-columns>
+        <join-column name="idEval" referenced-column-name="idEval"/>
+      </join-columns>
+    </many-to-one>
   </entity>
 </doctrine-mapping>
