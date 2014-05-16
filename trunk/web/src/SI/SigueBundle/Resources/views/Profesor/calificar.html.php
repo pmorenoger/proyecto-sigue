@@ -20,7 +20,7 @@
                                     <a href="#" id="boton_importar" >Importar/Exportar</a>
                                     </li>
                                     <li>
-                                    <a href="#" id="mas_info">+info</a>                                   
+                                    <a href="<?php echo $view['router']->generate('si_sigue_notificar_calificaciones', array("id_asignatura" =>$asignatura->getId() ) );?>" id="notificar" title="Envíe una notificación a los alumnos de esta asignatura de que ha habido cambios en las calificaciones" onclick="notificar();return false;">Notificar</a>                                   
                                     </li>                                                                        
                                 </ul>                 
                         </li>
@@ -76,6 +76,12 @@
         </p>
         
     </div>
+    
+    <?php if($exito=== true): ?>
+    <div id="tooltip_exito"> 
+        <p>¡Notificación enviada con éxito!</p>       
+    </div>
+    <?php endif; ?>
     <div id="importar_div" class="hiddenStructure">
        
           <h3>Importar/Exportar</h3>
@@ -214,6 +220,18 @@
                    $( "#accordion" ).accordion( "refresh" );
                }
            });
+           
+            
+           $( "#tooltip_exito" ).dialog({                
+                buttons: [
+                  {
+                    text: "OK",
+                    click: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+                ]
+              });
            
  });
 
