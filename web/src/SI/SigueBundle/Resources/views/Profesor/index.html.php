@@ -135,8 +135,26 @@
                 </form>
             </div>   
             
+           <div id="add_profesores_<?php echo $asignatura->getId();?>" class="hiddenStructure">
+                <div id="bloque_profesores_<?php echo $asignatura->getId();?>">
+                    <form id="form_add_prof_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura');?>">
+                    <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
+                    <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
+                    <label for="cantidad">Cantidad:</label>
+                    <select id="cantidad" name="cantidad">
+                        <option value="16">16</option>
+                        <option value="20">20</option>
+                        <option value="36">36</option>
+                        <option value="100">100</option>
+                    </select>  
+                    <input type="submit" value="Generar" />
+                </form>
+                </div>                
+           </div>
+ 
+ 
              <div id="evaluacion_<?php echo $asignatura->getId();?>" style="margin-left:750px;" class="hiddenStructure">
-                <form id="cambio_evaluacion_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_cambiar_metodo_evaluacion',array("id_asignatura" => $asignatura->getId()) );?>">
+                <form id="cambio_evaluacion_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_cambiar_metodo_evaluacion');?>">
                     <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
                     <span>Método de Evaluación de <h3><?php echo $asignatura->getNombre();?> </h3></span> 
                     <h3>Opción 1: Peso fijo para cada Token   <a href="#" onclick="mostrar_info_opcion(1)" >+info </a></h3>

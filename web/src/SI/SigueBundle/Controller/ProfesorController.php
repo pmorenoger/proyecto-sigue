@@ -13,8 +13,8 @@ use SI\SigueBundle\Entity\AsignaturaAlumno;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
- use Symfony\Component\HttpFoundation\ResponseHeaderBag;
- use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProfesorController extends Controller
     {
@@ -167,6 +167,8 @@ class ProfesorController extends Controller
                     $salt = $hash["salt"];
                     $alumno->setSalt($salt);
                     $alumno->setPassword($encrypted_password);
+                    
+                    //ENVIAR POR EMAIL AL ALUMNO//
                     //$alumno->setPassword($pass_provisional[0]);
                 }                
            }
@@ -206,27 +208,33 @@ class ProfesorController extends Controller
             return $response;
         }
         
-        public function cambiar_metodoAction($id_asignatura){
+        public function cambiar_metodoAction(){
             /*Aqui debo asignar el método de evaluación*/            
             /*Dependiendo del metodo, debo guardar los parametros*/
             $request = Request::createFromGlobals();
             $metodo = $request->request->get('metodo');
             $metodo_int = intval($metodo);
+            $id_asignatura = $request->request->get('id_asignatura');
             $params = "";
-            if($metodo === "1"){
+            $cambio = false;
+            if($metodo_int === 1){
                 $param1 = $request->request->get('valor_absoluto');
                 $params = $params . "valor_absoluto=".$param1;
-            }else if($metodo === "2"){
-                 $param1 = $request->request->get('margen_tolerancia');
+                $cambio = true;
+            }else if($metodo_int === 2){
+                $param1 = $request->request->get('margen_tolerancia');
                 $params = $params . "margen_tolerancia=".$param1;
                 $param2 = $request->request->get('num_notas_descartar');
-                 $params = $params . "##margen_tolerancia=".$param2;
-            }else{
+                $params = $params . "##margen_tolerancia=".$param2;
+                $cambio = true;
+            }else  if($metodo_int === 3){
                 $param1 = $request->request->get('nota_referencia');
                 $params = $params . "nota_referencia=".$param1;
                 $param2 = $request->request->get('minimo_tokens');
-                $params = $params . "##minimo_tokens=".$param2;                
-            }            
+                $params = $params . "##minimo_tokens=".$param2;     
+                $cambio = true;
+            }    
+            if($cambio){
              $em = $this->getDoctrine()->getManager();
              $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
              $metodo_eval = $em->getRepository('SISigueBundle:MetodosEvaluacion')->findOneByIdeval($metodo_int);
@@ -234,11 +242,14 @@ class ProfesorController extends Controller
              $asignatura->setParameval($params);
              $em->persist($asignatura);
              $em->flush();
-                
+            }
             //var_dump($metodo);die();
             
             return $this->indexAction(array("exito" => "true3"));
         }
+        
+        
+        
         
         public function generar_qrAction(){
                
@@ -365,10 +376,16 @@ class ProfesorController extends Controller
            return $this->render('SISigueBundle:Profesor:stats.html.php',$array);
         }
         
-        public function calificarAction($id_asignatura){            
+        public function notificarAction($id_asignatura){
+            /*Notificamos a las apps que tengan como usuarios los propios alumnos calificados*/ 
+            /*AQUI se debe hacer el http request para que mande a los alumnos.*/
+            return self::calificarAction($id_asignatura, true);
+        }
+        
+        
+        public function calificarAction($id_asignatura, $exito = false){            
             
-            $array = self::listado_alumnos_actividad_asignatura($id_asignatura);
-            
+            $array = self::listado_alumnos_actividad_asignatura($id_asignatura, $exito);
             
             return $this->render('SISigueBundle:Profesor:calificar.html.php', $array);
         }
@@ -441,12 +458,8 @@ class ProfesorController extends Controller
                               $encontrado = true;
                           }
                          $i++; 
-                      }
-                      
-                      
-                   }
-                    
-                   
+                      }                     
+                   }                   
                 }
                
                $em->flush();
@@ -743,6 +756,14 @@ class ProfesorController extends Controller
            return true;
         }
         
+        public function add_profesor_asignaturaAction(){
+            
+            
+            
+        }
+        
+        
+        
         public function generar_actividadAction(){
             $request = Request::createFromGlobals();
             $em = $this->getDoctrine()->getManager(); 
@@ -903,7 +924,9 @@ class ProfesorController extends Controller
                 $asig = array();
                 foreach ($asignaturas as $a){
                     $as = $em->getRepository('SISigueBundle:Asignaturas')->findBy(array('id' => $a->getIdAsignatura()));
-                array_push($asig, $as);             
+                    array_push($asig, $as);         
+                    //aqui le metemos en un array prof_left, la lista de profesores que NO imparten la asignatua
+                    //para poder añadirlos despues.
             }
                 return $asig;
             }
@@ -933,7 +956,7 @@ class ProfesorController extends Controller
                 $pdf->Image($dir_abs.'/web/img/linea.jpg',$x,$y+75,100,2);
             }
             
-            private function listado_alumnos_actividad_asignatura($id_asignatura){
+            private function listado_alumnos_actividad_asignatura($id_asignatura, $exito){
                  $em = $this->getDoctrine()->getManager();
                 $repo = $em->getRepository('SISigueBundle:Asignaturas');
                 $asignatura = $repo->find($id_asignatura);  
@@ -976,7 +999,7 @@ class ProfesorController extends Controller
                     $parcial = array("alumno" => $alumno, "actividades" => $actividades, "codigos"=>$codigos);
                     array_push($resultado, $parcial);
                 }
-                return array("asignatura"=>$asignatura,"resultados"=>$resultado, "actividades"=>$actividades_info);
+                return array("asignatura"=>$asignatura,"resultados"=>$resultado, "actividades"=>$actividades_info, "exito" => $exito);
             }
             
             private function margenes($pdf,$x,$j){
