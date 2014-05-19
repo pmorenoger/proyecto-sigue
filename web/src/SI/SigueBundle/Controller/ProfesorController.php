@@ -169,7 +169,14 @@ class ProfesorController extends Controller
                     $alumno->setPassword($encrypted_password);
                     
                     //ENVIAR POR EMAIL AL ALUMNO//
-                    //$alumno->setPassword($pass_provisional[0]);
+                   $message = \Swift_Message::newInstance('ssl://smtp.gmail.com', 465)
+                    ->setSubject('Alta Usuario SIGUE')
+                    ->setFrom('admin@sigue.com')
+                    ->setTo($alumno->getCorreo())
+                    ->setBody('Ha sido añadido al sistema SIGUE de la ucm.\n 
+                        Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0] );
+                    $this->get('mailer')->send($message);
+                        
                 }                
            }
            //var_dump($alumno);
@@ -756,13 +763,74 @@ class ProfesorController extends Controller
            return true;
         }
         
-        public function add_profesor_asignaturaAction(){
-            
-            
-            
+        public function add_profesor_asignaturaAction($exito){            
+            //Lista de asignaturas impartidas por el profesor//
+            // var_dump($exito);die(); 
+            $asig = self::getAsignaturas();
+            $profesor = self::getProfesor();
+            $asig_prof =  array();
+            $em = $this->getDoctrine()->getManager();
+            //Por cada asignatura, consulto los profesores que NO la imparten
+            foreach($asig as $asignatura){
+                // var_dump($asignatura[0]); die();
+               $prof_si = $em->createQuery('
+                            SELECT IDENTITY (p.idProfesor)
+                            FROM SISigueBundle:ProfesorAsignatura p     
+                            WHERE p.idAsignatura = :idAsignatura   
+
+                        ')->setParameter('idAsignatura',$asignatura[0]->getId());  
+                 $profesores_si = $prof_si->getResult();
+             //  var_dump($profesores_si);die(); 
+                 $prof_no  = $em->createQuery('
+                            SELECT prof
+                            FROM SISigueBundle:Profesor prof     
+                            WHERE prof.idprofesor NOT IN ('.$prof_si->getDQL().')
+                                
+                            ')->setParameter('idAsignatura',$asignatura[0]->getId());  ;
+                 //var_dump($prof_no->getDQL());die();
+                 $profesores_no = $prof_no->getResult();
+                 //var_dump($profesores_no);die(); 
+              $array_pa = array("asignatura" => $asignatura, "profesores" => $profesores_no);
+              array_push($asig_prof, $array_pa);
+                 
+                 
+            }
+            //var_dump($asig_prof);die();
+               
+               
+            return $this->render('SISigueBundle:Profesor:add_profesor.html.php',array("exito" => $exito,'asignaturas' =>$asig,"asig_prof" => $asig_prof));
         }
         
-        
+          public function add_profesor_asignatura_guardarAction(){
+               $request = Request::createFromGlobals();
+               $em = $this->getDoctrine()->getManager();
+              // $asig = $request->request->get('cantidad');
+              // $id_asignatura = $request->request->get('id_asignatura');
+               $array_total = $request->request->all();
+               // var_dump($array_total); die();
+                $array_claves = array_keys($array_total);
+                $i = 0;
+               foreach($array_total as $asignaturas){                  
+                   $id_as_str = $array_claves[$i];
+                  
+                   $id_asig = explode("_", $id_as_str);
+                   $id_asignatura = $id_asig[1];
+                   foreach($asignaturas as $idprof){
+                       $asig_prof = new ProfesorAsignatura();
+                       
+                       $asig_prof->setIdAsignatura($id_asignatura);
+                       $profesor = $em->getRepository('SISigueBundle:Profesor')->findOneByIdprofesor($idprof);
+                       $asig_prof->setIdprofesor($profesor);
+                       //var_dump($asig_prof); die();
+                       $em->persist($asig_prof);
+                   }
+                   $i++;
+               }
+                $em->flush();
+               //var_dump(); die();
+              
+             return $this->redirect($this->generateUrl("si_sigue_add_profesor_asignatura",array("exito" => true)));
+          }    
         
         public function generar_actividadAction(){
             $request = Request::createFromGlobals();

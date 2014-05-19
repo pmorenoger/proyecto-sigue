@@ -10,7 +10,10 @@
         }else if(substr($rol, 0,6)==="Alumno"){           
             $rol = $view['router']->generate('si_sigue_perfil_alumno');
              $logged = true;
-        }else{            
+        }else if($rol === "Admin"){            
+            $rol = $view['router']->generate('si_sigue_admin');
+             $logged = true;
+        }else {            
             $rol = $view['router']->generate('si_sigue_homepage');
         }
        ?>

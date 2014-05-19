@@ -128,7 +128,9 @@ class DefaultController extends Controller
         $nombre = $request->request->get("nombre");
         $apellidos = $request->request->get("apellidos");
         $correo = $request->request->get("correo");
-        
+        $em = $this->getDoctrine()->getManager();
+        $existe = $em->getRepository('SISigueBundle:Profesor')->findOneByCorreo($correo);
+        if(!$existe){
         $profesor->setNombre($nombre);
         $profesor->setCorreo($correo);
         $profesor->setApellidos($apellidos);
@@ -151,13 +153,18 @@ class DefaultController extends Controller
             Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0] );
         $this->get('mailer')->send($message);
                         
-        $em = $this->getDoctrine()->getManager();
+       
         $em->persist($profesor);
         $em->flush();
         
         
         
-        return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => true));        
+        return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => true)); 
+        
+        }else{
+            
+            return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => false));
+        }       
     }
     
     

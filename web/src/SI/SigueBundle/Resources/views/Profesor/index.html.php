@@ -40,8 +40,8 @@
                 <div>
                     <ul>           
                         <li> <a href="#" onclick="add_asignatura(); return false;"> Añadir Asignatura </a> </li>
-                       <!-- <li> <a href=""> Perfil </a> </li>
-                        <li> <a href=""> Otros </a> </li>
+                        <li> <a href="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura');?>"> Añadir profesores </a> </li>
+                        <!--<li> <a href=""> Otros </a> </li>
                        -->
                  </div>
           </div>
@@ -139,15 +139,8 @@
                 <div id="bloque_profesores_<?php echo $asignatura->getId();?>">
                     <form id="form_add_prof_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura');?>">
                     <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
-                    <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
-                    <label for="cantidad">Cantidad:</label>
-                    <select id="cantidad" name="cantidad">
-                        <option value="16">16</option>
-                        <option value="20">20</option>
-                        <option value="36">36</option>
-                        <option value="100">100</option>
-                    </select>  
-                    <input type="submit" value="Generar" />
+                  
+                    <input type="submit" value="Añadir" />
                 </form>
                 </div>                
            </div>
