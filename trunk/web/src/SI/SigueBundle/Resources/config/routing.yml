@@ -80,5 +80,8 @@ si_sigue_notificar_calificaciones:
     pattern:  /Profesor/notificar/{id_asignatura}
     defaults:   {_controller: SISigueBundle:Profesor:notificar}   
 si_sigue_add_profesor_asignatura:
-    pattern:  /Profesor/add_profesor_asignatura
-    defaults:   {_controller: SISigueBundle:Profesor:add_profesor_asignatura}   
+    pattern:  /Profesor/add_profesor_asignatura/{exito}
+    defaults:   {_controller: SISigueBundle:Profesor:add_profesor_asignatura, exito : false}   
+si_sigue_add_profesor_asignatura_guardar:
+    pattern:  /Profesor/add_profesor_asignatura_guardar
+    defaults:   {_controller: SISigueBundle:Profesor:add_profesor_asignatura_guardar}   
