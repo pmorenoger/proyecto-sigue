@@ -233,7 +233,7 @@ class ProfesorController extends Controller
                 $param1 = $request->request->get('margen_tolerancia');
                 $params = $params . "margen_tolerancia=".$param1;
                 $param2 = $request->request->get('num_notas_descartar');
-                $params = $params . "##margen_tolerancia=".$param2;
+                $params = $params . "##num_notas_descartar=".$param2;
                 $cambio = true;
             }else  if($metodo_int === 3){
                 $param1 = $request->request->get('nota_referencia');

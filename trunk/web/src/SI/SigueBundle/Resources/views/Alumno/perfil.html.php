@@ -196,12 +196,10 @@
                         <div id="bar_3d" class="hiddenStructure"></div>
                         <p><a href="javascript:void(0);" onclick="mostrarPredicciones();">Predicción de la nota</a></p>
                         <div id="prediccion" class="hiddenStructure">
-                        <?php if(isset($predicciones) && count($predicciones)>0): ?>
-                            <p>Predicciones de la nota (a fecha de hoy)</p>
+                        <?php if(isset($predicciones)): ?>
+                            <p>Predicción de la nota de participación (a fecha de hoy) es:</p>
                             <ul>
-                                <li><p>Opción 1 : <?php echo $predicciones[0] ;?></p></li>
-                                <li><p>Opción 2 : <?php echo $predicciones[1] ;?></p></li>
-                                <li><p>Opción 3 : <?php echo $predicciones[2] ;?></p></li>
+                                <li><p><?php echo $predicciones ;?></p></li>
                             </ul>
                         <?php endif; ?>
                         </div>
@@ -283,7 +281,7 @@
             $("#codQR").removeClass('hiddenStructure');
         }else{         
             var cod = '<?php echo $cod; ?>';
-            var url = '<?php echo "http://".$_SERVER['HTTP_HOST']. "/web/"; ?>';
+            var url = '<?php echo "http://".$_SERVER['HTTP_HOST']. "/Symfony/"; ?>';
             $.ajax({
                 type:"GET",
                 url: url + "vendor/generadorQR.php",
