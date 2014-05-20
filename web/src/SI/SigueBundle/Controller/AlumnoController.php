@@ -182,10 +182,8 @@ class AlumnoController extends Controller
                 $estAlumnos = self::alumnosTokens($asig,$em);
             }
         }
-        $opcion1 = self::prediccionNotaOpcion1($em,$id,$asig,0.25);
-        $opcion2 = self::prediccionNotaOpcion2($em,$id,$asig,80,0);
-        $opcion3 = self::prediccionNotaOpcion3($em,$id,$asig,6,7.5);
-        $predicciones = array($opcion1,$opcion2,$opcion3);
+        
+        $predicciones = self::getPrediccion($em,$id,$asig,$asignatura->getIdeval(),$asignatura->getParameval());
         
         $as = self::getAsignaturas($em,$id);
         
@@ -231,6 +229,50 @@ class AlumnoController extends Controller
         if (!$list) return NULL;
         if (count($list) == 0) return NULL;
         return $list;
+    }
+    
+    private function getPrediccion($em,$id,$asig,$metodoEval,$param){
+        $idEval = $metodoEval->getIdeval();
+        $p = array();
+        $prediccion = 0;
+        switch ($idEval){
+            case 1: $p = self::getParametrosOpcion1($param);
+                    $prediccion = self::prediccionNotaOpcion1($em,$id,$asig,$p[0]);
+                break;
+            case 2: $p = self::getParametrosOpcion2($param);
+                    $prediccion = self::prediccionNotaOpcion2($em,$id,$asig,$p[0],$p[1]);
+                break;
+            case 3: $p = self::getParametrosOpcion3($param);
+                    $prediccion = self::prediccionNotaOpcion3($em,$id,$asig,$p[0],$p[1]);
+                break;
+        }
+        return $prediccion;
+    }
+    
+    private function getParametrosOpcion1($param){
+        parse_str($param,$output);
+        $var = $output['valor_absoluto'];
+        return array (floatval($var));
+    }
+    
+    private function getParametrosOpcion2($param){
+        $vars = explode("##",$param);
+        parse_str($vars[0],$out1);
+        parse_str($vars[1],$out2);
+        $p = array();
+        $p[0] = floatval($out1['margen_tolerancia']);  
+        $p[1] = floatval($out2['num_notas_descartar']);
+        return $p;
+    }
+    
+    private function getParametrosOpcion3($param){
+        $vars = explode("##",$param);
+        parse_str($vars[0],$out1);
+        parse_str($vars[1],$out2);
+        $p = array();
+        $p[0] = floatval($out1['nota_referencia']);  
+        $p[1] = floatval($out2['minimo_tokens']);
+        return $p;
     }
     
     private function prediccionNotaOpcion1($em,$id,$asig,$peso){
