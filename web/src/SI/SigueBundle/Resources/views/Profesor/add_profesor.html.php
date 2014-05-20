@@ -68,15 +68,15 @@
             <?php 
                 $arr_prof = $pares["profesores"]; ?>
             <!--<input type="hidden" id="id_asignatura_<?php echo $id_asignatura;?>" name="id_asignatura_<?php echo $id_asignatura;?>" value="<?php echo $id_asignatura;?>"> -->
-           
+            <select multiple name="idAsignatura_<?php echo $id_asignatura;?>[]">
             <?php
             foreach ($arr_prof as $profesor) :?>
-                <input type="checkbox" name="profesor_<?php echo $id_asignatura?>[]" id="profesor_<?php echo $id_asignatura."_".$profesor->getIdprofesor(); ?>" title="<?php echo $profesor->getCorreo() ?>" value="<?php echo $profesor->getIdprofesor() ?>"/>
-                <label for="profesor_<?php echo $id_asignatura."_".$profesor->getIdprofesor(); ?>" title="<?php echo $profesor->getCorreo() ?>"> <?php echo $profesor->getNombre() ." ". $profesor->getApellidos() ?></label>
-                
+                <option type="checkbox" name="profesor_<?php echo $id_asignatura?>" id="profesor_<?php echo $id_asignatura."_".$profesor->getIdprofesor(); ?>" title="<?php echo $profesor->getCorreo() ?>" value="<?php echo $profesor->getIdprofesor() ?>">
+                 <?php echo $profesor->getNombre() ." ". $profesor->getApellidos() ?></option>
+              
                 
             <?php endforeach;?>
-           
+             </select>
         </fieldset>        
         <?php endforeach;?>
         <input type="submit" value="Guardar">
@@ -145,7 +145,9 @@
             $("#add_profesor").removeClass("hiddenStructure");
        
        }
-       
+       $("select").multiselect({
+            selectedText: "seleccionados # de #"
+            });
        
        
 </script>
