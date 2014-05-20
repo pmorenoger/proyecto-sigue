@@ -149,8 +149,9 @@ class DefaultController extends Controller
         ->setSubject('Alta Usuario SIGUE')
         ->setFrom('admin@sigue.com')
         ->setTo($correo)
-        ->setBody('Ha sido añadido al sistema SIGUE de la ucm.\n 
-            Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0] );
+        ->setBody('<h3> ¡Bienvenido! </h3> <p>Ha sido añadido al sistema SIGUE de la ucm.<br /> 
+            <p>Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0].'</p>
+                <a href="" title="Ir a Sigue">SIGUE </a> ','text/html' );
         $this->get('mailer')->send($message);
                         
        
@@ -167,7 +168,59 @@ class DefaultController extends Controller
         }       
     }
     
-    
+      public function recuperarAction($exito){
+
+          return $this->render('SISigueBundle:Default:recuperar.html.php',array("exito" => $exito));
+      }
+      
+       public function recuperar_guardarAction($exito){
+          $request = Request::createFromGlobals();
+          $correo = $request->request->get("correo");
+            
+        $em = $this->getDoctrine()->getManager();
+        $profesor = $em->getRepository('SISigueBundle:Profesor')->findOneByCorreo($correo);
+         $alumno = $em->getRepository('SISigueBundle:Alumnos')->findOneByCorreo($correo);
+         
+        
+        //var_dump($profesor);var_dump($alumno);die();
+        if(!$profesor ){
+            if(!$alumno){
+            $exito = "false";   
+             //var_dump($exito);die();
+            }else{
+                $profesor = $alumno;
+            }
+        }if($exito != "false"){
+            $pass_provisional = explode("@",$profesor->getCorreo());
+            $pass_provisional[0] = $pass_provisional[0].rand(0,99);
+
+            $hash = self::hashSSHA($pass_provisional[0]);
+            $encrypted_password = $hash["encrypted"];
+            $salt = $hash["salt"];
+            $profesor->setSalt($salt);
+            $profesor->setPassword($encrypted_password);
+
+
+            $message = \Swift_Message::newInstance('ssl://smtp.gmail.com', 465)
+            ->setSubject('Cambio contraseña SIGUE')
+            ->setFrom('admin@sigue.com')
+            ->setTo($correo)
+            ->setBody('<h3>Su contraseña ha sido restaurada.</h3>  
+                <p>Su nuevo password es: '. $pass_provisional[0].'</p>','text/html' );
+            $this->get('mailer')->send($message);
+
+            //var_dump($message);die();
+            $em->persist($profesor);
+            $em->flush();
+            $exito = "true";
+            
+        
+        }
+          
+          
+          
+          return $this->render('SISigueBundle:Default:recuperar.html.php', array("exito" => $exito));
+      }
       private function hashSSHA($password) {
         $salt = sha1(rand());
         $salt = substr($salt, 0, 10);

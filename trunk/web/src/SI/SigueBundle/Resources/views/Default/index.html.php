@@ -21,7 +21,9 @@
                 <input type="text" name="user" placeholder="Correo Electrónico" class='validate[required,custom[emailUCM]]'/>
                 <p class="ejemplo">Ej: xxxx@ucm.es</p>
                 <label for="password" class="labelContraseña">Contraseña:</label>
-                <input type="password" name="password" placeholder="Contraseña" class="validate[required]"/>
+                <input type="password" name="password" placeholder="Contraseña" class="validate[required]"/>             
+                <a href="<?php echo $view['router']->generate('si_sigue_recuperar');?>" title="Recuperar contraseña"> Recuperar Contraseña </a>
+                <br />
                 <input type="submit" value="Entrar" id="bEntrar" />
             </form>
         </div>

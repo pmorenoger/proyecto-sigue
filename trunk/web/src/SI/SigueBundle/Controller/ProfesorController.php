@@ -173,8 +173,9 @@ class ProfesorController extends Controller
                     ->setSubject('Alta Usuario SIGUE')
                     ->setFrom('admin@sigue.com')
                     ->setTo($alumno->getCorreo())
-                    ->setBody('Ha sido añadido al sistema SIGUE de la ucm.\n 
-                        Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0] );
+                    ->setBody('<h3> ¡Bienvenido! </h3> <p>Ha sido añadido al sistema SIGUE de la ucm.<br /> 
+            <p>Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0].'</p>
+                <a href="" title="Ir a Sigue">SIGUE </a> '. $pass_provisional[0], 'text/html' );
                     $this->get('mailer')->send($message);
                         
                 }                
