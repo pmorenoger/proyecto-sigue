@@ -11,12 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DefaultController extends Controller
 {
-    public function indexAction()
+    public function indexAction($error)
     {
-        return $this->render('SISigueBundle:Default:index.html.php');
+        return $this->render('SISigueBundle:Default:index.html.php', array("error" => $error));
     }
     
-    public function loginAction(){
+    public function loginAction($error){
         
          /*AQUI TENGO QUE CONTROLAR LA INFO DEL LOGIN*/
             $request = Request::createFromGlobals();
@@ -77,7 +77,8 @@ class DefaultController extends Controller
             if ($res == 1) return $this->redirect('Profesor/inicio');
             else if ($res == 2) return $this->redirect('Alumno/inicio');
             else if ($res == 3) return $this->redirect('admin');
-            return $this->render('SISigueBundle:Default:error.html.php'); 
+            $error = "error";
+            return $this->render('SISigueBundle:Default:index.html.php', array("error" => $error)); 
     }
     
     private function checkhashSSHA($salt, $password) {
