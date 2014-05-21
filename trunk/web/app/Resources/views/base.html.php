@@ -23,7 +23,7 @@
         <link rel="shortcut icon" href="<?php echo $view['assets']->getUrl('favicon.ico') ?>" />
     </head>
     <body>
-        <div id="content">                   
+        <div id="ContenidoPrincipal">                   
             <?php $view['slots']->output('_content') ?>
             <?php $view['slots']->output('javascripts') ?>
         </div>

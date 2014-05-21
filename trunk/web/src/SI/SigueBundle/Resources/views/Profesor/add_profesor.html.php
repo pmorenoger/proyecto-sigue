@@ -2,8 +2,13 @@
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
-<?php $view['slots']->start("menu_left"); ?>  
    <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
+   <?php $view['slots']->start("center"); ?>
+   <div class="perfil">
+       <div class="encabezado3">
+            <h3>Menu del Profesor</h3> 
+        </div>
+       <div class="Izquierda">
    <div id="accordion-resizer" class="ui-widget-content">
          <div id="accordion">
            <?php if (count($asignaturas)>0) :?>
@@ -46,16 +51,10 @@
                  </div>
           </div>
     </div>
-<?php $view['slots']->stop(); ?>
-
-
-
-
-
-
-<?php $view['slots']->start("center"); ?>
+    </div>
+       <div class="Derecha">
 <h3> Menú administración </h3>
-<div id="add_profesor" style="margin-left:550px;">
+<div id="add_profesor">
     <h3>Añadir Profesor </h3>
     <p>Rellene por cada asignatura los profesores que quiera añadir</p>
     <form enctype="multipart/form-data" action="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura_guardar');?>" method="POST">
@@ -99,13 +98,10 @@
         
     </div>
 <?php endif; ?>
-
-
-
-
+       </div>
+       <div class="Clear"></div>
+</div>
 <?php $view['slots']->stop(); ?>
-
-
 
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
