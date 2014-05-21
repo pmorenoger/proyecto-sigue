@@ -29,6 +29,12 @@
         </div>
     </div>
 </div>
+<?php if($error==="error"): ?>
+    <div id="tooltip_error"> 
+        <p>¡Error!</p>
+        <p>Usuario/Contraseña incorrectos. Por favor, vuelva a intentarlo.</p>      
+    </div>
+<?php endif; ?>
 <?php $view['slots']->stop(); ?>
 
 <?php $view['slots']->start("javascripts"); ?>
@@ -40,6 +46,17 @@
                 if (!$("#bEntrar").validationEngine('validate')) return false;
                 return true;
             }
+         $( "#tooltip_error" ).dialog({                
+                buttons: [
+                  {
+                    text: "OK",
+                    click: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+                ]
+              });
+              
     });
 </script>
 <?php $view['slots']->stop(); ?>

@@ -1,9 +1,9 @@
 si_sigue_homepage:
-    pattern:  /inicio
-    defaults: { _controller: SISigueBundle:Default:index }
+    pattern:  /inicio/{error}
+    defaults: { _controller: SISigueBundle:Default:index, error:"" }
 si_sigue_login:
-    pattern:  /login
-    defaults: { _controller: SISigueBundle:Default:login }
+    pattern:  /login/{error}
+    defaults: { _controller: SISigueBundle:Default:login, error:"" }
 si_sigue_admin:
     pattern:  /admin
     defaults: { _controller: SISigueBundle:Default:admin }
