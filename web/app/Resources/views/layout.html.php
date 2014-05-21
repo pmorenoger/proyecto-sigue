@@ -29,17 +29,18 @@
     <?php endif; ?>
 </div>
 
-<div id="content">
-    <div id="left">
+
+    <!--<div id="left">
          <?php $view['slots']->output('menu_left') ?>
     </div>
-    <div id="center" class="<?php $view['slots']->output('tipo_clase') ?>">
+    <div id="center" class="<?php $view['slots']->output('tipo_clase') ?>">-->
+    <div id="Bloque_Centro" class="bloqueCentro">
          <?php $view['slots']->output('center') ?>
     </div>
-    <div id="right">
+    <!--<div id="right">
          <?php $view['slots']->output('menu_right') ?>
-    </div>
-</div>
+    </div>-->
+
 
 <?php
 ?>

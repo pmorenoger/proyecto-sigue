@@ -2,8 +2,13 @@
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
-<?php $view['slots']->start("menu_left"); ?>  
+<?php $view['slots']->start("center"); ?>  
    <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
+   <div class="perfil">
+       <div class="encabezado3">
+            <h3>Menu del Profesor</h3> 
+        </div>
+       <div class="Izquierda">
     <div id="accordion-resizer" class="ui-widget-content">
          <div id="accordion">
            <?php if (count($asignaturas)>0) :?>
@@ -46,15 +51,11 @@
                  </div>
           </div>
     </div>
-    <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
-
-<?php $view['slots']->stop(); ?>
-
-
-
-<?php $view['slots']->start("center"); ?>
-<!-- AQUI IRAN LAS OPCIONES QUE TENGA EL PROFESOR -->
- <div id="codQR" style="margin-left:750px;"></div>
+    
+</div>
+       
+<div class="Derecha">       
+ <div id="codQR"></div>
  <?php if($exito==="true"): ?>
     <div id="tooltip_exito"> 
         <p>¡La lista se ha cargado con éxito!</p>
@@ -81,7 +82,7 @@
         <p>No se ha podido procesar la solicitud. Inténtelo de nuevo más tarde.</p>
     </div>
 <?php endif;?>
-<div id="nueva_asignatura" style="margin-left:750px;" class="hiddenStructure">
+<div id="nueva_asignatura" class="hiddenStructure">
     <form enctype="multipart/form-data" action="subir_alumno" method="POST">
         <!-- MAX_FILE_SIZE debe preceder el campo de entrada de archivo -->
         <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
@@ -120,7 +121,7 @@
     <?php foreach ($asignaturas as $as): ?>     
          <?php $param1 = ""; $param2 = ""; $selected="";?>
          <?php foreach ($as as $asignatura):?>
-            <div id="asignatura_<?php echo $asignatura->getId();?>" style="margin-left:750px;" class="hiddenStructure">
+            <div id="asignatura_<?php echo $asignatura->getId();?>" class="hiddenStructure">
                 <form id="form_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_tokens_profesor' );?>">
                     <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
                     <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
@@ -146,7 +147,7 @@
            </div>
  
  
-             <div id="evaluacion_<?php echo $asignatura->getId();?>" style="margin-left:750px;" class="hiddenStructure">
+             <div id="evaluacion_<?php echo $asignatura->getId();?>" class="hiddenStructure">
                 <form id="cambio_evaluacion_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_cambiar_metodo_evaluacion');?>">
                     <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
                     <span>Método de Evaluación de <h3><?php echo $asignatura->getNombre();?> </h3></span> 
@@ -288,14 +289,14 @@
          <?php endforeach; ?>                                   
     <?php endforeach; ?>
 <?php endif; ?>
+</div>
+<br>
+<br>
+<div class="Clear"></div>
+<input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
 
-
-
-
-<?php $view['slots']->stop(); ?>
-
-<?php $view['slots']->start("menu_right"); ?> 
-       
+</div>
+   
 <?php $view['slots']->stop(); ?>
 
 <?php $view['slots']->start("javascripts"); ?>

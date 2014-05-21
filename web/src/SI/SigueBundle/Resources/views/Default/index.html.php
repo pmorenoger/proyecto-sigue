@@ -14,19 +14,17 @@
 
 <?php $view['slots']->start("center"); ?>
 <div class="login">
-    <div id="form_login">
-        <div class="form_login">
-            <form method="post" id="main" action="login">
-                <label for="user" class="labelCorreo">Correo Electrónico:</label>
-                <input type="text" name="user" placeholder="Correo Electrónico" class='validate[required,custom[emailUCM]]'/>
-                <p class="ejemplo">Ej: xxxx@ucm.es</p>
-                <label for="password" class="labelContraseña">Contraseña:</label>
-                <input type="password" name="password" placeholder="Contraseña" class="validate[required]"/>             
-                <a href="<?php echo $view['router']->generate('si_sigue_recuperar');?>" title="Recuperar contraseña"> Recuperar Contraseña </a>
-                <br />
-                <input type="submit" value="Entrar" id="bEntrar" />
-            </form>
-        </div>
+    <div class="mainCSS">
+        <form method="post" id="main" action="login">
+            <label for="user" class="labelCorreo">Correo Electrónico:</label>
+            <input type="text" name="user" placeholder="Correo Electrónico" class='validate[required,custom[emailUCM]]'/>
+            <p class="ejemplo">Ej: xxxx@ucm.es</p>
+            <label for="password" class="labelContraseña">Contraseña:</label>
+            <input type="password" name="password" placeholder="Contraseña" class="validate[required]"/>             
+            <a href="<?php echo $view['router']->generate('si_sigue_recuperar');?>" title="Recuperar contraseña"> Recuperar Contraseña </a>
+            <br />
+            <input type="submit" value="Entrar" id="bEntrar" />
+        </form>
     </div>
 </div>
 <?php if($error==="error"): ?>

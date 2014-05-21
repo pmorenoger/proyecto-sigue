@@ -2,10 +2,13 @@
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 <?php $view['slots']->start("center"); ?>
-<h2>Estadísticas de <?php echo $asignatura->getNombre(). " - Grupo ".$asignatura->getGrupo() . " (". $asignatura->getCurso().") "; ?></h2>
-<div id="generados-redimidos" ></div>
-<div id="total_por_alumno"></div>
-<div id="grafico_fechas"></div>
+<div class="perfil">
+<div class="encabezado3">    
+    <h3>Estadísticas de <?php echo $asignatura->getNombre(). " - Grupo ".$asignatura->getGrupo() . " (". $asignatura->getCurso().") "; ?></h3>
+</div>
+<div id="generados-redimidos" class="Marco"></div>
+<div id="total_por_alumno" class="Marco"></div>
+<div id="grafico_fechas" class="Marco"></div>
 
  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -68,5 +71,5 @@
         chart.draw(data, options);
       }
     </script>
-
+</div>
 <?php $view['slots']->stop(); ?>
