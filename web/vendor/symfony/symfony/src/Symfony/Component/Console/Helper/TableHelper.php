@@ -143,6 +143,29 @@ class TableHelper extends Helper
     {
         $this->rows[] = array_values($row);
 
+        $keys = array_keys($this->rows);
+        $rowKey = array_pop($keys);
+
+        foreach ($row as $key => $cellValue) {
+            if (!strstr($cellValue, "\n")) {
+                continue;
+            }
+
+            $lines = explode("\n", $cellValue);
+            $this->rows[$rowKey][$key] = $lines[0];
+            unset($lines[0]);
+
+            foreach ($lines as $lineKey => $line) {
+                $nextRowKey = $rowKey + $lineKey + 1;
+
+                if (isset($this->rows[$nextRowKey])) {
+                    $this->rows[$nextRowKey][$key] = $line;
+                } else {
+                    $this->rows[$nextRowKey] = array($key => $line);
+                }
+            }
+        }
+
         return $this;
     }
 
@@ -254,7 +277,7 @@ class TableHelper extends Helper
     /**
      * Sets cell padding type.
      *
-     * @param integer $padType STR_PAD_*
+     * @param int     $padType STR_PAD_*
      *
      * @return TableHelper
      */
@@ -353,7 +376,7 @@ class TableHelper extends Helper
      * Renders table cell with padding.
      *
      * @param array   $row
-     * @param integer $column
+     * @param int     $column
      * @param string  $cellFormat
      */
     private function renderCell(array $row, $column, $cellFormat)
@@ -365,6 +388,8 @@ class TableHelper extends Helper
         if (function_exists('mb_strlen') && false !== $encoding = mb_detect_encoding($cell)) {
             $width += strlen($cell) - mb_strlen($cell, $encoding);
         }
+
+        $width += $this->strlen($cell) - $this->computeLengthWithoutDecoration($cell);
 
         $this->output->write(sprintf(
             $cellFormat,
@@ -400,7 +425,7 @@ class TableHelper extends Helper
     /**
      * Gets column width.
      *
-     * @param integer $column
+     * @param int     $column
      *
      * @return int
      */
@@ -423,21 +448,13 @@ class TableHelper extends Helper
      * Gets cell width.
      *
      * @param array   $row
-     * @param integer $column
+     * @param int     $column
      *
      * @return int
      */
     private function getCellWidth(array $row, $column)
     {
-        if ($column < 0) {
-            return 0;
-        }
-
-        if (isset($row[$column])) {
-            return $this->strlen($row[$column]);
-        }
-
-        return $this->getCellWidth($row, $column - 1);
+        return isset($row[$column]) ? $this->computeLengthWithoutDecoration($row[$column]) : 0;
     }
 
     /**
@@ -449,8 +466,20 @@ class TableHelper extends Helper
         $this->numberOfColumns = null;
     }
 
+    private function computeLengthWithoutDecoration($string)
+    {
+        $formatter = $this->output->getFormatter();
+        $isDecorated = $formatter->isDecorated();
+        $formatter->setDecorated(false);
+
+        $string = $formatter->format($string);
+        $formatter->setDecorated($isDecorated);
+
+        return $this->strlen($string);
+    }
+
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

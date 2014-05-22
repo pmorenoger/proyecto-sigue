@@ -1,0 +1,99 @@
+/* 
+    Document   : estilos
+    Created on : 05-oct-2013, 20:00:39
+    Author     : Diego Santos
+    Description:
+        Estilos generales de la aplicación.
+*/
+h1{
+    
+        font-weight:bold;
+	text-align: left;
+	margin-bottom:20px;
+	text-shadow:0 1px 0 #FFF;
+	font-size:3.6em;
+	color:#000080;
+}
+h2{
+    
+     font-size: 2.2em;
+        margin-bottom: 20px;
+        margin-left: 10px;
+        color: #000080;
+}
+root { 
+    display: block;
+}
+
+#top{
+    
+    color:red;
+    margin-left:39%;
+    margin-top:10px;
+    /*float:left;*/
+    width:100%;
+}
+/*Principales estilos de body, content y formulario inicial*/
+body {
+       background-color:#F0F8FF;    
+    
+}
+
+#content {
+    margin-left:15px;  
+    width:100%;
+}
+
+#content #left {
+    width:20%;
+    float: left;    
+}
+#content #right {
+    width:20%;
+    float: left;    
+}
+
+#content #form_login {
+    width:45%;
+    float: left;
+    padding-left: 7%;
+}
+#content #form_login span{
+    width:100px;
+    float:left;
+}
+#content #form_login .form_login {
+   
+   width:80%;
+    
+    
+}
+
+#content .left_menu{
+    width:25%;
+    border:1px solid black;
+    background-color:white;
+    float:left;    
+}
+
+#content .left_menu h3{
+      background-color:turquoise;
+      cursor:pointer;
+}
+
+#content .content_center{
+    
+    float:left;
+    width:60%;
+    margin-left:10%;
+    
+}
+
+
+#footer {
+    margin-left:45%;
+    margin-top:10px;
+    float:left;
+    width:75%;
+    
+}

@@ -13,6 +13,16 @@
 <?php $view['slots']->stop(); ?>
 
 <?php $view['slots']->start("center"); ?>
+    
+    
+    <?php /*$item = $view['knp_menu']->get('SISigueBundle:Builder:mainMenu'); 
+       
+        echo $view['knp_menu']->render($item, array(), 'list'); */
+    ?>
+    
+    
+    
+    
 <div class="login">
     <div class="mainCSS">
         <form method="post" id="main" action="login">
