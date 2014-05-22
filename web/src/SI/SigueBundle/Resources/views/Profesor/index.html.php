@@ -2,7 +2,7 @@
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
-<?php $view['slots']->start("center"); ?>  
+<?php $view['slots']->start("menu_left"); ?>  
    <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
    <div class="perfil">
        <div class="encabezado3">
@@ -51,7 +51,8 @@
                  </div>
           </div>
     </div>
-    <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
+ </div>
+   <!-- <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()"> -->
     
       <?php /*$item = $view['knp_menu']->get('SISigueBundle:Builder:profesorMenu'); 
         var_dump($item);die();
