@@ -64,3 +64,8 @@ swiftmailer:
     username:   ssiisigue
     password:   proyectosigue
     spool:     { type: memory }
+knp_menu:
+    twig:  
+        template: knp_menu.html.twig
+    templating: true 
+    default_renderer: php 

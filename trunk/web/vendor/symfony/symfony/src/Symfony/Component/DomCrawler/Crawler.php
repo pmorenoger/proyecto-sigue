@@ -97,11 +97,11 @@ class Crawler extends \SplObjectStorage
 
         // DOM only for HTML/XML content
         if (!preg_match('/(x|ht)ml/i', $type, $xmlMatches)) {
-            return null;
+            return;
         }
 
         $charset = null;
-        if (false !== $pos = strpos($type, 'charset=')) {
+        if (false !== $pos = stripos($type, 'charset=')) {
             $charset = substr($type, $pos + 8);
             if (false !== $pos = strpos($charset, ';')) {
                 $charset = substr($charset, 0, $pos);
@@ -141,19 +141,31 @@ class Crawler extends \SplObjectStorage
      */
     public function addHtmlContent($content, $charset = 'UTF-8')
     {
-        $current = libxml_use_internal_errors(true);
+        $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 
         $dom = new \DOMDocument('1.0', $charset);
         $dom->validateOnParse = true;
 
-        if (function_exists('mb_convert_encoding') && in_array(strtolower($charset), array_map('strtolower', mb_list_encodings()))) {
-            $content = mb_convert_encoding($content, 'HTML-ENTITIES', $charset);
+        if (function_exists('mb_convert_encoding')) {
+            $hasError = false;
+            set_error_handler(function () use (&$hasError) {
+                $hasError = true;
+            });
+            $tmpContent = @mb_convert_encoding($content, 'HTML-ENTITIES', $charset);
+
+            restore_error_handler();
+
+            if (!$hasError) {
+                $content = $tmpContent;
+            }
         }
 
-        @$dom->loadHTML($content);
+        if ('' !== trim($content)) {
+            @$dom->loadHTML($content);
+        }
 
-        libxml_use_internal_errors($current);
+        libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
 
         $this->addDocument($dom);
@@ -190,16 +202,18 @@ class Crawler extends \SplObjectStorage
      */
     public function addXmlContent($content, $charset = 'UTF-8')
     {
-        $current = libxml_use_internal_errors(true);
+        $internalErrors = libxml_use_internal_errors(true);
         $disableEntities = libxml_disable_entity_loader(true);
 
         $dom = new \DOMDocument('1.0', $charset);
         $dom->validateOnParse = true;
 
-        // remove the default namespace to make XPath expressions simpler
-        @$dom->loadXML(str_replace('xmlns', 'ns', $content), LIBXML_NONET);
+        if ('' !== trim($content)) {
+            // remove the default namespace to make XPath expressions simpler
+            @$dom->loadXML(str_replace('xmlns', 'ns', $content), LIBXML_NONET);
+        }
 
-        libxml_use_internal_errors($current);
+        libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
 
         $this->addDocument($dom);
@@ -266,7 +280,7 @@ class Crawler extends \SplObjectStorage
     /**
      * Returns a node given its position in the node list.
      *
-     * @param integer $position The position
+     * @param int     $position The position
      *
      * @return Crawler A new instance of the Crawler with the selected node, or an empty Crawler if it does not exist.
      *
@@ -544,6 +558,7 @@ class Crawler extends \SplObjectStorage
     public function extract($attributes)
     {
         $attributes = (array) $attributes;
+        $count = count($attributes);
 
         $data = array();
         foreach ($this as $node) {
@@ -556,7 +571,7 @@ class Crawler extends \SplObjectStorage
                 }
             }
 
-            $data[] = count($attributes) > 1 ? $elements : $elements[0];
+            $data[] = $count > 1 ? $elements : $elements[0];
         }
 
         return $data;
@@ -757,7 +772,7 @@ class Crawler extends \SplObjectStorage
     }
 
     /**
-     * @param integer $position
+     * @param int     $position
      *
      * @return \DOMElement|null
      */
@@ -769,8 +784,6 @@ class Crawler extends \SplObjectStorage
             }
         // @codeCoverageIgnoreStart
         }
-
-        return null;
         // @codeCoverageIgnoreEnd
     }
 

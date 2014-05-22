@@ -51,11 +51,19 @@
                  </div>
           </div>
     </div>
+    <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
     
-</div>
-       
-<div class="Derecha">       
- <div id="codQR"></div>
+      <?php /*$item = $view['knp_menu']->get('SISigueBundle:Builder:profesorMenu'); 
+        var_dump($item);die();
+        echo $view['knp_menu']->render($item, array() , $asignaturas, 'list'); */
+    ?>
+<?php $view['slots']->stop(); ?>
+
+
+
+<?php $view['slots']->start("center"); ?>
+<!-- AQUI IRAN LAS OPCIONES QUE TENGA EL PROFESOR -->
+ <div id="codQR" style="margin-left:750px;"></div>
  <?php if($exito==="true"): ?>
     <div id="tooltip_exito"> 
         <p>¡La lista se ha cargado con éxito!</p>
