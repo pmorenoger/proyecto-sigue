@@ -246,7 +246,7 @@ class AlumnoController extends Controller
                     $prediccion = self::prediccionNotaOpcion3($em,$id,$asig,$p[0],$p[1]);
                 break;
         }
-        return $prediccion;
+        return number_format($prediccion,2);
     }
     
     private function getParametrosOpcion1($param){
