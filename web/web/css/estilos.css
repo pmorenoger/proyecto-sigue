@@ -66,12 +66,11 @@ body {
 }
 
 .cuadro{
-     border-radius:3px; 
     -moz-border-radius:3px; /* Firefox */ 
     -webkit-border-radius:3px; /* Safari y Chrome */ 
     border:1px solid #FFF;
     background-color: #FFF;
-    -moz-box-shadow: 1px 1px 10px #00f;
+    -moz-box-shadow: 1px 1px 10px #fff;
     -webkit-box-shadow: 1px 1px 10px #fff;
 }
 
@@ -85,9 +84,12 @@ body {
     font-family:Comic Sanz, "Helvetica Neue", Verdana, Sans-serif;
     padding:10%;
     background-image: url("../img/fondoLogin.jpg");
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-    background-size: cover;
+    -moz-background-repeat: no-repeat;
+    -webkit-background-repeat: no-repeat;
+    -moz-background-attachment: scroll;
+    -webkit-background-attachment: scroll;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
     margin: 0 auto;
 }
 
@@ -153,8 +155,10 @@ textarea{
     width:290px;
     height:50px;
     border:1px solid #D9D9D9;
-    border-radius:2px;
-    box-shadow:0 2px 1px #B0E0E6;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    -moz-box-shadow:0 2px 1px #B0E0E6;
+    -webkit-box-shadow:0 2px 1px #B0E0E6;
     font-size:1.4em;
     color:#737373;
     padding:0 5px;
@@ -220,4 +224,24 @@ a.nota_vacia{
 }
 .tabulado_derecha{
     margin-left:35%;
+}
+
+.tablaActividades{
+    width: 250px;
+    border: 1px solid #006dcc;
+    border-collapse: collapse;
+    text-align: center;
+    min-width: 600px;
+    min-height: 380px;
+}
+
+.tablaActividades th, .tablaActividades td{
+    border: 1px solid #006dcc;
+}
+
+.tablaActividades th{
+    background-color: #006dcc;
+    color: #FFF;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #006dcc), color-stop(100%, #B0E0E6));
+    background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #006dcc), color-stop(100%, #B0E0E6));
 }

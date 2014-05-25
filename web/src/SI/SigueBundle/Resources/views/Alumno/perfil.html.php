@@ -46,7 +46,7 @@
                 <div id="codQR"></div>
                 <div id="actividades" class="hiddenStructure">
                     <?php if($actividades !== NULL and count($actividades) >0): ?>
-                        <table border="1" style='text-align: center;'>
+                        <table class="tablaActividades">
                             <th>Asignatura</th>
                             <th>Actividad</th>
                             <th>Descripción</th>
@@ -56,7 +56,7 @@
                                 <tr>
                                     <td><?php echo $act->getIdAsignatura()->getNombre(); ?></td>
                                     <td><?php echo $act->getNombre(); ?></td>
-                                    <td><?php echo $act->getDescripcion(); ?></td>
+                                    <td style="min-width: 250px;"><?php echo $act->getDescripcion(); ?></td>
                                     <td><?php echo $act->getPeso()*100; ?></td>  
                                     <td><?php echo $act->getPeso()*$act->getNota(); ?></td>    
                                 </tr>
