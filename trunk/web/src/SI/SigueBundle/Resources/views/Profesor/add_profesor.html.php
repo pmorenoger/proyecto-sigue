@@ -3,12 +3,8 @@
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
    <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
-   <?php $view['slots']->start("center"); ?>
+   <?php $view['slots']->start("menu_left"); ?>
    <div class="perfil">
-       <div class="encabezado3">
-            <h3>Menu del Profesor</h3> 
-        </div>
-       <div class="Izquierda">
    <div id="accordion-resizer" class="ui-widget-content">
          <div id="accordion">
            <?php if (count($asignaturas)>0) :?>
@@ -52,7 +48,10 @@
           </div>
     </div>
     </div>
-       <div class="Derecha">
+<?php $view['slots']->stop(); ?>
+   
+<?php $view['slots']->start("center"); ?>
+       <div class="perfil">
 <h3> Menú administración </h3>
 <div id="add_profesor">
     <h3>Añadir Profesor </h3>

@@ -4,6 +4,7 @@
 
 <?php $view['slots']->start("menu_left"); ?>  
    <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
+   <div class="perfil">
     <div id="accordion-resizer" class="ui-widget-content">
          <div id="accordion">    
              <?php  $rol = $view['router']->generate('si_sigue_perfil_profesor'); ?>
@@ -30,14 +31,11 @@
           
          </div>  
     </div>
-    
+</div>
 
 <?php $view['slots']->stop(); ?>
-
-
-
-
 <?php $view['slots']->start("center"); ?>
+   <div class="perfil">
    <div id="centro_tabla" class="ancho_horizontal">
        <h2>Actividades de <?php echo $asignatura->getNombre(); ?></h2>
 <!-- Formulario para crear una nueva actividad. -->
@@ -200,11 +198,7 @@
 </div>
    
 </div>
-
-<?php $view['slots']->stop(); ?>
-
-<?php $view['slots']->start("menu_right"); ?> 
-       
+   </div>
 <?php $view['slots']->stop(); ?>
 
 <?php $view['slots']->start("javascripts"); ?>

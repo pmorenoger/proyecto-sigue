@@ -1,6 +1,6 @@
 <?php $view->extend('::base.html.php') ?>
 
-<div id="top">    
+<div id="top" class="cuadro">    
    <div class="titles"> 
        <?php $rol =  $view['slots']->get('rol'); 
         $logged = false;
@@ -28,10 +28,10 @@
 </div>
 
 <div id="content">
-    <div id="left" class="menu_left2">
+    <div id="left" class="menu_left2 cuadro">
          <?php $view['slots']->output('menu_left') ?>
     </div>
-    <div id="center" class="calificaciones_horizontales">
+    <div id="center" class="calificaciones_horizontales cuadro">
          <?php $view['slots']->output('center') ?>
     </div>
     
