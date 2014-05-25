@@ -3,26 +3,16 @@
 <?php $view['slots']->set('rol', 'Inicio'); ?>
 
 <?php $view['slots']->start("menu_left"); ?>  
-    <img src="<?php echo $view['assets']->getUrl('img/profe_der.jpg') ?>" alt="Profesora en la pizarra" title="Profesionales de la enseñanza"/>
-<?php $view['slots']->stop(); ?>
-
-<?php $view['slots']->start("menu_right"); ?> 
-        <a href="http://www.ucm.es" title="UCM" >
-            <img src="<?php echo $view['assets']->getUrl('img/ucm_logo.gif') ?>" alt="Logo de la UCM" title="UCM" width="300px" />
-        </a>   
+    <a href="http://www.ucm.es" title="UCM" >
+        <img src="<?php echo $view['assets']->getUrl('img/ucm_logo.gif') ?>" alt="Logo de la UCM" title="UCM" width="100%"/>
+    </a> 
 <?php $view['slots']->stop(); ?>
 
 <?php $view['slots']->start("center"); ?>
-    
-    
     <?php /*$item = $view['knp_menu']->get('SISigueBundle:Builder:mainMenu'); 
        
         echo $view['knp_menu']->render($item, array(), 'list'); */
-    ?>
-    
-    
-    
-    
+    ?> 
 <div class="login">
     <div class="mainCSS">
         <form method="post" id="main" action="login">
@@ -45,6 +35,10 @@
 <?php endif; ?>
 <?php $view['slots']->stop(); ?>
 
+<!-- <?php $view['slots']->start("menu_right"); ?> 
+    <!-- <img src="<?php echo $view['assets']->getUrl('img/profe_der.jpg') ?>" alt="Profesora en la pizarra" title="Profesionales de la enseñanza"/>-->  
+<?php $view['slots']->stop(); ?> -->
+    
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
     $(document).ready(function(){

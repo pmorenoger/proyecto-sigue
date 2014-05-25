@@ -1,13 +1,10 @@
 <?php $view->extend('::layout.html.php') ?>
 <?php $view['slots']->set('rol', 'Alumno'); ?>
 
-<?php $view['slots']->start("center"); ?>
+<?php $view['slots']->start("menu_left"); ?>
     <div class="perfil">
-        <div class="encabezado3">
-            <h3>Bienvenido  <?php echo $alumno->getNombre(); ?></h3> 
-        </div>
+        
         <!--<div style="height: auto;width: auto;">-->
-            <div class="Izquierda">
                 <div id="accordion-resizer" class="ui-widget-content">
                     <div id="accordion">
                         <?php if (count($asignaturas)>0) :?>
@@ -39,9 +36,13 @@
                                 </ul>
                              </div>
                     </div>
-                </div>
+                </div> 
+        <div class="Clear"></div>
+        <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
             </div>
-            <div class="Derecha">
+        <?php $view['slots']->stop(); ?>
+        <?php $view['slots']->start("center"); ?>
+        <div class="perfil">
                 <div id="codQR"></div>
                 <div id="actividades" class="hiddenStructure">
                     <?php if($actividades !== NULL and count($actividades) >0): ?>
@@ -203,12 +204,9 @@
                     <?php endif; ?>
                     </div>
                 </div>
-            </div>
         <!--</div>-->
         <br>
         <br>
-        <div class="Clear"></div>
-        <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
         
     </div>
 <?php $view['slots']->stop(); ?>

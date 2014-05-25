@@ -5,10 +5,6 @@
 <?php $view['slots']->start("menu_left"); ?>  
    <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
    <div class="perfil">
-       <div class="encabezado3">
-            <h3>Menu del Profesor</h3> 
-        </div>
-       <div class="Izquierda">
     <div id="accordion-resizer" class="ui-widget-content">
          <div id="accordion">
            <?php if (count($asignaturas)>0) :?>
@@ -51,7 +47,9 @@
                  </div>
           </div>
     </div>
- </div>
+    <div class="Clear"></div>
+    <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
+  </div>
    <!-- <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()"> -->
     
       <?php /*$item = $view['knp_menu']->get('SISigueBundle:Builder:profesorMenu'); 
@@ -64,7 +62,8 @@
 
 <?php $view['slots']->start("center"); ?>
 <!-- AQUI IRAN LAS OPCIONES QUE TENGA EL PROFESOR -->
- <div id="codQR" style="margin-left:750px;"></div>
+<div class="perfil">
+ <div id="codQR"></div>
  <?php if($exito==="true"): ?>
     <div id="tooltip_exito"> 
         <p>¡La lista se ha cargado con éxito!</p>
@@ -299,11 +298,6 @@
     <?php endforeach; ?>
 <?php endif; ?>
 </div>
-<br>
-<br>
-<div class="Clear"></div>
-<input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
-
 </div>
    
 <?php $view['slots']->stop(); ?>
