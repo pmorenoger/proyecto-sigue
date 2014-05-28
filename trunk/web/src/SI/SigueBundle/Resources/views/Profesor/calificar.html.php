@@ -10,10 +10,10 @@
              <?php  $rol = $view['router']->generate('si_sigue_perfil_profesor'); ?>
             <h3> <a href="<?php echo $rol;?>" title="Página de incio">Curso 2013/2014 .</a></h3>
                  <div>
-                    <ul>                        
+                    <ul class="list1">                        
                         <li>                            
                                 <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="ocultar_todo();mostrar_tabla();"><?php echo $asignatura->getNombre();?> </div>
-                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="lista_opciones">
+                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="lista_opciones list2">
                                     <li>
                                     <a href="#" onclick="nueva_actividad();">Nueva Actividad </a> 
                                     </li>
