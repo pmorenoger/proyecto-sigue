@@ -1,4 +1,4 @@
-<?php $view->extend('::layout.html.php') ?>
+<?php $view->extend('::layoutLogin.html.php') ?>
 
 <?php $view['slots']->set('rol', 'Inicio'); ?>
 
@@ -35,10 +35,6 @@
 <?php endif; ?>
 <?php $view['slots']->stop(); ?>
 
-<!-- <?php $view['slots']->start("menu_right"); ?> 
-    <!-- <img src="<?php echo $view['assets']->getUrl('img/profe_der.jpg') ?>" alt="Profesora en la pizarra" title="Profesionales de la enseñanza"/>-->  
-<?php $view['slots']->stop(); ?> -->
-    
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
     $(document).ready(function(){

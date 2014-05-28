@@ -2,19 +2,15 @@
 
 a {text-decoration:none; color:#3e9c8f;}
 
-.titles {
-	margin-top:20px;        
-        width:80%;      
-}
-
 .encabezado {
         font-weight:bold;
 	text-align: left;
 	margin-bottom:20px;
 	text-shadow:0 1px 0 #FFF;
-	font-size:3.6em;
-	color:#DC143C;
+	font-size:1.6em;
+	color:#D10B0B;
         width:400px;
+        font-family:fantasy;
 }
 
 .encabezado3{
@@ -100,10 +96,11 @@ input[type="submit"]{
 }
 
 .encabezado2{
-        font-size: 2.0em;
+        font-size: 1.9em;
         margin-bottom: 20px;
         margin-left: 10px;
         color: #006400;
+        font-family: cursive;
 }
 
 #accordion-resizer {

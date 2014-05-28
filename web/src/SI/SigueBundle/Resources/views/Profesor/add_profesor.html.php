@@ -11,12 +11,12 @@
            <?php /*FALTARIA HACER DINAMICOS LOS AÑOS EN LA PARTE PROFESOR*/ ?>
             <h3>Curso 2013/2014 .</h3>
                  <div>
-                    <ul>
+                    <ul class="list1">
                         <?php foreach ($asignaturas as $as): ?>
                         <li>
                              <?php foreach ($as as $asignatura):?>
                                 <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="mostrar_opciones_asignatura(<?php echo $asignatura->getId();?>);"><?php echo $asignatura->getNombre();?> </div>
-                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="hiddenStructure lista_opciones">
+                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="hiddenStructure lista_opciones list2">
                                     <li>
                                         <a href="#" onclick="generar_qr_pop_up(<?php echo $asignatura->getId();?>);">Generar Códigos </a> 
                                     </li>
@@ -39,7 +39,7 @@
             <?php endif; ?>
             <h3>Otras Opciones</h3>
                 <div>
-                    <ul>           
+                    <ul class="list1">           
                         <li> <a href="#" onclick="add_asignatura(); return false;"> Añadir Asignatura </a> </li>
                         <li> <a href="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura');?>"> Añadir profesores </a> </li>
                        <!-- <li> <a href=""> Otros </a> </li>

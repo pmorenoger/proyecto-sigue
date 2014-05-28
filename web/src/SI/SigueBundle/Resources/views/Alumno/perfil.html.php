@@ -10,10 +10,10 @@
                         <?php if (count($asignaturas)>0) :?>
                         <h3>Curso 2013/2014 .</h3>
                              <div>
-                                <ul>
+                                <ul class="list1">
                                     <?php foreach ($asignaturas as $as): ?>
                                     <li><a href="javascript:void(0);" onclick="mostrarMenuAsignatura(<?php echo $as->getId(); ?>);"><?php echo $as->getNombre();?></a> </li>
-                                         <ul id="opciones_<?php echo $as->getId(); ?>" class="hiddenStructure">
+                                         <ul id="opciones_<?php echo $as->getId(); ?>" class="hiddenStructure list2">
                                             <li><a href="javascript:void(0);" onclick="mostrarRegistrar(<?php echo $as->getId(); ?>);">Registrar un token</a></li>
                                             <li><a id="li_est_<?php echo $as->getId(); ?>" href="<?php echo $view['router']->generate('si_sigue_alumno_estadisticas', array('id' => $alumno->getIdalumno(),'asig'=>$as->getId()),true); ?>"> Mis Estadísticas </a></li>
                                         </ul>    
