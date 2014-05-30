@@ -174,6 +174,7 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 			$i= 0;
 			while($row = mysql_fetch_assoc($subjects)){
 				$tokens = $db->getTokens($row["id_asignatura_alumno"]);
+				$activities = $db->getActivities($user,$row["id_asignatura"]);
 				if($tokens){
 				$response ['Asignaturas'][$i]['Asignatura']['Datos'] =  $row;
 				prev($response);
@@ -192,13 +193,21 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				while($column = mysql_fetch_assoc($tokens)){
 				$response ['Asignaturas'][$i]['Asignatura']['Tokens'][] =  $column;
 				}
-				$i = $i + 1;
+				
 				}else{
 					$response ['Asignaturas'][$i]['Asignatura']['Datos'] =  $row;
 					$response ['ASignaturas'][$i]['Asignatura']['Tokens']=array();
-					$i = $i + 1;
 				}
-				//$response ["name"]["tokens"] = db->getTokens($subjects["id_asignatura_alumno"]);
+				if($activities){								
+				while($column = mysql_fetch_assoc($activities)){
+				$response ['Asignaturas'][$i]['Asignatura']['Actividades'][] =  $column;
+				}
+				
+				}else{
+					$response ['Asignaturas'][$i]['Asignatura']['Actividades']=array();					
+					
+				}
+				$i = $i + 1;//$response ["name"]["tokens"] = db->getTokens($subjects["id_asignatura_alumno"]);
 			}
 
                 echo json_encode($response);
@@ -247,7 +256,7 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 					
 					$response ['Alumnos'][$i]['Alumno']['Tokens']=array();				
 				}
-				if($tokens){								
+				if($activities){								
 				while($column = mysql_fetch_assoc($activities)){
 				$response ['Alumnos'][$i]['Alumno']['Actividades'][] =  $column;
 				}
@@ -314,10 +323,11 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 	}else if ($tag == 'qr_register') {
 		$codigo = $_POST['codigo'];
 
-        $asignatura = $_POST['asignatura'];
-
-        $user = $_POST['user'];
+        //$asignatura = $_POST['asignatura'];
+		$asignatura = $db->QRSubjectCode($codigo)[id];
 		
+        $user = $_POST['user'];
+		if($asignatura){
 		$alumn_asig = $db->isUserSignedUp($user,$asignatura);
 		
 		if ($alumn_asig) {
@@ -353,6 +363,13 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 			$response["error"] = 2;
 
             $response["error_msg"] = "User Not Signed Up on that subject";
+			
+			$response["Aignatura"] = $asignatura;
+			
+			}
+	}else{
+		$response["error"] = 2;
+		$response["error_msg"] = "Code not Existing";
 	}	
 		echo json_encode($response);
 		
