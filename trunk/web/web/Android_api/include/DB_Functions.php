@@ -230,6 +230,28 @@ class DB_Functions {
 
     }
 	
+	public function QRSubjectCode($code) {
+
+        $result = mysql_query("SELECT id from codigos WHERE codigo = '$code'");
+
+        $no_of_rows = mysql_num_rows($result);
+
+        if ($no_of_rows > 0) {
+
+            // user existed
+
+            return mysql_fetch_array($result);;
+
+        } else {
+
+            // user not existed
+
+            return false;
+
+        }
+
+    }
+	
 	/**
 	
 	*Check if user is singed up on that subject
