@@ -12,18 +12,18 @@
                  <div>
                     <ul class="list1">                        
                         <li>                            
-                                <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="ocultar_todo();mostrar_tabla();"><?php echo $asignatura->getNombre();?> </div>
-                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="lista_opciones list2">
-                                    <li>
-                                    <a href="#" onclick="nueva_actividad();">Nueva Actividad </a> 
-                                    </li>
-                                    <li>
-                                    <a href="#" id="boton_importar" >Importar/Exportar</a>
-                                    </li>
-                                    <li>
-                                    <a href="<?php echo $view['router']->generate('si_sigue_notificar_calificaciones', array("id_asignatura" =>$asignatura->getId() ) );?>" id="notificar" title="Envíe una notificación a los alumnos de esta asignatura de que ha habido cambios en las calificaciones" onclick="notificar();return false;">Notificar</a>                                   
-                                    </li>                                                                        
-                                </ul>                 
+                            <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="ocultar_todo();mostrar_tabla();"><?php echo $asignatura->getNombre();?> </div>
+                            <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="lista_opciones list2">
+                                <li>
+                                <a href="#" onclick="nueva_actividad();">Nueva Actividad </a> 
+                                </li>
+                                <li>
+                                <a href="#" id="boton_importar" >Importar/Exportar</a>
+                                </li>
+                                <li>
+                                <a href="<?php echo $view['router']->generate('si_sigue_notificar_calificaciones', array("id_asignatura" =>$asignatura->getId() ) );?>" id="notificar" title="Envíe una notificación a los alumnos de esta asignatura de que ha habido cambios en las calificaciones" onclick="notificar();return false;">Notificar</a>                                   
+                                </li>                                                                        
+                            </ul>                 
                         </li>
                         
                     </ul>
@@ -127,12 +127,12 @@
     </div>
     
     <div id="calificador" class="tabla_horizontal">
-        <table id="tabla_actividades" border="1" style='text-align: center;'>
+        <table id="tabla_actividades" class="tablaActividades widthAuto">
             
             <th>Nombre</th>
             <th>Apellidos</th>
             <?php foreach($actividades as $actividad):?>            
-            <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>" onclick="editar_actividad(<?php echo "'".$actividad["nombre"]."','".$actividad["peso"]."','".$actividad["descripcion"]."'" ; ?>);"><?php echo $actividad["nombre"]; ?> (<?php echo $actividad["peso"] ; ?>)</a></th>            
+            <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>" style="color:white !important;" onclick="editar_actividad(<?php echo "'".$actividad["nombre"]."','".$actividad["peso"]."','".$actividad["descripcion"]."'" ; ?>);"><?php echo $actividad["nombre"]; ?> (<?php echo $actividad["peso"] ; ?>)</a></th>            
             <?php endforeach; ?>
             <th>TOKENS</th>
             <th>Nota TOKENS</th>

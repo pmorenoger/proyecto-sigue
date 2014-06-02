@@ -1,7 +1,7 @@
 <?php $view->extend('::base.html.php') ?>
 
 <div id="top" class="cuadro">    
-   <div class="titles"> 
+   <div id="titles"> 
        <?php $rol =  $view['slots']->get('rol'); 
         $logged = false;
         if($rol === "Profesor"){
@@ -16,22 +16,28 @@
         }
        ?>
        <a href="<?php echo $rol;?>" title="Página de incio">
-            <img src="<?php echo $view['assets']->getUrl('img/logo.png') ?>" ALIGN="middle">
+            <img src="<?php echo $view['assets']->getUrl('img/logo.png') ?>" ALIGN="middle" height="50px">
             <text class="encabezado">IGUE</text> 
             <text class="encabezado2"> <?php $view['slots']->output('rol') ?></text>       
         </a>
-    </div>
+   
     <?php $logout = $view['router']->generate('si_sigue_logout'); ?>
     <?php if($logged): ?>
-        <div id="logout"><a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >Salir</a></div>
+        <div id="logout">
+            <a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >
+                <img src="<?php echo $view['assets']->getUrl('img/logout.png') ?>" height="30px" alt="salir">
+            </a>
+        </div>
     <?php endif; ?>
+    </div>
 </div>
 
 <div id="content">
-    <div id="left" class="menu_left2 cuadro">
+    
+    <div id="left" class="menu_left2 bloqueIzq cuadro">
          <?php $view['slots']->output('menu_left') ?>
     </div>
-    <div id="center" class="calificaciones_horizontales cuadro">
+    <div id="center" class="calificaciones_horizontales bloqueCentro cuadro bloqueCentroLayout2">
          <?php $view['slots']->output('center') ?>
     </div>
     

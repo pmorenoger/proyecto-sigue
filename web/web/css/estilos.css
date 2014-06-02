@@ -56,6 +56,11 @@ body {
     margin: 15px auto;
 }
 
+.bloqueCentroLayout2{
+    width:880px !important;
+    float:right !important;
+}
+
 .bloqueIzq{
     width:20%;
     float: left;
@@ -210,20 +215,20 @@ a.nota_vacia{
     
 }
 .ancho_horizontal{
-   padding-left: 41%;
+  /* padding-left: 41%;
    padding-right: 5%;
-   margin-right: 5%;
+   margin-right: 5%;*/
 }
 .menu_left2{
-    float:left;
+    /*float:left;
     margin: 15px auto;
-    padding: 1%;
+    padding: 1%;*/
 }
 .calificaciones_horizantales{
     /*float:left;*/
     height: auto;
-    margin: 15px auto;
-    padding: 1%;
+    /*margin: 15px auto;
+    padding: 1%;*/
 }
 .fila_calificaciones{
       overflow-x: scroll;
@@ -248,6 +253,10 @@ a.nota_vacia{
     text-align: center;
     min-width: 600px;
     min-height: 380px;
+}
+
+.widthAuto{
+    width: auto !important;
 }
 
 .tablaActividades th, .tablaActividades td{
