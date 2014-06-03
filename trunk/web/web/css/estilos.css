@@ -139,6 +139,14 @@ body {
     margin: 7px;
 }
 
+.Marco p{
+    /*text-align: center;*/
+    text-indent:20px;
+    font-size: 10px;
+    font-family: Comic Sanz, "Helvetica Neue", Verdana, Sans-serif;
+    /*font-weight: bold;*/
+}
+
 .Centrar{
     margin:0 auto;
 }

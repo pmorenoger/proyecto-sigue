@@ -119,10 +119,10 @@
                 <?php if (isset($est) and $est !== NULL): ?>
                     <?php if ($est['total'] > 0 and $est['num']>0): ?>
                     <p><a href="javascript:void(0);" onclick="mostrarGeneral();">Estadísticas generales</a></p>
-                    <div id="general" class="hiddenStructure">
-                        <p>Número total de TOKENS de esta asignatura es: <?php echo $est['total'];?></p>
-                        <p>Tu número de TOKENS de esta asignatura es: <?php echo $est['num'];?></p>
-                        <p>Los máximos TOKENS obtenidos de esta asignatura es: <?php echo $est['max'];?></p>
+                    <div id="general" class="hiddenStructure Marco">
+                        <p>Número total de TOKENS de esta asignatura es: <strong><?php echo $est['total'];?></strong></p>
+                        <p>Tu número de TOKENS de esta asignatura es: <strong><?php echo $est['num'];?></strong></p>
+                        <p>Los máximos TOKENS obtenidos de esta asignatura es: <strong><?php echo $est['max'];?></strong></p>
                     </div>
                     <script type="text/javascript">
                         google.load('visualization', '1.0', {'packages':['corechart']});
@@ -139,9 +139,9 @@
                               ['Alumnos con más TOKENS', mas]
                             ]);
                             var options = {'title':'Mis estadísticas',
-                                           'width':400,
-                                           'height':300,
-                                           'backgroundColor': '#ceecf5',
+                                           'width':572,
+                                           'height':350,
+                                           'backgroundColor': '#F0E68C',
                                            'legend.position': 'bottom',
                                            'legend.alignment':'center',
                                            'fontName': 'Comic Sans MS',
@@ -180,9 +180,9 @@
                             <?php endforeach; ?>
                             var data = new google.visualization.arrayToDataTable(array);    
                             var options = {'title':'Alumnos-Tokens',
-                                           'width':400,
-                                           'height':300,
-                                           'backgroundColor': '#ceecf5',
+                                           'width':572,
+                                           'height':350,
+                                           'backgroundColor': '#F0E68C',
                                            'legend.position': 'bottom',
                                            'fontName': 'Comic Sans MS'};
                             var chart = new google.visualization.BarChart(document.getElementById('bar_3d'));
@@ -191,16 +191,13 @@
                     </script>
                     <?php endif; ?>
                     <p><a href="javascript:void(0);" onclick="mostrarGraficaPorcentaje();">Gráfica Porcentaje de alumnos con mas/menos tokens</a></p>
-                    <div id="piechart_3d" class="hiddenStructure"></div>
+                    <div id="piechart_3d" class="hiddenStructure Marco"></div>
                     <p><a href="javascript:void(0);" onclick="mostrarGraficaAlumnosTokens();">Gráfica Alumnos-Tokens</a></p>
-                    <div id="bar_3d" class="hiddenStructure"></div>
+                    <div id="bar_3d" class="hiddenStructure Marco"></div>
                     <p><a href="javascript:void(0);" onclick="mostrarPredicciones();">Predicción de la nota</a></p>
-                    <div id="prediccion" class="hiddenStructure">
+                    <div id="prediccion" class="hiddenStructure Marco">
                     <?php if(isset($predicciones)): ?>
-                        <p>Predicción de la nota de participación (a fecha de hoy) es:</p>
-                        <ul>
-                            <li><p><?php echo $predicciones ;?></p></li>
-                        </ul>
+                        <p>Predicción de la nota de participación (a fecha de hoy) es:  <strong><?php echo $predicciones ;?></strong></p>
                     <?php endif; ?>
                     </div>
                 </div>
