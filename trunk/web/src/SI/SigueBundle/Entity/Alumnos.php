@@ -288,10 +288,5 @@ class Alumnos
     {
         return $this->codigo_id;
     }
-    /**
-     * @var string
-     */
-    private $codigoId;
-
 
 }

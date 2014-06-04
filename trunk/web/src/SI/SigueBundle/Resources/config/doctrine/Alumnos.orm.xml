@@ -11,6 +11,6 @@
     <field name="correoadicional" type="string" column="correoAdicional" length="255" nullable="true"/>
     <field name="password" type="string" column="password" length="45" nullable="true"/>
     <field name="salt" type="string" column="salt" length="10" nullable="true"/>
-    <field name="codigoId" type="string" column="codigo_id" length="50" nullable="true"/>
+    <field name="codigo_id" type="string" column="codigo_id" length="50" nullable="true"/>
   </entity>
 </doctrine-mapping>
