@@ -255,11 +255,10 @@ a.nota_vacia{
 }
 
 .tablaActividades{
-    width: 250px;
+    width: 600px;
     border: 1px solid #006dcc;
     border-collapse: collapse;
     text-align: center;
-    min-width: 600px;
     min-height: 380px;
 }
 

@@ -23,16 +23,15 @@
                         <?php endif; ?>
                         <h3>Editar Perfil</h3>
                             <div>
-                                <ul>           
+                                <ul class="list1">           
                                     <li> <a href="javascript:void(0);" onclick="mostrarFormPassword();"> Cambiar Contraseña</a> </li>
                                     <li> <a href="javascript:void(0);" onclick="mostrarFormCorreo();"> Añadir un correo adicional </a> </li>
                                 </ul>
                              </div>
                         <h3>Otras Opciones</h3>
                             <div>
-                                <ul>           
+                                <ul class="list1">           
                                     <li> <a href="javascript:void(0);" onclick="mostrarActividades();"> Mostrar Actividades </a> </li>
-                                    <li> <a href="javascript:void(0);"> Otros </a> </li>
                                 </ul>
                              </div>
                     </div>
@@ -275,10 +274,10 @@
             $("#codQR").removeClass('hiddenStructure');
         }else{         
             var cod = '<?php echo $cod; ?>';
-            var url = '<?php echo "http://".$_SERVER['HTTP_HOST']. "/Symfony/"; ?>';
+            var url = '<?php echo "http://".$_SERVER['HTTP_HOST'].""; ?>';
             $.ajax({
                 type:"GET",
-                url: url + "vendor/generadorQR.php",
+                url: url + "/generadorQR.php",
                 async: true,
                 data: {
                    codigo: cod

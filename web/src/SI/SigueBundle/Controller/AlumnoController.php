@@ -182,8 +182,11 @@ class AlumnoController extends Controller
                 $estAlumnos = self::alumnosTokens($asig,$em);
             }
         }
-        
-        $predicciones = self::getPrediccion($em,$id,$asig,$asignatura->getIdeval(),$asignatura->getParameval());
+        if ($asignatura->getIdeval() != null){
+            $predicciones = self::getPrediccion($em,$id,$asig,$asignatura->getIdeval(),$asignatura->getParameval());
+        }else{
+            $predicciones = 0;
+        }
         
         $as = self::getAsignaturas($em,$id);
         
