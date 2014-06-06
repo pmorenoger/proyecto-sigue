@@ -2,60 +2,10 @@
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
-<?php $view['slots']->start("menu_left"); ?>  
-   <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
-   <div class="perfil">
-    <div id="accordion-resizer" class="ui-widget-content">
-         <div id="accordion">
-           <?php if (count($asignaturas)>0) :?>
-           <?php /*FALTARIA HACER DINAMICOS LOS AÑOS EN LA PARTE PROFESOR*/ ?>
-            <h3>Curso 2013/2014 .</h3>
-                 <div>
-                    <ul class="list1">
-                        <?php foreach ($asignaturas as $as): ?>
-                        <li>
-                             <?php foreach ($as as $asignatura):?>
-                                <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="mostrar_opciones_asignatura(<?php echo $asignatura->getId();?>);"><?php echo $asignatura->getNombre();?> </div>
-                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="hiddenStructure lista_opciones list2">
-                                    <li>
-                                        <a href="#" onclick="generar_qr_pop_up(<?php echo $asignatura->getId();?>);">Generar Códigos </a> 
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asignatura->getId() ));?>" onclick="ver_stats_codigo(<?php echo $asignatura->getId();?>)">Ver estadísticas de los Códigos</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo $view['router']->generate('si_sigue_calificar_profesor', array("id_asignatura" =>$asignatura->getId()));?>" >Gestionar calificaciones</a>                                   
-                                    </li>    
-                                     <li>
-                                        <a href="#" onclick="formulario_metodo_evaluacion(<?php echo $asignatura->getId();?>);">Método Evaluación </a> 
-                                    </li>
-                                </ul>
-                                
-                             <?php endforeach; ?>                            
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                 </div>
-            <?php endif; ?>
-            <h3>Otras Opciones</h3>
-                <div>
-                    <ul class="list1">           
-                        <li> <a href="#" onclick="add_asignatura(); return false;"> Añadir Asignatura </a> </li>
-                        <li> <a href="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura');?>"> Añadir profesores </a> </li>
-                    </ul>
-                 </div>
-          </div>
-    </div>
-    <div class="Clear"></div>
-    <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
-  </div>
-   <!-- <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()"> -->
-    
-      <?php /*$item = $view['knp_menu']->get('SISigueBundle:Builder:profesorMenu'); 
-        var_dump($item);die();
-        echo $view['knp_menu']->render($item, array() , $asignaturas, 'list'); */
-    ?>
-<?php $view['slots']->stop(); ?>
+<?php echo $view->render(
+            'SISigueBundle:Profesor:menu.html.php',
+            array('asignaturas' => $asignaturas )
+        ); ?>
 
 
 
@@ -331,17 +281,17 @@
        });
        
        function qr(){
-            var id = '<?php echo $asignatura->getId();?>';
+            var id = '<?php if(isset($asignatura)){ echo $asignatura->getId();}?>';
             if ($('#codQR').has('img').length){
                 ocultar_todo();
                 $("#nueva_asignatura").addClass("hiddenStructure");
                 $("#codQR").removeClass('hiddenStructure');
             }else{
                 var cod = '<?php if(isset($cod)){ echo $cod; } else{ echo ""; };?>';
-                var url = '<?php echo "http://".$_SERVER['HTTP_HOST']. "/web/"; ?>';
+                var url = '<?php echo "http://".$_SERVER['SERVER_NAME']. ""; ?>';
                 $.ajax({
                     type:"GET",
-                    url: url + "vendor/generadorQR.php",
+                    url: url + "/generadorQR.php",
                     async: true,
                     data: {
                        codigo: cod 

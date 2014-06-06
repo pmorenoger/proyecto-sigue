@@ -16,6 +16,11 @@ class DefaultController extends Controller
         return $this->render('SISigueBundle:Default:index.html.php', array("error" => $error));
     }
     
+     public function redirectAction()
+    {
+        return $this->redirect($this->generateUrl('si_sigue_homepage', array("error" => $error)));
+    }
+    
     public function loginAction($error){
         
          /*AQUI TENGO QUE CONTROLAR LA INFO DEL LOGIN*/

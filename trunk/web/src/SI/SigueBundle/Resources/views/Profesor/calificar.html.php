@@ -2,38 +2,12 @@
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
-<?php $view['slots']->start("menu_left"); ?>  
-   <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
-   <div class="perfil">
-    <div id="accordion-resizer" class="ui-widget-content">
-         <div id="accordion">    
-             <?php  $rol = $view['router']->generate('si_sigue_perfil_profesor'); ?>
-            <h3> <a href="<?php echo $rol;?>" title="Página de incio">Curso 2013/2014 .</a></h3>
-                 <div>
-                    <ul class="list1">                        
-                        <li>                            
-                            <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="ocultar_todo();mostrar_tabla();"><?php echo $asignatura->getNombre();?> </div>
-                            <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="lista_opciones list2">
-                                <li>
-                                <a href="#" onclick="nueva_actividad();">Nueva Actividad </a> 
-                                </li>
-                                <li>
-                                <a href="#" id="boton_importar" >Importar/Exportar</a>
-                                </li>
-                                <li>
-                                <a href="<?php echo $view['router']->generate('si_sigue_notificar_calificaciones', array("id_asignatura" =>$asignatura->getId() ) );?>" id="notificar" title="Envíe una notificación a los alumnos de esta asignatura de que ha habido cambios en las calificaciones" onclick="notificar();return false;">Notificar</a>                                   
-                                </li>                                                                        
-                            </ul>                 
-                        </li>
-                        
-                    </ul>
-                 </div>
-          
-         </div>  
-    </div>
-</div>
 
-<?php $view['slots']->stop(); ?>
+<?php echo $view->render(
+            'SISigueBundle:Profesor:menu.html.php',
+            array('asignaturas' => $asignaturas, "asignatura" => $asignatura )
+        ); ?>
+
 <?php $view['slots']->start("center"); ?>
    <div class="perfil">
    <div id="centro_tabla" class="ancho_horizontal">
@@ -215,7 +189,8 @@
                }
            });
            
-            
+           mostrar_opciones_asignatura(<?php echo $asignatura->getId();?>);
+           mostrar_subopciones_asignatura(<?php echo $asignatura->getId();?>); 
            $( "#tooltip_exito" ).dialog({                
                 buttons: [
                   {
@@ -267,8 +242,29 @@ function ocultar_tabla(){
 function ocultar_todo(){
     $("#actividad_asignatura").addClass("hiddenStructure");
     $("div [id^='actividad_']").addClass("hiddenStructure");
+    $("div [id^='asignatura_']").addClass("hiddenStructure");
+   $("div [id^='evaluacion_']").addClass("hiddenStructure");
+   $("div [id^='evaluacion_']").addClass("hiddenStructure");
+   $("div [id^='stats_codigos']").addClass("hiddenStructure");
+   $("#codQR").addClass("hiddenStructure");
 }
-           
+
+
+ function mostrar_opciones_asignatura(id_asignatura){    
+               // ocultar_todo();
+                $("ul [id^='lista_opciones']").addClass("hiddenStructure");
+                $("#codQR").addClass("hiddenStructure");
+                $("#lista_opciones_"+id_asignatura).removeClass("hiddenStructure");
+                $("#nueva_asignatura").addClass("hiddenStructure");         
+                //console.log("Ha llegado al de la id "+id_asignatura);
+                return false;
+         }
+function mostrar_subopciones_asignatura(id_asignatura){
+     $("ul [id^='lista_subopciones']").addClass("hiddenStructure");
+     $("#lista_subopciones_"+id_asignatura).removeClass("hiddenStructure");
+}        
+
+
 function nueva_actividad(){
     ocultar_todo();
     ocultar_tabla();   
