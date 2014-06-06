@@ -65,7 +65,7 @@
                 <div>
                     <ul class="list1">           
                          <li> <a href="<?php echo $view['router']->generate('si_sigue_add_asignatura');?>" > Añadir Asignatura </a> </li>
-                        <li> <a href="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura', array("exito"=>"no"));?>"> Añadir profesores </a> </li>
+                        <li> <a href="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura', array("exito"=> "no"));?>"> Añadir profesores </a> </li>
                     </ul>
                  </div>
           </div>
