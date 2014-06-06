@@ -21,16 +21,16 @@ class ProfesorController extends Controller
         public function indexAction($exito)
         {     
             $asig = self::getAsignaturas();
-            $profesor = self::getProfesor();
-            if($profesor === "session_lost"){
-               $session = $this->container->get('session');
-                $session->remove('idalumno');
-                $session->remove('idprofesor');
-                return $this->redirect('inicio');
-            }
+           
             $peticion = $this->container->get('session');
             $p = $peticion->get('pAl');
-            
+            $profesor = self::getProfesor();
+                 if($profesor === "session_lost"){
+                    $session = $this->container->get('session');
+                    $session->remove('idalumno');
+                    $session->remove('idprofesor');                   
+                   return $this->redirect($this->generateUrl('si_sigue_homepage'));
+                }
             //TODO Redigir si no hay login.
             $em = $this->getDoctrine()->getEntityManager();
             if ($profesor->getCodigo() === NULL){
@@ -59,6 +59,7 @@ class ProfesorController extends Controller
            }              
         }
         public function subir_alumnoAction(){
+            self::hayLogin();
             $kernel = $this->get('kernel');
             $dir_abs = self::getDireccionAbsoluta();
             require_once $dir_abs . '/vendor/Excel/lib/src/Classes/PHPExcel.php';
@@ -196,7 +197,7 @@ class ProfesorController extends Controller
         }
         
         public function descargar_pdfAction($pdf){
-            
+            self::hayLogin();
              $path = self::getDireccionAbsoluta() ."/web/archivos/pdfs/". $pdf;
             $content = file_get_contents($path);
 
@@ -217,6 +218,7 @@ class ProfesorController extends Controller
         }
         
         public function cambiar_metodoAction(){
+            self::hayLogin();
             /*Aqui debo asignar el método de evaluación*/            
             /*Dependiendo del metodo, debo guardar los parametros*/
             $request = Request::createFromGlobals();
@@ -253,14 +255,14 @@ class ProfesorController extends Controller
             }
             //var_dump($metodo);die();
             
-            return $this->indexAction(array("exito" => "true3"));
+            return $this->metodoAction($id_asignatura, "true");
         }
         
         
         
         
         public function generar_qrAction(){
-               
+               self::hayLogin();
                 $request = Request::createFromGlobals();
                 $cantidad = $request->request->get('cantidad');
                 $id_asignatura = $request->request->get('id_asignatura');
@@ -301,10 +303,10 @@ class ProfesorController extends Controller
                 /*2º Crear el pdf a partir de todas la imágenes generadas*/
                 $ruta_pdf = self::crearPdfCodigos($rutas_codigos);
                 /*3º Enviar por email*/
+          
+               
                 
-                
-                
-                return $this->indexAction(array("exito" => "true2", "ruta_pdf" => $ruta_pdf));
+                return $this->generar_tokensAction($id_asignatura,$ruta_pdf);
                 
             }
                
@@ -321,6 +323,7 @@ class ProfesorController extends Controller
              * 6.- Cálculo de los SS, AP, NT y SB
              * 
              */
+            self::hayLogin();
             $em = $this->getDoctrine()->getManager();
             $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($id_asignatura);
             
@@ -379,22 +382,58 @@ class ProfesorController extends Controller
            
             
            $asignaturas = self::getAsignaturas();
-           $array = ["asignatura" => $asignatura, "exito" => $exito, "alumnos" =>$alumnos, "totales" =>$totales, "redimidos" => $redimidos, "fechas_veces" => $fechas_veces ];           
+           $array = ["asignatura" => $asignatura, "exito" => $exito, "alumnos" =>$alumnos, "totales" =>$totales, "redimidos" => $redimidos, "fechas_veces" => $fechas_veces, "asignaturas" => $asignaturas ];           
            //return   $this->indexAction($array);
            return $this->render('SISigueBundle:Profesor:stats.html.php',$array);
         }
         
         public function notificarAction($id_asignatura){
+            self::hayLogin();
             /*Notificamos a las apps que tengan como usuarios los propios alumnos calificados*/ 
             /*AQUI se debe hacer el http request para que mande a los alumnos.*/
             return self::calificarAction($id_asignatura, true);
         }
         
+        public function generar_tokensAction($id_asignatura, $ruta_pdf = ""){
+            self::hayLogin();
+              $em = $this->getDoctrine()->getManager();
+              $asignatura = $em->getRepository("SISigueBundle:Asignaturas")->findOneById($id_asignatura);
+             $asignaturas = self::getAsignaturas();
+             //var_dump($asignaturas);die();
+             $array =  array();
+             $array["asignaturas"] = $asignaturas;
+             $array["asignatura"] = $asignatura;
+             $array["exito"] = "";
+             if($ruta_pdf != ""){
+                $array["exito"] = "true2";
+                $array["ruta_pdf"] = $ruta_pdf;                 
+             }
+             
+            return $this->render('SISigueBundle:Profesor:codigos.html.php', $array);
+        }
+        
+        public function metodoAction($id_asignatura, $exito = ""){
+             self::hayLogin();
+              $em = $this->getDoctrine()->getManager();
+              $asignatura = $em->getRepository("SISigueBundle:Asignaturas")->findOneById($id_asignatura);
+             $asignaturas = self::getAsignaturas();
+             //var_dump($asignaturas);die();
+             $array =  array();
+             $array["asignaturas"] = $asignaturas;
+             $array["asignatura"] = $asignatura;
+             $array["exito"] = "";
+             if($exito != ""){
+                $array["exito"] = $exito;                      
+             }
+            return $this->render('SISigueBundle:Profesor:metodos.html.php', $array);
+        }
         
         public function calificarAction($id_asignatura, $exito = false){            
-            
+            self::hayLogin();
             $array = self::listado_alumnos_actividad_asignatura($id_asignatura, $exito);
-            
+            $asignaturas = self::getAsignaturas();
+            $array["asignaturas"] = $asignaturas;
+            $array["subopciones"] = "true";
             return $this->render('SISigueBundle:Profesor:calificar.html.php', $array);
         }
         
@@ -402,7 +441,7 @@ class ProfesorController extends Controller
               $em = $this->getDoctrine()->getManager();
               $asignatura = $em->getRepository("SISigueBundle:Asignaturas")->findOneById($id_asignatura);
               $alumno = $em->getRepository("SISigueBundle:Alumnos")->findOneByIdalumno($id_alumno);
-             
+             self::hayLogin();
                $query = $em->CreateQuery(
                         'SELECT p
                          FROM SISigueBundle:ActividadAsignatura p
@@ -420,14 +459,17 @@ class ProfesorController extends Controller
                             ')->SetParameters(array('idAsignatura'=>$id_asignatura, 'idAlumno'=>$alumno));
                 $codigos = $query2->getResult();
                  */
-                 
+              $resultado["asignatura"] = $asignatura;
+              $resultado["alumno"] = $alumno;
+              $resultado["actividades"] = $actividades;
+              $resultado["asignaturas"] = self::getAsignaturas();
              
-           return $this->render('SISigueBundle:Profesor:calificar_actividad.html.php', array("asignatura"=>$asignatura, "alumno" => $alumno, "actividades" => $actividades));  
+           return $this->render('SISigueBundle:Profesor:calificar_actividad.html.php',$resultado);  
          }
         
          
            public function calificar_actividad_guardarAction($id_asignatura, $id_alumno){    
-               
+               self::hayLogin();
                /*Aquí hay que guardar el formulario con las notas. El profesor habrá rellenado el 
                 * formulario, y hay que recoger cada nota y guardarlo debidamente.
                 */
@@ -475,6 +517,7 @@ class ProfesorController extends Controller
            }
         
         public function guardar_calificacionesAction($id_asignatura){
+                self::hayLogin();
                 $request = Request::createFromGlobals();
                 $notas = $request->request->all();
                 $claves = array_keys($notas);
@@ -513,7 +556,7 @@ class ProfesorController extends Controller
             
         }  
          public function exportar_calificacionesAction($id_asignatura){
-                
+                self::hayLogin();
                 $kernel = $this->get('kernel');
                 $dir_abs = self::getDireccionAbsoluta();
                  $em = $this->getDoctrine()->getManager();
@@ -631,6 +674,7 @@ class ProfesorController extends Controller
         }
         
          public function importar_calificacionesAction(){
+             self::hayLogin();
             $kernel = $this->get('kernel');
             $dir_abs = self::getDireccionAbsoluta();
             require_once $dir_abs . '/vendor/Excel/lib/src/Classes/PHPExcel.php';
@@ -764,7 +808,11 @@ class ProfesorController extends Controller
            return true;
         }
         
-        public function add_profesor_asignaturaAction($exito){            
+        public function add_profesor_asignaturaAction($exito = ""){
+            self::hayLogin();
+            if($exito ==="no") {
+                $exito = "";
+            }
             //Lista de asignaturas impartidas por el profesor//
             // var_dump($exito);die(); 
             $asig = self::getAsignaturas();
@@ -796,13 +844,39 @@ class ProfesorController extends Controller
                  
                  
             }
-            //var_dump($asig_prof);die();
+               
+           $resultado["exito"] = $exito;
+           $resultado["asignaturas"] = $asig;
+           $resultado["asig_prof"] = $asig_prof;
+           $resultado["asignatura"] = null;
+           
                
                
-            return $this->render('SISigueBundle:Profesor:add_profesor.html.php',array("exito" => $exito,'asignaturas' =>$asig,"asig_prof" => $asig_prof));
+            return $this->render('SISigueBundle:Profesor:add_profesor.html.php',$resultado);
         }
         
+        public function add_asignaturaAction($exito = ""){
+            
+            self::hayLogin();
+             $em = $this->getDoctrine()->getManager();             
+             $asignaturas = self::getAsignaturas();
+             //var_dump($asignaturas);die();
+             $array =  array();
+             $array["asignaturas"] = $asignaturas; 
+             $array["asignatura"] = null; 
+             $array["exito"] = "";
+             if($exito != ""){
+                $array["exito"] = "true2";                          
+             }
+             
+            return $this->render('SISigueBundle:Profesor:add_asignatura.html.php', $array);
+            
+            
+        }
+        
+        
           public function add_profesor_asignatura_guardarAction(){
+              self::hayLogin();
                $request = Request::createFromGlobals();
                $em = $this->getDoctrine()->getManager();
               // $asig = $request->request->get('cantidad');
@@ -830,10 +904,11 @@ class ProfesorController extends Controller
                 $em->flush();
                //var_dump(); die();
               
-             return $this->redirect($this->generateUrl("si_sigue_add_profesor_asignatura",array("exito" => true)));
+             return $this->redirect($this->generateUrl("si_sigue_add_profesor_asignatura",array("exito" => "true")));
           }    
         
         public function generar_actividadAction(){
+            self::hayLogin();
             $request = Request::createFromGlobals();
             $em = $this->getDoctrine()->getManager(); 
             $id_asignatura = $request->request->get("id_asignatura");
@@ -1094,6 +1169,17 @@ class ProfesorController extends Controller
                     $result .= $char;
                 }
                 return base64_encode($result);
+            }
+            
+            private function hayLogin(){
+                 $profesor = self::getProfesor();
+                 if($profesor === "session_lost"){
+                    $session = $this->container->get('session');
+                    $session->remove('idalumno');
+                    $session->remove('idprofesor');
+                    return $this->redirect($this->generateUrl('si_sigue_homepage'));
+                }
+                
             }
     }
   

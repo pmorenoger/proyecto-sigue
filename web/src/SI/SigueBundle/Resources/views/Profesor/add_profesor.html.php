@@ -2,53 +2,10 @@
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
-   <!-- AQUI VA EL MENU DE LA IZQUIERDA -->
-   <?php $view['slots']->start("menu_left"); ?>
-   <div class="perfil">
-   <div id="accordion-resizer" class="ui-widget-content">
-         <div id="accordion">
-           <?php if (count($asignaturas)>0) :?>
-           <?php /*FALTARIA HACER DINAMICOS LOS AÑOS EN LA PARTE PROFESOR*/ ?>
-            <h3>Curso 2013/2014 .</h3>
-                 <div>
-                    <ul class="list1">
-                        <?php foreach ($asignaturas as $as): ?>
-                        <li>
-                             <?php foreach ($as as $asignatura):?>
-                                <div id="bloque_asginatura_<?php echo $asignatura->getId();?>" class="bloque_asignatura" onclick="mostrar_opciones_asignatura(<?php echo $asignatura->getId();?>);"><?php echo $asignatura->getNombre();?> </div>
-                                <ul id="lista_opciones_<?php echo $asignatura->getId();?>" class="hiddenStructure lista_opciones list2">
-                                    <li>
-                                        <a href="#" onclick="generar_qr_pop_up(<?php echo $asignatura->getId();?>);">Generar Códigos </a> 
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asignatura->getId() ));?>" onclick="ver_stats_codigo(<?php echo $asignatura->getId();?>)">Ver estadísticas de los Códigos</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo $view['router']->generate('si_sigue_calificar_profesor', array("id_asignatura" =>$asignatura->getId()));?>" >Gestionar calificaciones</a>                                   
-                                    </li>    
-                                     <li>
-                                        <a href="#" onclick="formulario_metodo_evaluacion(<?php echo $asignatura->getId();?>);">Método Evaluación </a> 
-                                    </li>
-                                </ul>
-                                
-                             <?php endforeach; ?>                            
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                 </div>
-            <?php endif; ?>
-            <h3>Otras Opciones</h3>
-                <div>
-                    <ul class="list1">           
-                        <li> <a href="#" onclick="add_asignatura(); return false;"> Añadir Asignatura </a> </li>
-                        <li> <a href="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura');?>"> Añadir profesores </a> </li>
-                       <!-- <li> <a href=""> Otros </a> </li>
-                       -->
-                 </div>
-          </div>
-    </div>
-    </div>
-<?php $view['slots']->stop(); ?>
+  <?php echo $view->render(
+            'SISigueBundle:Profesor:menu.html.php',
+            array('asignaturas' => $asignaturas, 'asignatura' => $asignatura )
+        ); ?>
    
 <?php $view['slots']->start("center"); ?>
        <div class="perfil">
@@ -83,14 +40,14 @@
     
     
 </div>
-<?php if($exito === 1): ?>
+<?php if($exito === "true"): ?>
     <div id="tooltip_exito"> 
         <p>¡Profesor añadido con éxito!</p>
         <p></p>
     </div>
 <?php endif; ?>
 
-<?php if($exito === 0): ?>
+<?php if($exito === "false"): ?>
     <div id="tooltip_exito"> 
         <p>¡Lo sentimos!</p>
         <p>El profesor no ha podido ser añadido a la asignatura.</p>
@@ -144,6 +101,23 @@
             selectedText: "seleccionados # de #"
             });
        
-       
+        function mostrar_opciones_asignatura(id_asignatura){    
+               // ocultar_todo();
+                $("ul [id^='lista_opciones']").addClass("hiddenStructure");
+                $("#codQR").addClass("hiddenStructure");
+                $("#lista_opciones_"+id_asignatura).removeClass("hiddenStructure");
+                $("#nueva_asignatura").addClass("hiddenStructure");         
+                //console.log("Ha llegado al de la id "+id_asignatura);
+                return false;
+         }
+         
+         function ocultar_todo(){
+            $("div [id^='asignatura_']").addClass("hiddenStructure");
+            $("div [id^='evaluacion_']").addClass("hiddenStructure");
+            $("div [id^='evaluacion_']").addClass("hiddenStructure");
+            $("div [id^='stats_codigos']").addClass("hiddenStructure");
+            $("#codQR").addClass("hiddenStructure");
+         }
+         
 </script>
 <?php $view['slots']->stop(); ?>  
