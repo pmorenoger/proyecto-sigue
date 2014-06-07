@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
-
+include ('../vendor/PHPqrcode/phpqrcode.php');
 class ProfesorController extends Controller
     {
         public function indexAction($exito)
@@ -158,7 +158,7 @@ class ProfesorController extends Controller
                 }else{
                     return;
                 }
-                $existe_alumno = $em->getRepository('SISigueBundle:Alumnos')->findByCorreo($alumno->getCorreo());
+                $existe_alumno = $em->getRepository('SISigueBundle:Alumnos')->findOneByCorreo($alumno->getCorreo());
                 if(!$existe_alumno){
                     $pass_provisional = explode("@",$alumno->getCorreo());
                     $pass_provisional[0] = $pass_provisional[0].rand(0,99);
@@ -176,7 +176,7 @@ class ProfesorController extends Controller
                     ->setTo($alumno->getCorreo())
                     ->setBody('<h3> ¡Bienvenido! </h3> <p>Ha sido añadido al sistema SIGUE de la ucm.<br /> 
             <p>Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0].'</p>
-                <a href="" title="Ir a Sigue">SIGUE </a> '. $pass_provisional[0], 'text/html' );
+                <a href="" title="Ir a Sigue">SIGUE </a> ', 'text/html' );
                     $this->get('mailer')->send($message);
                         
                 }                
@@ -216,6 +216,215 @@ class ProfesorController extends Controller
             
             return $response;
         }
+        
+         public function add_alumnoAction($id_asignatura){
+             $em = $this->getDoctrine()->getManager();              
+             $asignaturas = self::getAsignaturas();
+             $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->findOneById($id_asignatura);
+             
+             $array =  array();
+             $array["asignaturas"] = $asignaturas;
+             $array["asignatura"] = $asignatura;
+             $array["exito"] = "";            
+           
+            return $this->render('SISigueBundle:Profesor:add_alumno.html.php', $array);
+            
+            
+        }
+        
+        public function add_alumnoGuardarAction($id_asignatura){
+            
+            
+            $em = $this->getDoctrine()->getManager();              
+             $asignaturas = self::getAsignaturas();            
+             $array =  array();
+             $array["asignaturas"] = $asignaturas;
+              $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->findOneById($id_asignatura);
+             $array["asignatura"] = $asignatura;
+              $request = Request::createFromGlobals();
+              $alumno = new Alumnos();
+              
+              $nombre =  $request->request->get('nombre', 'fallo');
+              $apellidos = $request->request->get('apellidos', 'fallo');
+              $correo = $request->request->get('correo', 'fallo');
+              
+              if($nombre != "fallo" && $apellidos != "fallo" && $correo != "fallo"){
+              $alumno->setNombre($nombre);
+              $alumno->setApellidos($apellidos);
+              $alumno->setCorreo($correo);
+              $existe_alumno = $em->getRepository('SISigueBundle:Alumnos')->findOneByCorreo($alumno->getCorreo());
+             
+              if(!$existe_alumno){
+                    $pass_provisional = explode("@",$alumno->getCorreo());
+                    $pass_provisional[0] = $pass_provisional[0].rand(0,99);
+                    
+                    $hash = self::hashSSHA($pass_provisional[0]);
+                    $encrypted_password = $hash["encrypted"];
+                    $salt = $hash["salt"];
+                    $alumno->setSalt($salt);
+                    $alumno->setPassword($encrypted_password);
+                    
+                    //ENVIAR POR EMAIL AL ALUMNO//
+                   $message = \Swift_Message::newInstance('ssl://smtp.gmail.com', 465)
+                    ->setSubject('Alta Usuario SIGUE')
+                    ->setFrom('admin@sigue.com')
+                    ->setTo($alumno->getCorreo())
+                    ->setBody('<h3> ¡Bienvenido! </h3> <p>Ha sido añadido al sistema SIGUE de la ucm.<br /> 
+            <p>Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0].'</p>
+                <a href="'.$_SERVER["SERVER_NAME"].'" title="Ir a Sigue">SIGUE </a> ', 'text/html' );
+                    $this->get('mailer')->send($message);
+                        
+                }                
+                /*
+                var_dump($alumno);
+                var_dump($existe_alumno);die();*/
+                /*Solo lo añado a la tabla alumnos si no existe en esa tabla*/
+                if($existe_alumno){                              
+                     $alumno = $existe_alumno;
+                }
+                $em->persist($alumno);
+                $em->flush();
+                //Controlo que el alumno no esté ya en la asignatura
+                $asignatura_alumno = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneById_alumno($alumno->getIdalumno());
+                
+                if(!$asignatura_alumno){
+                
+                /*A la asignatura nueva se añade siempre*/
+                $asignatura_alumno = new AsignaturaAlumno();
+                $asignatura_alumno->setIdAlumno($alumno);
+                $asignatura_alumno->setIdAsignatura($asignatura);
+                $asignatura_alumno->setNum(0);
+                $em->persist($asignatura_alumno);
+                $array["exito"] = "true";
+                //Así como todas las actividades de esa asignatura para ese alumno:
+                $query = $em->createQuery(  "SELECT T
+                                    FROM SISigueBundle:ActividadAsignatura T
+                                    WHERE T.idAsignatura = :id
+                                    GROUP BY T.nombre
+                                    " )->setParameter('id',$asignatura->getId());
+                $actividades = $query->getResult();
+                
+                
+               
+                foreach($actividades as $actividad){
+                    $nueva = new ActividadAsignatura();
+                    $nueva->setNombre($actividad->getNombre());
+                    $nueva->setPeso($actividad->getPeso());
+                    $nueva->setNota(0);
+                    $nueva->setDescripcion($actividad->getDescripcion());
+                    $nueva->setObservaciones("");
+                    $nueva->setFechaCreacion($actividad->getFechaCreacion());
+                    $nueva->setFechaLimite($actividad->getFechaLimite());                  
+                    $nueva->setIdAlumno($alumno);
+                    $nueva->setIdAsignatura($asignatura);
+                    $em->persist($nueva);
+                }
+                
+                
+                 $em->flush();
+                }else{
+                    $array["exito"] = "false2";         
+                }
+           } else{
+             
+             
+              $array["exito"] = "false";            
+              
+              }
+            return $this->render('SISigueBundle:Profesor:add_alumno.html.php', $array);
+        }
+        
+        public function cambiar_passwordAction(){
+             $em = $this->getDoctrine()->getManager();              
+             $asignaturas = self::getAsignaturas();            
+             $array =  array();
+             $array["asignaturas"] = $asignaturas;
+             $array["asignatura"] = null;
+             $array["exito"] = "";            
+           
+            return $this->render('SISigueBundle:Profesor:cambiar_password.html.php', $array);
+            
+            
+        }
+        
+        public function cambiar_passwordGuardarAction(){
+            
+             $em = $this->getDoctrine()->getManager();              
+             $asignaturas = self::getAsignaturas();            
+             $array =  array();
+             $array["asignaturas"] = $asignaturas;
+             $array["asignatura"] = null;
+                        
+              $request = Request::createFromGlobals();
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        //$id = $peticion->get('idalumno');//$request->request->get("id_alumno");
+       $profesor = self::getProfesor();
+        $password = $request->request->get("password");
+        
+        $oldCod = $profesor->getCodigo(); 
+        $query = $em->createQuery(  "SELECT T
+                                    FROM SISigueBundle:Codigos T
+                                    WHERE T.codigo = :cod" )->setParameter('cod',$oldCod);
+        $list = $query->getResult();
+        if(!is_null($list) && count($list)== 1){
+            $codigo = $list[0];
+            $codigo->setCodigo($profesor->getCorreo()."#&".$password);
+            $em->persist($codigo);
+        }
+        
+        $hash = self::hashSSHA($password);
+        $profesor->setSalt($hash["salt"]);
+        $profesor->setPassword($hash["encrypted"]);
+        $profesor->setCodigo($profesor->getCorreo()."#&".$password);
+        $em->persist($profesor);
+        $em->flush();
+        $array["exito"] = "true"; 
+                                 
+             
+        return $this->render('SISigueBundle:Profesor:cambiar_password.html.php', $array);
+            
+        }
+        public function activar_appAction(){
+             self::hayLogin();
+             $codigo =  self::getCodigoEncriptadop();
+             
+             //var_dump($codigo);die();
+             $key = "sigue";
+            $result =$codigo;
+            $res = "";
+            $string = base64_decode($result);
+            for($i=0; $i<strlen($string); $i++) {
+                $char = substr($string, $i, 1);
+                $keychar = substr($key, ($i % strlen($key))-1, 1);
+                $char = chr(ord($char)-ord($keychar));
+                $res .= $char;
+            }
+            $data = $res;
+            //tratamos el código QR
+            $nombre = explode("@", $data);
+            $nombre = $nombre[0];
+                $nombre = 'qr'.$nombre.'.png';
+            $dir =  '../web/img/'.$nombre;
+
+            \QRcode::png($data, $dir,QR_ECLEVEL_H,6);
+    
+             
+             
+             $em = $this->getDoctrine()->getManager();              
+             $asignaturas = self::getAsignaturas();            
+             $array =  array();
+             $array["asignaturas"] = $asignaturas;
+             $array["asignatura"] = null;
+             $array["exito"] = "";
+             $dir_real = str_replace("..","",$dir);
+             $array["dir"] = $dir_real;
+           
+            return $this->render('SISigueBundle:Profesor:activar_app.html.php', $array);
+        }
+        
+        
+        
         
         public function cambiar_metodoAction(){
             self::hayLogin();
@@ -874,6 +1083,8 @@ class ProfesorController extends Controller
             
         }
         
+       
+        
         
           public function add_profesor_asignatura_guardarAction(){
               self::hayLogin();
@@ -1156,6 +1367,12 @@ class ProfesorController extends Controller
 	        $pdf->Line($x+100,$j-10,$x+100,$j-5);
 	        $pdf->Line($x,$j+120,$x,$j+125);
                 $pdf->Line($x+100,$j+120,$x+100,$j+125);
+            }
+            
+            
+            public function getCodigoEncriptadop(){
+                $profesor = self::getProfesor();               
+                return self::getCodigoEncriptado($profesor);
             }
             
             private function getCodigoEncriptado($profesor){

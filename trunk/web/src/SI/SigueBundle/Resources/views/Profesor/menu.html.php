@@ -24,12 +24,12 @@
                                     </li>
                                     <li>
                                         <?php $asignatura_actual = 0;
-                                            if(isset($subopciones)){
-                                                if(!isset($asignatura)){ 
-                                                                                           
+                                          if(!isset($asignatura)){ 
+                                               $asignatura_actual = 0;   
+                                                                                                                                                                                      
                                                 }else{ 
                                                     $asignatura_actual = $asignatura->getId();                                                     
-                                             }                                           
+                                                                                        
                                             } 
                                         ?>
                                         <?php $enlace=""; if($asig->getId() != $asignatura_actual){$enlace = $view['router']->generate('si_sigue_calificar_profesor', array("id_asignatura" =>$asig->getId()));} ?>
@@ -51,6 +51,9 @@
                                      <li>
                                         <a href="<?php echo $view['router']->generate('si_sigue_metodo_evaluacion', array("id_asignatura" =>$asig->getId() ) );?>" >Método Evaluación </a> 
                                     </li>
+                                     <li>
+                                        <a href="<?php echo $view['router']->generate('si_sigue_add_alumno', array("id_asignatura" =>$asig->getId() ) );?>" >Añadir Alumno </a> 
+                                    </li>
                                 </ul>
                                 
                              <?php endforeach; ?>                            
@@ -66,49 +69,66 @@
                     <ul class="list1">           
                          <li> <a href="<?php echo $view['router']->generate('si_sigue_add_asignatura');?>" > Añadir Asignatura </a> </li>
                         <li> <a href="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura', array("exito"=> "no"));?>"> Añadir profesores </a> </li>
+                         <li> <a href="<?php echo $view['router']->generate('si_sigue_cambiar_password', array("exito"=> "no"));?>"> Cambiar Contraseña </a> </li>
                     </ul>
                  </div>
           </div>
     </div>
     <div class="Clear"></div>
-    <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr()">
+    <input class="bActivar" type="button" value="Activar Aplicación" id="bActivar" onclick="qr();">
   </div>
-   
+   <script type="text/javascript">
+    $(document).ready(function(){
+           $("#accordion").accordion({
+               heightStyle: "fill"
+           });
+           $( "#accordion-resizer" ).resizable({
+               minHeight: 140,
+               minWidth: 200,
+               resize: function() {
+                   $( "#accordion" ).accordion( "refresh" );
+               }
+           });
+           mostrar_opciones_asignatura(<?php echo $asignatura_actual;?>);
+           $( "#tooltip_exito" ).dialog({                
+                buttons: [
+                  {
+                    text: "OK",
+                    click: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+                ]
+              });
+              
+             
+          
+       });
+       
+   </script>
    <script type="text/javascript">
     function qr(){
-            var id = '<?php if(isset($asignatura)){ echo $asignatura->getId();}?>';
-            if ($('#codQR').has('img').length){
-                ocultar_todo();
-                $("#nueva_asignatura").addClass("hiddenStructure");
-                $("#codQR").removeClass('hiddenStructure');
-            }else{
-                var cod = '<?php if(isset($cod)){ echo $cod; } else{ echo ""; };?>';
-                var url = '<?php echo "http://".$_SERVER['SERVER_NAME']. ""; ?>';
-                $.ajax({
-                    type:"GET",
-                    url: url + "/generadorQR.php",
-                    async: true,
-                    data: {
-                       codigo: cod 
-                    },
-                    dataType:"json",
-                    success: function(data) {
-                        if (data.status){
-                            //$("#actividades").addClass('hiddenStructure');
-                            //$('#divCambiar').addClass('hiddenStructure');
-                            //$('#divCorreoAdicional').addClass('hiddenStructure');
-                            ocultar_todo();
-                            $("#codQR").removeClass('hiddenStructure');
-                            $("#codQR").append("<img src='" + url + data.dir + "'>");
-                            //$("#bActivar").attr("disabled", "disabled");
-                        }else{
-                            $("#bActivar").attr("disabled", "disabled");
-                        }
-                     }
-                });
-            }
+        var url = window.location.pathname;      
+        var path_array = url.split('/');
+        if(path_array[path_array.length-1] != "activar_app" ){
+            window.location = "<?php echo $view['router']->generate('si_sigue_activar_app');?> ";
         }
-   
+      
+        }
+    function mostrar_opciones_asignatura(id_asignatura){    
+               // ocultar_todo();
+                $("ul [id^='lista_opciones']").addClass("hiddenStructure");               
+                $("#lista_opciones_"+id_asignatura).removeClass("hiddenStructure");                                   
+                return false;
+         }
+         
+         function ocultar_todo(){
+            $("div [id^='asignatura_']").addClass("hiddenStructure");
+            $("div [id^='evaluacion_']").addClass("hiddenStructure");
+            $("div [id^='evaluacion_']").addClass("hiddenStructure");
+            $("div [id^='stats_codigos']").addClass("hiddenStructure");            
+         }
+         
    </script>
    
 <?php $view['slots']->stop(); ?>
