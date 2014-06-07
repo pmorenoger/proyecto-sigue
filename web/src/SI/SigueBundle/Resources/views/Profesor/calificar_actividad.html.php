@@ -33,54 +33,12 @@
          window.history.go(-1);
           
       }
-      $(document).ready(function(){
-           $("#accordion").accordion({
-               heightStyle: "fill"
-           });
-           $( "#accordion-resizer" ).resizable({
-               minHeight: 140,
-               minWidth: 200,
-               resize: function() {
-                   $( "#accordion" ).accordion( "refresh" );
-               }
-           });
-             mostrar_opciones_asignatura(<?php echo $asignatura->getId();?>);
-           $( "#tooltip_exito" ).dialog({                
-                buttons: [
-                  {
-                    text: "OK",
-                    click: function() {
-                      $( this ).dialog( "close" );
-                    }
-                  }
-                ]
-              });
-              
-             
-          
-       });
       
       
       
       
-       function mostrar_opciones_asignatura(id_asignatura){    
-               // ocultar_todo();
-                $("ul [id^='lista_opciones']").addClass("hiddenStructure");
-                $("#codQR").addClass("hiddenStructure");
-                $("#lista_opciones_"+id_asignatura).removeClass("hiddenStructure");
-                $("#nueva_asignatura").addClass("hiddenStructure");         
-                //console.log("Ha llegado al de la id "+id_asignatura);
-                return false;
-         }
-         
-         function ocultar_todo(){
-            $("div [id^='asignatura_']").addClass("hiddenStructure");
-            $("div [id^='evaluacion_']").addClass("hiddenStructure");
-            $("div [id^='evaluacion_']").addClass("hiddenStructure");
-            $("div [id^='stats_codigos']").addClass("hiddenStructure");
-            $("#codQR").addClass("hiddenStructure");
-         }
-         
+      
+      
       </script>
       
 <?php $view['slots']->stop(); ?>

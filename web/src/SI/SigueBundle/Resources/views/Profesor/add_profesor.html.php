@@ -61,32 +61,10 @@
 
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
-    $(document).ready(function(){
-           $("#accordion").accordion({
-               heightStyle: "fill"
-           });
-           $( "#accordion-resizer" ).resizable({
-               minHeight: 140,
-               minWidth: 200,
-               resize: function() {
-                   $( "#accordion" ).accordion( "refresh" );
-               }
-           });
-           
-           $( "#tooltip_exito" ).dialog({                
-                buttons: [
-                  {
-                    text: "OK",
-                    click: function() {
-                      $( this ).dialog( "close" );
-                    }
-                  }
-                ]
-              });
-              
-             
-          
-       });
+           $(document).ready(function(){
+           $("#accordion").accordion( "option", "active", 1 );
+
+            });
        
        function ocultar_todo(){
             $("#add_profesor").addClass("hiddenStructure");

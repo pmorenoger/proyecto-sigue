@@ -39,6 +39,9 @@ si_sigue_alumno_token:
     pattern:  /Alumno/registrar/{id}/{asig}
     defaults:   {_controller: SISigueBundle:Alumno:token }
     methods:  [POST]
+si_sigue_activar_app:
+    pattern:  /Profesor/activar_app
+    defaults: { _controller: SISigueBundle:Profesor:activar_app }    
 si_sigue_perfil_profesor:
     pattern:  /Profesor/inicio/{exito}
     defaults:   {_controller: SISigueBundle:Profesor:index, exito:none}
@@ -100,3 +103,17 @@ si_sigue_add_profesor_asignatura_guardar:
 si_sigue_add_asignatura:
     pattern:  /Profesor/add_asignatura
     defaults:   {_controller: SISigueBundle:Profesor:add_asignatura} 
+si_sigue_cambiar_password:
+    pattern:  /Profesor/cambiar_password
+    defaults:   {_controller: SISigueBundle:Profesor:cambiar_password} 
+si_sigue_cambiar_password_guardar:
+    pattern:  /Profesor/cambiar_password_guardar
+    defaults:   {_controller: SISigueBundle:Profesor:cambiar_passwordGuardar}
+si_sigue_add_alumno:
+    pattern:  /Profesor/add_alumno/{id_asignatura}
+    defaults:   {_controller: SISigueBundle:Profesor:add_alumno} 
+si_sigue_add_alumno_guardar:
+    pattern:  /Profesor/add_alumno_guardar/{id_asignatura}
+    defaults:   {_controller: SISigueBundle:Profesor:add_alumnoGuardar}     
+    
+    
