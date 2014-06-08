@@ -707,8 +707,8 @@ class ProfesorController extends Controller
                       while(!$encontrado && $i<  count($actividades) ){
                           //var_dump($id_actividad . $actividades[$i]->getNombre());
                           if($id_actividad === $actividades[$i]->getNombre()){
-                              
-                              $actividades[$i]->setNota($datos[$clave]);
+                              $valor_final = str_replace(",", ".", $datos[$clave]);                                   
+                              $actividades[$i]->setNota($valor_final);
                               $observaciones = $request->request->get("obs_".$id_actividad2);                                                           
                               $actividades[$i]->setObservaciones($observaciones);
                               $em->persist($actividades[$i]);
@@ -747,9 +747,10 @@ class ProfesorController extends Controller
                     $actividad  = $repository->findOneBy( array('idAlumno' => $id_alumno, 'idAsignatura' => $id_asignatura2, 'nombre' => $nombre_actividad));
                      //var_dump($actividad);
                     $valor = $notas[$clave];
-                     //var_dump($claves);
+                   
                     if($identificadores[0] === "nota"){
-                        $actividad->setNota($valor);
+                        $valor_final = str_replace(",", ".", $valor);
+                        $actividad->setNota($valor_final);
                     }else{
                         $actividad->setObservaciones($valor);
                     }
@@ -789,7 +790,7 @@ class ProfesorController extends Controller
                //AQUI DEBO IMPRIMIR TODOS LOS DATOS QUE HAY QUE MOSTRAR EN LA TABLA//
               $fila = "A";
               $columna = 1;
-              $datos = self::listado_alumnos_actividad_asignatura($id_asignatura);
+              $datos = self::listado_alumnos_actividad_asignatura($id_asignatura,"");
              
               $asignatura = $datos["asignatura"];
              
@@ -812,9 +813,7 @@ class ProfesorController extends Controller
               $objPHPExcel->getActiveSheet()->setCellValue($fila.($columna+1), "TOKENS");
               $fila++;
               $objPHPExcel->getActiveSheet()->setCellValue($fila.($columna+1), "NOTA TOTAL(aprox)");
-              //XXXXXXXXXXXXXXXX
-              //var_dump($lista_actividades);
-              //die();
+            
                 //AHORA LOS DATOS DE VERDAD.
              $ac_nota = 0; 
               $x  = 0;
@@ -832,13 +831,7 @@ class ProfesorController extends Controller
                       
                         //Variables de control del input
                         $valor= $fila_actividad->getNota();
-                        /*
-                        $id_asignatura2 = $asignatura->getId();
-                        $nombre_actividad = str_replace(" ", "%/%",$fila_actividad->getNombre());
-                        $observaciones = $fila_actividad->getObservaciones();
-                        $id_alumno = $fila_actividad->getIdAlumno()->getIdAlumno();
-                        */
-                 
+                       
                        
                         //LA PROPIA NOTA DE LA ACTIVIDAD
                         $objPHPExcel->getActiveSheet()->setCellValue($fila++.$columna, $valor); 
@@ -949,8 +942,10 @@ class ProfesorController extends Controller
             $em = $this->getDoctrine()->getManager();            
             $alumno = new Alumnos();
             $actividad = new ActividadAsignatura();
-            foreach($fila as $celda){               
-                //echo "FILAS " . var_dump($celda->getRow());
+            // var_dump($fila);die();
+            foreach($fila as $celda){   
+               
+                //var_dump($celda->getColumn().$celda->getRow());
                 if($celda->getRow() > 2){
                     //echo "COLMUNAS " . var_dump($celda->getColumn());
                     switch ($celda->getColumn()){
@@ -958,7 +953,7 @@ class ProfesorController extends Controller
                                 //Esta debe ser la id del alumno
                                 if(!$alumno->getIdalumno()){
                                     $alumno = $em->getRepository("SISigueBundle:Alumnos")->findOneByIdalumno($celda->getValue());
-                                    //var_dump($alumno);
+                                   // var_dump($alumno);
                                 }
                                 break;
                         case "B":
@@ -974,7 +969,7 @@ class ProfesorController extends Controller
                             $celda_peso = $celda->getColumn()."2";
                             $nombre_actividad = $objPHPExcel->getActiveSheet()->getCell($celda_cabecera)->getValue();
                             $peso_actividad = $objPHPExcel->getActiveSheet()->getCell($celda_peso)->getValue();
-                            //var_dump($nombre_actividad);
+                           // var_dump($nombre_actividad);
                             if(is_null($nombre_actividad) || $nombre_actividad === ""){
                                 //fin de las actividades
                             }else{
@@ -985,16 +980,19 @@ class ProfesorController extends Controller
                                 $actividad = $em->getRepository("SISigueBundle:ActividadAsignatura")->findOneBy(array("nombre" => $nombre_actividad, "idAlumno" => $alumno->getidalumno()));
                                 //var_dump($actividad);
                                 if(!is_null($actividad) && $actividad->getNombre()){
-                                    $actividad->setNota($celda->getValue());
+                                    $valor_final = str_replace(",", ".", $celda->getValue());
+                                    $actividad->setNota($valor_final);
                                     $actividad->setPeso($peso_actividad);
-
+                                     $em->persist($actividad);
                                 }else{
                                     //Si es una actividad nueva: Tengo que crearla.
                                     self::nueva_actividad($id_asignatura,$nombre_actividad,$peso_actividad,"");
                                     $actividad = $em->getRepository("SISigueBundle:ActividadAsignatura")->findOneBy(array("nombre" => $nombre_actividad, "idAlumno" => $alumno->getidalumno()));
+                                    $valor_final = str_replace(",", ".", $celda->getValue());
+                                    $actividad->setNota($valor_final);
                                     $actividad->setNota($celda->getValue());
                                     //$actividad->setPeso($peso_actividad);
-                                    
+                                     $em->persist($actividad);
                                 }
 
                             }
@@ -1004,7 +1002,7 @@ class ProfesorController extends Controller
                    
                     return;
                 }
-                
+               // die();
                 if($actividad->getNombre()){
                     
                     $em->persist($actividad);
@@ -1350,8 +1348,11 @@ class ProfesorController extends Controller
                                 AND cod.idAlumno = :idAlumno
                                 ')->SetParameters(array('idAsignatura'=>$id_asignatura, 'idAlumno'=>$alumno));
                     $codigos = $query2->getResult();
-
+                    
+                    
+                    
                     $parcial = array("alumno" => $alumno, "actividades" => $actividades, "codigos"=>$codigos);
+                    $parcial["nota_tokens"] = self::getNotaTokens($alumno->getIdalumno(),$asignatura);
                     array_push($resultado, $parcial);
                 }
                 return array("asignatura"=>$asignatura,"resultados"=>$resultado, "actividades"=>$actividades_info, "exito" => $exito);
@@ -1398,6 +1399,124 @@ class ProfesorController extends Controller
                 }
                 
             }
+        
+        private function getNotaTokens($id_alumno,$asignatura){
+           $em =  $this->getDoctrine()->getManager();            
+           $predicciones = self::getPrediccion($em,$id_alumno,$asignatura,$asignatura->getIdeval(),$asignatura->getParameval());
+            
+           return $predicciones;
+            
+        }    
+            
+            
+            
+        private function getPrediccion($em,$id,$asig,$metodoEval,$param){
+        
+        if(isset($metodoEval)){    
+        $idEval = $metodoEval->getIdeval();
+        $p = array();
+        $prediccion = 0;
+        switch ($idEval){
+            case 1: $p = self::getParametrosOpcion1($param);
+                    $prediccion = self::prediccionNotaOpcion1($em,$id,$asig,$p[0]);
+                break;
+            case 2: $p = self::getParametrosOpcion2($param);
+                    $prediccion = self::prediccionNotaOpcion2($em,$id,$asig,$p[0],$p[1]);
+                break;
+            case 3: $p = self::getParametrosOpcion3($param);
+                    $prediccion = self::prediccionNotaOpcion3($em,$id,$asig,$p[0],$p[1]);
+                break;
+        }
+        return number_format($prediccion,2);
+        
+        }else{
+            return 0;
+        }
+    }
+    
+    private function getParametrosOpcion1($param){
+        parse_str($param,$output);
+        $var = $output['valor_absoluto'];
+        return array (floatval($var));
+    }
+    
+    private function getParametrosOpcion2($param){
+        $vars = explode("##",$param);
+        parse_str($vars[0],$out1);
+        parse_str($vars[1],$out2);
+        $p = array();
+        $p[0] = floatval($out1['margen_tolerancia']);  
+        $p[1] = floatval($out2['num_notas_descartar']);
+        return $p;
+    }
+    
+    private function getParametrosOpcion3($param){
+        $vars = explode("##",$param);
+        parse_str($vars[0],$out1);
+        parse_str($vars[1],$out2);
+        $p = array();
+        $p[0] = floatval($out1['nota_referencia']);  
+        $p[1] = floatval($out2['minimo_tokens']);
+        return $p;
+    }
+    
+    private function prediccionNotaOpcion1($em,$id,$asig,$peso){
+        $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
+        $num = $query->getNum();
+        $valor = $num*$peso;
+        if ($valor > 10) return 10;
+        return $valor;
+    }
+    
+    private function prediccionNotaOpcion2($em,$id,$asig,$tolerancia,$descartes){
+        $queryMax = $em->createQuery(  'SELECT T
+                                    FROM SISigueBundle:AsignaturaAlumno T
+                                    WHERE T.idAsignatura = :asig
+                                    ORDER BY T.num DESC'
+                                    )->setParameter('asig',$asig);
+        $list = $queryMax->getResult();
+        if(!$list || count($list)<1) return 0;
+        $max = $list[0]->getNum();
+        if($descartes < count($list))
+            $max = $list[$descartes]->getNum();
+        $limite = $max*$tolerancia/100;
+        $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
+        $num = $query->getNum();
+        if ($num >= $limite) return 10;
+        return $num*10/16;
+        
+    }
+    
+    private function prediccionNotaOpcion3($em,$id,$asig,$n,$x){
+        $queryNum = $em->createQuery(  'SELECT COUNT (T)
+                                        FROM SISigueBundle:Codigos T
+                                        WHERE T.id = :asig
+                                        GROUP BY T.id'
+                                        )->setParameter('asig',$asig);
+        $numTokens = 0;
+        if(count($queryNum->getResult())>0){
+            $result = $queryNum->getResult();
+            $numTokens = intval($result[0][1]);
+        }else{
+            return 0;
+        }
+        $queryN = $em->createQuery(  'SELECT COUNT (T)
+                                    FROM SISigueBundle:AsignaturaAlumno T
+                                    WHERE T.idAsignatura = :asig AND T.num >= :n'
+                                    )->setParameter('asig',$asig)
+                                     ->setParameter('n',$n);
+        $result2 = $queryN->getResult();
+        $numAl = intval($result2[0][1]);
+        
+        $numX = $numTokens/$numAl;
+        $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
+        $num = $query->getNum();
+        if ($num == $numX) return $x;
+        return $num*$x/$numX;
+    }
+    
+            
+            
     }
   
 ?>

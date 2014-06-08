@@ -54,6 +54,8 @@
         <p>¡Notificación enviada con éxito!</p>       
     </div>
     <?php endif; ?>
+    
+    
     <div id="importar_div" class="hiddenStructure">
        
           <h3>Importar/Exportar</h3>
@@ -155,7 +157,7 @@
                          $codigos = $codigos[0];
                     ?>
                      <td><?php echo $codigos->getNum() ; ?></td>
-                     <td>NotaTokens</td>
+                     <td><?php echo $fila["nota_tokens"];?></td>
                      <td><?php echo $ac_nota; $ac_nota = 0;?></td>
                      <td><a href="<?php echo $view['router']->generate('si_sigue_calificar_actividad_profesor', array("id_asignatura" =>$asignatura->getId(), "id_alumno" => $fila["alumno"]->getIdAlumno()));?>" title="Editar los resultados del alumno <?php echo $fila["alumno"]->getNombre() . " " . $fila["alumno"]->getApellidos() ; ?>">Editar</a></td>
                 </tr>           
@@ -177,31 +179,8 @@
 
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
- $(document).ready(function(){
-           $("#accordion").accordion({
-               heightStyle: "fill"              
-           });
-           $( "#accordion-resizer" ).resizable({
-               minHeight: 140,
-               minWidth: 200,
-               resize: function() {
-                   $( "#accordion" ).accordion( "refresh" );
-               }
-           });
-           
-           mostrar_opciones_asignatura(<?php echo $asignatura->getId();?>);
-           mostrar_subopciones_asignatura(<?php echo $asignatura->getId();?>); 
-           $( "#tooltip_exito" ).dialog({                
-                buttons: [
-                  {
-                    text: "OK",
-                    click: function() {
-                      $( this ).dialog( "close" );
-                    }
-                  }
-                ]
-              });
-           
+ $(document).ready(function(){           
+      mostrar_subopciones_asignatura(<?php echo $asignatura->getId();?>); 
  });
 
 
@@ -227,8 +206,9 @@
     $("#mas_info").click(function() {
         $( "#info" ).dialog( "open" );
   });
-  $("#boton_importar").click(function() {
+  $("#boton_importar_<?php echo $asignatura->getId();?>").click(function() {
         $( "#importar_div" ).dialog( "open" );
+        return false;
   });
 
 
