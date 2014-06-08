@@ -134,6 +134,12 @@ body {
     padding: 0;
 }
 
+#accordion .list3{
+    list-style-image: url("../img/list3.png");
+    margin-left: 25px;
+    padding: 0;
+}
+
 .Marco{
     border: #FFA500 2px solid;
     margin: 7px;

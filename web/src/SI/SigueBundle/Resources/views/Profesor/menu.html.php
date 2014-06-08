@@ -20,7 +20,7 @@
                                         <a href="<?php echo $view['router']->generate('si_sigue_generar_tokens', array("id_asignatura" =>$asig->getId() ));?>" onclick="">Generar Códigos </a> 
                                     </li>
                                     <li>
-                                        <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asig->getId() ));?>" onclick="ver_stats_codigo(<?php echo $asig->getId();?>)">Ver estadísticas de los Códigos</a>
+                                        <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asig->getId() ));?>" >Ver estadísticas de los Códigos</a>
                                     </li>
                                     <li>
                                         <?php $asignatura_actual = 0;
@@ -32,15 +32,15 @@
                                                                                         
                                             } 
                                         ?>
-                                        <?php $enlace=""; if($asig->getId() != $asignatura_actual){$enlace = $view['router']->generate('si_sigue_calificar_profesor', array("id_asignatura" =>$asig->getId()));} ?>
-                                        <a href="<?php echo $enlace ?>" onclick="mostrar_subopciones( <?php echo $asig->getId(); ?>)" >Gestionar calificaciones</a>
+                                        <?php $enlace = $view['router']->generate('si_sigue_calificar_profesor', array("id_asignatura" =>$asig->getId())); ?>
+                                        <a href="<?php echo $enlace; ?>" onclick="mostrar_subopciones( <?php echo $asig->getId(); ?>)" >Gestionar calificaciones</a>
                                         <?php if(isset($subopciones)){$class = "";}else{$class = "hiddenStructure";} ?>
-                                        <ul id="lista_subopciones_<?php echo $asig->getId();?>" class="lista_opciones list2 <?php echo $class;?>">
+                                        <ul id="lista_subopciones_<?php echo $asig->getId();?>" class="lista_opciones list3 <?php echo $class;?>">
                                             <li>
-                                            <a href="#" onclick="nueva_actividad();">Nueva Actividad </a> 
+                                            <a href="javascript:void(0);" onclick="nueva_actividad();">Nueva Actividad </a> 
                                             </li>
                                             <li>
-                                            <a href="#" id="boton_importar" >Importar/Exportar</a>
+                                            <a href="javascript:void(0);" id="boton_importar_<?php echo $asig->getId();?>" >Importar/Exportar</a>
                                             </li>
                                             <li>
                                             <a href="<?php echo $view['router']->generate('si_sigue_notificar_calificaciones', array("id_asignatura" =>$asig->getId() ) );?>" id="notificar" title="Envíe una notificación a los alumnos de esta asignatura de que ha habido cambios en las calificaciones" onclick="notificar();return false;">Notificar</a>                                   
