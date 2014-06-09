@@ -82,7 +82,7 @@ class AlumnoController extends Controller
             
             $dir_real = "/img/".$nombre;//str_replace("..","",$dir);
             
-            return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'dir' => $dir_real));
+            return $this->render('SISigueBundle:Alumno:activarApp.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'dir' => $dir_real));
         }else{
             $peticion->remove('idalumno');
             $peticion->remove('idprofesor');
@@ -243,7 +243,7 @@ class AlumnoController extends Controller
         
         //$cod = self::getCodigoCifrado($alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'est'=>$est,
+        return $this->render('SISigueBundle:Alumno:estadisticas.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'est'=>$est,
                                                                         'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones,'selected'=>$asig));    
     }
     
