@@ -68,15 +68,19 @@ class AlumnoController extends Controller
             $nombre = explode("@", $data);
             $nombre = $nombre[0];
             $nombre = 'qr'.$nombre.'.png';
-            $dir =  '../img/'.$nombre;
-
+            //$dir =  '../img/'.$nombre;
+            $dir = self::getDireccionAbsoluta()."/web/img/".$nombre;
+            //var_dump(self::getDireccionAbsoluta());
+            //var_dump($dir);
+            //die();
+            
             \QRcode::png($data, $dir,QR_ECLEVEL_H,6);
             
             $asig = self::getAsignaturas($em,$id);
         
             $actividades = self::getActividades($em,$alumno);
             
-            $dir_real = str_replace("..","",$dir);
+            $dir_real = "/img/".$nombre;//str_replace("..","",$dir);
             
             return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'dir' => $dir_real));
         }else{
@@ -409,6 +413,16 @@ class AlumnoController extends Controller
             $result .= $char;
         }
         return base64_encode($result);
+    }
+    
+    private function getDireccionAbsoluta(){        
+        $kernel = $this->get("kernel");
+        $dir_abs = $kernel->getRootDir();
+        //Aqui tenemos la direccion hasta app, hay que volver y paso.
+        $dir_abs = explode('/', $dir_abs);
+        array_pop($dir_abs);
+        $dir_abs = implode('/', $dir_abs);
+        return $dir_abs;
     }
 }
 ?>

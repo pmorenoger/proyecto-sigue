@@ -42,8 +42,19 @@
         <?php $view['slots']->stop(); ?>
         <?php $view['slots']->start("center"); ?>
         <div class="perfil">
+                <div id="divInicio">
+                    <h2>¡BIENVENIDO!</h2>
+    
+                    <h3>El menú:</h3>
+                    <p>El menú de la izquierda tiene todas las opciones disponibles en la aplicación</p>
+                    <h3>Activar aplicación</h3>
+                    <p>Si aún no has activado la app Android, descárgala y logueate con el código QR que aparecerá después de clicar en el botón.</p>
+                </div>
                 <div id="codQR">
                     <?php if (isset($dir)): ?>
+                        <h3>¡Activa tu aplicación Android!</h3>
+                        <p>Lo único que tienes que hacer es descargarla y escanear este código.</p>
+                        <p>¡Es la manera más simple de loguearse!</p>
                         <img src="<?php echo $dir; ?>" title="Qr con la info de tu login" />
                      <?php endif; ?>
                 </div>
@@ -217,11 +228,16 @@
     $(document).ready(function(){
         
          <?php if (isset($selected)): ?>
-                 var s = <?php echo $selected; ?>;
-                //$("#li_est_" + s).attr('href','javascript:void(0);');
-                mostrarMenuAsignatura(s);            
-                $("#li_est_" + s).attr('onClick',"mostrarEstadisticas(" + s +");");
+           var s = <?php echo $selected; ?>;
+           //$("#li_est_" + s).attr('href','javascript:void(0);');
+           $("#divInicio").addClass("hiddenStructure");
+           mostrarMenuAsignatura(s);            
+           $("#li_est_" + s).attr('onClick',"mostrarEstadisticas(" + s +");");
          <?php endif; ?>        
+        
+        <?php if (isset($dir)): ?>
+            $("#divInicio").addClass("hiddenStructure");
+         <?php endif; ?>
         
         $("#accordion").accordion({
             heightStyle: "fill"
@@ -272,7 +288,7 @@
     function qr(){
         var url = window.location.pathname;      
         var path_array = url.split('/');
-        if(path_array[path_array.length-1] != "activar_app" ){
+        if(path_array[path_array.length-1] !== "activar_app" ){
             $("#actividades").addClass('hiddenStructure');
             $("div [id^='formRegistrar']").addClass("hiddenStructure");
             $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
@@ -295,6 +311,7 @@
         $('#divCambiar').addClass('hiddenStructure');
         $('#divCorreoAdicional').addClass('hiddenStructure');
         $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
+        $("#divInicio").addClass("hiddenStructure");
         $('#actividades').removeClass('hiddenStructure');
     }
     
@@ -305,6 +322,7 @@
         $('#actividades').addClass('hiddenStructure');
         $('#divCorreoAdicional').addClass('hiddenStructure');
         $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
+        $("#divInicio").addClass("hiddenStructure");
         $('#divCambiar').removeClass('hiddenStructure');
     }
     
@@ -315,6 +333,7 @@
         $('#actividades').addClass('hiddenStructure');
         $('#divCambiar').addClass('hiddenStructure');
         $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
+        $("#divInicio").addClass("hiddenStructure");
         $('#divCorreoAdicional').removeClass('hiddenStructure');
     }
     
@@ -330,6 +349,7 @@
         $('#actividades').addClass('hiddenStructure');
         $("div [id^='formRegistrar']").addClass("hiddenStructure");
         $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
+        $("#divInicio").addClass("hiddenStructure");
         $("#formRegistrar_"+asig).removeClass("hiddenStructure");
     }
     
@@ -341,6 +361,7 @@
         $("div [id^='formRegistrar']").addClass("hiddenStructure");
         $("ul [id^='opciones']").addClass("hiddenStructure");
         $("#opciones_"+asig).removeClass("hiddenStructure");
+        $("#divInicio").addClass("hiddenStructure");
         $("#estadisticasAlumnoAsignatura").removeClass("hiddenStructure");
     }
     

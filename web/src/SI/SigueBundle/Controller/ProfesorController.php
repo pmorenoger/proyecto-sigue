@@ -33,7 +33,7 @@ class ProfesorController extends Controller
                 }
             //TODO Redigir si no hay login.
             $em = $this->getDoctrine()->getEntityManager();
-            if ($profesor->getCodigo() === NULL){
+            //if ($profesor->getCodigo() === NULL){
                 $cod = $profesor->getCorreo()."#&".$p;
                 $profesor->setCodigo($cod);
                 $em->persist($profesor);
@@ -43,7 +43,7 @@ class ProfesorController extends Controller
                 $codigo->setCodigo($profesor->getCodigo());
                 $em->persist($codigo);
                 $em->flush();
-            }
+            //}
             $miCodigo = self::getCodigoEncriptado($profesor);
            
            if(!is_array($exito)){                           
@@ -404,9 +404,10 @@ class ProfesorController extends Controller
             //tratamos el código QR
             $nombre = explode("@", $data);
             $nombre = $nombre[0];
-                $nombre = 'qr'.$nombre.'.png';
-            $dir =  '../img/'.$nombre;
-
+            $nombre = 'qr'.$nombre.'.png';
+            //$dir =  '../img/'.$nombre;
+            $dir = self::getDireccionAbsoluta()."/web/img/".$nombre;
+            
             \QRcode::png($data, $dir,QR_ECLEVEL_H,6);
     
              
@@ -418,7 +419,7 @@ class ProfesorController extends Controller
              $array["asignatura"] = null;
              $array["exito"] = "";
              $dir_real = str_replace("..","",$dir);
-             $array["dir"] = $dir_real;
+             $array["dir"] = "/img/".$nombre;
            
             return $this->render('SISigueBundle:Profesor:activar_app.html.php', $array);
         }
