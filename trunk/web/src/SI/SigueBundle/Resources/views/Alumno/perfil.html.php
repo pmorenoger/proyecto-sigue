@@ -42,7 +42,11 @@
         <?php $view['slots']->stop(); ?>
         <?php $view['slots']->start("center"); ?>
         <div class="perfil">
-                <div id="codQR"></div>
+                <div id="codQR">
+                    <?php if (isset($dir)): ?>
+                        <img src="<?php echo $dir; ?>" title="Qr con la info de tu login" />
+                     <?php endif; ?>
+                </div>
                 <div id="actividades" class="hiddenStructure">
                     <?php if($actividades !== NULL and count($actividades) >0): ?>
                         <table class="tablaActividades">
@@ -115,48 +119,52 @@
                     <?php endif;?>
                 <?php endif;?>
                 <div id="estadisticasAlumnoAsignatura">
-                <?php if (isset($est) and $est !== NULL): ?>
-                    <?php if ($est['total'] > 0 and $est['num']>0): ?>
-                    <p><a href="javascript:void(0);" onclick="mostrarGeneral();">Estadísticas generales</a></p>
-                    <div id="general" class="hiddenStructure Marco">
-                        <p>Número total de TOKENS de esta asignatura es: <strong><?php echo $est['total'];?></strong></p>
-                        <p>Tu número de TOKENS de esta asignatura es: <strong><?php echo $est['num'];?></strong></p>
-                        <p>Los máximos TOKENS obtenidos de esta asignatura es: <strong><?php echo $est['max'];?></strong></p>
-                    </div>
-                    <script type="text/javascript">
-                        google.load('visualization', '1.0', {'packages':['corechart']});
-                        google.setOnLoadCallback(drawChart);
-                        function drawChart() {
-                            // Create the data table.
-                            var data = new google.visualization.DataTable();
-                            data.addColumn('string', 'Topping');
-                            data.addColumn('number', 'Slices');
-                            var menos  = <?php echo $est['menos']; ?>;
-                            var mas  = <?php echo $est['mas']; ?>;
-                            data.addRows([
-                              ['Alumnos con menos TOKENS', menos],
-                              ['Alumnos con más TOKENS', mas]
-                            ]);
-                            var options = {'title':'Mis estadísticas',
-                                           'width':572,
-                                           'height':350,
-                                           'backgroundColor': '#F0E68C',
-                                           'legend.position': 'bottom',
-                                           'legend.alignment':'center',
-                                           'fontName': 'Comic Sans MS',
-                                           'is3D':true};
-                            var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-                            chart.draw(data, options);
+                    <?php if (isset($est) and $est !== NULL): ?>
+                        <?php if ($est['total'] > 0 and $est['num']>0): ?>
+                        <p><a href="javascript:void(0);" onclick="mostrarGeneral();">Estadísticas generales</a></p>
+                        <div id="general" class="hiddenStructure Marco">
+                            <p>Número total de TOKENS de esta asignatura es: <strong><?php echo $est['total'];?></strong></p>
+                            <p>Tu número de TOKENS de esta asignatura es: <strong><?php echo $est['num'];?></strong></p>
+                            <p>Los máximos TOKENS obtenidos de esta asignatura es: <strong><?php echo $est['max'];?></strong></p>
+                        </div>
+                        <p><a href="javascript:void(0);" onclick="mostrarGraficaPorcentaje();">Gráfica Porcentaje de alumnos con mas/menos tokens</a></p>
+                        <div id="piechart_3d" class="hiddenStructure Marco"></div>
+                        <script type="text/javascript">
+                            google.load('visualization', '1.0', {'packages':['corechart']});
+                            google.setOnLoadCallback(drawChart);
+                            function drawChart() {
+                                // Create the data table.
+                                var data = new google.visualization.DataTable();
+                                data.addColumn('string', 'Topping');
+                                data.addColumn('number', 'Slices');
+                                var menos  = <?php echo $est['menos']; ?>;
+                                var mas  = <?php echo $est['mas']; ?>;
+                                data.addRows([
+                                  ['Alumnos con menos TOKENS', menos],
+                                  ['Alumnos con más TOKENS', mas]
+                                ]);
+                                var options = {'title':'Mis estadísticas',
+                                               'width':572,
+                                               'height':350,
+                                               'backgroundColor': '#F0E68C',
+                                               'legend.position': 'bottom',
+                                               'legend.alignment':'center',
+                                               'fontName': 'Comic Sans MS',
+                                               'is3D':true};
+                                var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+                                chart.draw(data, options);
 
 
-                            }
-                    </script>
-                    <?php else:?>
-                    <p><strong>No tienes ningún token....PONTE LAS PILAS!!!</strong></p>
+                                }
+                        </script>
+                        <?php else:?>
+                            <p><strong>No tienes ningún token....PONTE LAS PILAS!!!</strong></p>
+                        <?php endif;?>
                     <?php endif;?>
-                <?php endif;?>
 
                 <?php if(isset($estAlumnos) and $estAlumnos !== NULL): ?>
+                    <p><a href="javascript:void(0);" onclick="mostrarGraficaAlumnosTokens();">Gráfica Alumnos-Tokens</a></p>
+                    <div id="bar_3d" class="hiddenStructure Marco"></div>
                     <script type="text/javascript">
                         google.load('visualization', '1.0', {'packages':['corechart']});
                         google.setOnLoadCallback(drawBarChart);
@@ -188,15 +196,12 @@
                             chart.draw(data, options);
                             }
                     </script>
-                    <?php endif; ?>
-                    <p><a href="javascript:void(0);" onclick="mostrarGraficaPorcentaje();">Gráfica Porcentaje de alumnos con mas/menos tokens</a></p>
-                    <div id="piechart_3d" class="hiddenStructure Marco"></div>
-                    <p><a href="javascript:void(0);" onclick="mostrarGraficaAlumnosTokens();">Gráfica Alumnos-Tokens</a></p>
-                    <div id="bar_3d" class="hiddenStructure Marco"></div>
-                    <p><a href="javascript:void(0);" onclick="mostrarPredicciones();">Predicción de la nota</a></p>
-                    <div id="prediccion" class="hiddenStructure Marco">
+                    <?php endif; ?> 
                     <?php if(isset($predicciones)): ?>
+                    <p><a href="javascript:void(0);" onclick="mostrarPredicciones();">Predicción de la nota</a></p>
+                    <div id="prediccion" class="hiddenStructure Marco">                   
                         <p>Predicción de la nota de participación (a fecha de hoy) es:  <strong><?php echo $predicciones ;?></strong></p>
+                    </div>
                     <?php endif; ?>
                     </div>
                 </div>
@@ -213,9 +218,9 @@
         
          <?php if (isset($selected)): ?>
                  var s = <?php echo $selected; ?>;
-                //$("#li_est").attr('href','javascript:void(0);');
+                //$("#li_est_" + s).attr('href','javascript:void(0);');
+                mostrarMenuAsignatura(s);            
                 $("#li_est_" + s).attr('onClick',"mostrarEstadisticas(" + s +");");
-                mostrarMenuAsignatura(s);
          <?php endif; ?>        
         
         $("#accordion").accordion({
@@ -265,39 +270,16 @@
     });
     
     function qr(){
-        if ($('#codQR').has('img').length){
+        var url = window.location.pathname;      
+        var path_array = url.split('/');
+        if(path_array[path_array.length-1] != "activar_app" ){
             $("#actividades").addClass('hiddenStructure');
             $("div [id^='formRegistrar']").addClass("hiddenStructure");
             $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
             $('#divCambiar').addClass('hiddenStructure');
             $('#divCorreoAdicional').addClass('hiddenStructure');
             $("#codQR").removeClass('hiddenStructure');
-        }else{         
-            var cod = '<?php echo $cod; ?>';
-            var url = '<?php echo "http://".$_SERVER['HTTP_HOST'].""; ?>';
-            $.ajax({
-                type:"GET",
-                url: url + "/generadorQR.php",
-                async: true,
-                data: {
-                   codigo: cod
-                },
-                dataType:"json",
-                success: function(data) {
-                    if (data.status){
-                        $("div [id^='formRegistrar']").addClass("hiddenStructure");
-                        $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
-                        $("#actividades").addClass('hiddenStructure');
-                        $('#divCambiar').addClass('hiddenStructure');
-                        $('#divCorreoAdicional').addClass('hiddenStructure');
-                        $("#codQR").removeClass('hiddenStructure');
-                        $("#codQR").append("<img src='" + url + data.dir + "'>");
-                        //$("#bActivar").attr("disabled", "disabled");
-                    }else{
-                        $("#bActivar").attr("disabled", "disabled");
-                    }
-                 }
-            });
+            window.location = "<?php echo $view['router']->generate('si_sigue_alumno_activar_app');?> ";
         }
     }
     
