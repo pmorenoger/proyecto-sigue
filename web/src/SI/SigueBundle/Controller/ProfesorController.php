@@ -23,7 +23,7 @@ class ProfesorController extends Controller
             $asig = self::getAsignaturas();
            
             $peticion = $this->container->get('session');
-            $p = $peticion->get('pAl');
+            $p = $peticion->get('pProf');
             $profesor = self::getProfesor();
                  if($profesor === "session_lost"){
                     $session = $this->container->get('session');
@@ -405,12 +405,12 @@ class ProfesorController extends Controller
             $nombre = explode("@", $data);
             $nombre = $nombre[0];
                 $nombre = 'qr'.$nombre.'.png';
-            $dir =  '../web/img/'.$nombre;
+            $dir =  '../img/'.$nombre;
 
             \QRcode::png($data, $dir,QR_ECLEVEL_H,6);
     
              
-             
+      
              $em = $this->getDoctrine()->getManager();              
              $asignaturas = self::getAsignaturas();            
              $array =  array();
