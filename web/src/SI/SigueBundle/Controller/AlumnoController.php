@@ -8,6 +8,8 @@ use SI\SigueBundle\Entity\AsignaturaCodigo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+include ('../vendor/PHPqrcode/phpqrcode.php');
+
 class AlumnoController extends Controller
 {
     public function perfilAction()
@@ -32,13 +34,53 @@ class AlumnoController extends Controller
             $em2->flush();
         }
         
-        $cod = self::getCodigoCifrado($alumno);
+        //$cod = self::getCodigoCifrado($alumno);
         
         $asig = self::getAsignaturas($em,$id);
         
         $actividades = self::getActividades($em,$alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'cod' => $cod));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades));
+    }
+    
+    public function activarAppAction(){
+        $peticion = $this->container->get('session');
+        $id = $peticion->get('idalumno');
+        
+        if(isset($id) && !is_null($id)){
+            $em = $this->getDoctrine()->getEntityManager();
+            $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
+            $codigo = self::getCodigoCifrado($alumno);
+            
+            $key = "sigue";
+            $result =$codigo;
+            $res = "";
+            $string = base64_decode($result);
+            for($i=0; $i<strlen($string); $i++) {
+                $char = substr($string, $i, 1);
+                $keychar = substr($key, ($i % strlen($key))-1, 1);
+                $char = chr(ord($char)-ord($keychar));
+                $res .= $char;
+            }
+            $data = $res;
+            //tratamos el código QR
+            $nombre = explode("@", $data);
+            $nombre = $nombre[0];
+                $nombre = 'qr'.$nombre.'.png';
+            $dir =  '../web/img/'.$nombre;
+
+            \QRcode::png($data, $dir,QR_ECLEVEL_H,6);
+            
+            $asig = self::getAsignaturas($em,$id);
+        
+            $actividades = self::getActividades($em,$alumno);
+            
+            return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'dir' =>str_replace("..","",$dir)));
+        }else{
+            $peticion->remove('idalumno');
+            $peticion->remove('idprofesor');
+            return $this->redirect($this->generateUrl('si_sigue_homepage'));
+        }
     }
     
     public function cambiarPasswordAction($id){
@@ -72,9 +114,9 @@ class AlumnoController extends Controller
         
         $actividades = self::getActividades($em,$alumno);
         
-        $cod = self::getCodigoCifrado($alumno);
+        //$cod = self::getCodigoCifrado($alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'cod' => $cod,'res' => 1));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' => 1));
     }
     
     public function correoAdicionalAction($id){
@@ -94,9 +136,9 @@ class AlumnoController extends Controller
         
         $actividades = self::getActividades($em,$alumno);
         
-        $cod = self::getCodigoCifrado($alumno);
+        //$cod = self::getCodigoCifrado($alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'cod' => $cod,'res' =>2));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' =>2));
     }
     
     public function registrarAction($id,$asig){
@@ -150,9 +192,9 @@ class AlumnoController extends Controller
         
         $actividades = self::getActividades($em,$alumno);
         
-        $cod = self::getCodigoCifrado($alumno);
+        //$cod = self::getCodigoCifrado($alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'cod' => $cod,'res' => $res,'selected'=>$asig));
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'res' => $res,'selected'=>$asig));
     }
     
     private function tokenValido($em,$token,$asignatura){
@@ -192,10 +234,10 @@ class AlumnoController extends Controller
         
         $actividades = self::getActividades($em,$alumno);
         
-        $cod = self::getCodigoCifrado($alumno);
+        //$cod = self::getCodigoCifrado($alumno);
         
-        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'cod' => $cod,
-                                                                        'est'=>$est,'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones,'selected'=>$asig));    
+        return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $as,'actividades' => $actividades,'est'=>$est,
+                                                                        'estAlumnos'=>$estAlumnos,'predicciones'=>$predicciones,'selected'=>$asig));    
     }
     
     private function numTotalToken($asig,$em,$t){

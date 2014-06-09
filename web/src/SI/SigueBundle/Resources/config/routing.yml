@@ -58,6 +58,9 @@ si_sigue_metodo_evaluacion:
 si_sigue_generar_tokens_profesor:
     pattern:  /Profesor/generar_qr
     defaults:   {_controller: SISigueBundle:Profesor:generar_qr}
+si_sigue_alumno_activar_app:
+    pattern:  /Alumno/activar_app
+    defaults: { _controller: SISigueBundle:Alumno:activarApp } 
 si_sigue_alumno_estadisticas:
     pattern:  /Alumno/estadisticas/{id}/{asig}
     defaults:   {_controller: SISigueBundle:Alumno:estadisticas }
