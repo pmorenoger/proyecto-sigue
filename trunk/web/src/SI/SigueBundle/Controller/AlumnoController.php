@@ -50,10 +50,11 @@ class AlumnoController extends Controller
         if(isset($id) && !is_null($id)){
             $em = $this->getDoctrine()->getEntityManager();
             $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
-            $codigo = self::getCodigoCifrado($alumno);
             
+            $codigo = self::getCodigoCifrado($alumno);
+           
             $key = "sigue";
-            $result =$codigo;
+            $result = $codigo;
             $res = "";
             $string = base64_decode($result);
             for($i=0; $i<strlen($string); $i++) {
@@ -66,8 +67,8 @@ class AlumnoController extends Controller
             //tratamos el código QR
             $nombre = explode("@", $data);
             $nombre = $nombre[0];
-                $nombre = 'qr'.$nombre.'.png';
-            $dir =  '../web/img/'.$nombre;
+            $nombre = 'qr'.$nombre.'.png';
+            $dir =  '../img/'.$nombre;
 
             \QRcode::png($data, $dir,QR_ECLEVEL_H,6);
             
@@ -75,7 +76,9 @@ class AlumnoController extends Controller
         
             $actividades = self::getActividades($em,$alumno);
             
-            return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'dir' =>str_replace("..","",$dir)));
+            $dir_real = str_replace("..","",$dir);
+            
+            return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'dir' => $dir_real));
         }else{
             $peticion->remove('idalumno');
             $peticion->remove('idprofesor');
