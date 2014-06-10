@@ -5,28 +5,20 @@
     Description:
         Estilos generales de la aplicación.
 */
-h1{
-    
-        font-weight:bold;
-	text-align: left;
-	margin-bottom:20px;
-	text-shadow:0 1px 0 #FFF;
-	font-size:3.6em;
-	color:#000080;
+
+/*** CUERPOR PRINCIPAL ***/
+body {
+       background-color:#E7E7E7;   
+       width:1200px;
+       margin: 0 auto;
 }
-h2{
-    
-     font-size: 2.2em;
-        margin-bottom: 20px;
-        margin-left: 10px;
-        color: #000080;
+
+#ContenidoPrincipal {
+    margin: 0 auto;  
+    width:auto;
+    min-width: 1200px;
 }
-root { 
-    display: block;
-}
-.hiddenStructure{    
-    display:none;
-}
+
 #top{
     color:red;   
     /*margin-top:10px;*/
@@ -34,18 +26,6 @@ root {
     width:100%;
     height: 55px;
     min-width: 1200px;
-}
-/*Principales estilos de body, content y formulario inicial*/
-body {
-       background-color:#F0F8FF;   
-       width:1200px;
-       margin: 0 auto;
-}
-
-#logout{
-    float:right;
-    margin-top:15px;
-    margin-right: 20px;
 }
 
 .bloqueCentro{
@@ -73,6 +53,150 @@ body {
     float: right;
 }
 
+.perfil {
+    background-color: #FFF;
+    font-size:62.5%;
+    font-family:Arial, "Helvetica Neue", Verdana, Sans-serif;
+    width: auto;
+}
+/*** ****************** ***/
+
+/*** CABECERA ***/
+#titles {
+    left: 20px;
+    top: 5px;
+    margin: 0px;
+    padding: 0px;
+    z-index: 20;      
+}
+
+#logout{
+    float:right;
+    margin-right: 20px;
+}
+
+.logoutHeader{
+    color:#CC0000;
+    font-size: 15pt;
+}
+
+.headerSigue{
+    -moz-border-radius:3px; /* Firefox */ 
+    -webkit-border-radius:3px; /* Safari y Chrome */ 
+    border:3px solid #0A6088;
+    background-color: #1DA8E9;  
+}
+
+.encabezadoHeader {
+	margin: 0 auto;
+	margin-bottom:20px;
+	font-size:35pt;
+	color:#FFF;
+        font-family:'Open Sans', sans-serif;
+}
+/*** ************** ***/
+
+/*** ESTILOS LOGIN ***/
+.bloqueCentroLogin{
+    padding: 1%;
+    width: 430px;
+    height: auto;
+    margin: 15px auto;
+}
+
+.encabezado {
+	text-align: center;
+	margin-bottom:20px;
+	font-size:40pt;
+	color:#333;
+        font-family:'Open Sans', sans-serif;
+}
+
+.ejemplo {
+        font-size: 0.8em;
+        margin-top: 5px;
+        margin-bottom: 30px;
+        margin-left: 10px;
+        color: #FFF;
+        font-family:'Open Sans', sans-serif;
+}
+
+.login{
+    width: auto;
+    background-color: #505050;
+    padding: 40px 50px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    display: block;
+    width: 92%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555;
+    vertical-align: middle;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.colorGray{
+    background-color: #404040;
+}
+
+.signin {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #FF8627;
+    color: #ffffff;
+    -webkit-transition: background-color 300ms linear;
+    -moz-transition: background-color 300ms linear;
+    -o-transition: background-color 300ms linear;
+    -ms-transition: background-color 300ms linear;
+    transition: background-color 300ms linear;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+    margin: 0 auto;
+    background-color: #1DA8E9;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+}
+/*** *********************** ***/
+
+/*** CUADROS Y MARCOS ***/
 .cuadro{
     -moz-border-radius:3px; /* Firefox */ 
     -webkit-border-radius:3px; /* Safari y Chrome */ 
@@ -82,46 +206,21 @@ body {
     -webkit-box-shadow: 1px 1px 10px #fff;
 }
 
-.login{
-    width: auto;
+.Marco{
+    border: #FFA500 2px solid;
+    margin: 7px;
 }
 
-.mainCSS{
-    position:relative;
-    font-size:62.5%;
-    font-family:Comic Sanz, "Helvetica Neue", Verdana, Sans-serif;
-    padding:10%;
-    background-image: url("../img/fondoLogin.jpg");
-    -moz-background-repeat: no-repeat;
-    -webkit-background-repeat: no-repeat;
-    -moz-background-attachment: scroll;
-    -webkit-background-attachment: scroll;
-    -moz-background-size: cover;
-    -webkit-background-size: cover;
-    margin: 0 auto;
+.Marco p{
+    /*text-align: center;*/
+    text-indent:20px;
+    font-size: 10px;
+    font-family: Comic Sanz, "Helvetica Neue", Verdana, Sans-serif;
+    /*font-weight: bold;*/
 }
+/*** ************ ***/
 
-#ContenidoPrincipal {
-    margin: 0 auto;  
-    width:auto;
-    min-width: 1200px;
-}
-
-.perfil {
-    background-color: #FFF;
-    font-size:62.5%;
-    font-family:Arial, "Helvetica Neue", Verdana, Sans-serif;
-    width: auto;
-}
-
-#titles {
-    left: 20px;
-    top: 5px;
-    margin: 0px;
-    padding: 0px;
-    z-index: 20;      
-}
-
+/*** ACCORDION ***/
 #accordion .list1{
     list-style-image: url("../img/list1.jpg");
     margin: 5px;
@@ -139,18 +238,21 @@ body {
     margin-left: 25px;
     padding: 0;
 }
+/*** ************ ***/
 
-.Marco{
-    border: #FFA500 2px solid;
-    margin: 7px;
+h2{
+    font-size: 2.2em;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    color: #000080;
 }
 
-.Marco p{
-    /*text-align: center;*/
-    text-indent:20px;
-    font-size: 10px;
-    font-family: Comic Sanz, "Helvetica Neue", Verdana, Sans-serif;
-    /*font-weight: bold;*/
+root { 
+    display: block;
+}
+
+.hiddenStructure{    
+    display:none;
 }
 
 .Centrar{
@@ -160,6 +262,10 @@ body {
 .MargenTopBottom{
     margin-left: 20px;
     margin-top: 20px;
+}
+
+.bottom70{
+    margin-bottom: 70px;
 }
 
 .Clear{
