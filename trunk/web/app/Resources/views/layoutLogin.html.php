@@ -1,7 +1,6 @@
 <?php $view->extend('::base.html.php') ?>
 
-<div id="top" class="MargenTopBottom">    
-   <div class="center"> 
+<div id="top" class="bottom70">    
        <?php $rol =  $view['slots']->get('rol'); 
        $logged = false;
         if($rol === "Profesor"){
@@ -17,11 +16,8 @@
             $rol = $view['router']->generate('si_sigue_homepage');
         }
        ?>
-        <a href="<?php echo $rol;?>" title="Página de incio">
-            <img src="<?php echo $view['assets']->getUrl('img/logo.png') ?>" align="middle" height="50px">
-            <text class="encabezado">IGUE</text>   
-        </a>
-       <?php $logout = $view['router']->generate('si_sigue_logout'); ?>
+     <h1 class="encabezado">Sigue</h1>   
+    <?php $logout = $view['router']->generate('si_sigue_logout'); ?>
     <?php if($logged): ?>
         <div id="logout">
             <a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >
@@ -29,11 +25,10 @@
             </a>
         </div>
     <?php endif; ?>
-    </div>
     
 </div>
 <div class="Clear"></div>
-    <div id="center" class="<?php $view['slots']->output('tipo_clase') ?> bloqueCentro cuadro">
+    <div id="center" class="<?php $view['slots']->output('tipo_clase') ?> bloqueCentroLogin">
     <!--<div id="Bloque_Centro" class="bloqueCentro">-->
          <?php $view['slots']->output('center') ?>
     </div>

@@ -1,6 +1,6 @@
 <?php $view->extend('::base.html.php') ?>
 
-<div id="top" class="cuadro">    
+<div id="top" class="headerSigue">    
    <div id="titles"> 
        <?php $rol =  $view['slots']->get('rol'); 
        $logged = false;
@@ -17,16 +17,17 @@
             $rol = $view['router']->generate('si_sigue_homepage');
         }
        ?>
+       <div class="center">
         <a href="<?php echo $rol;?>" title="Página de incio">
-            <img src="<?php echo $view['assets']->getUrl('img/logo.png') ?>" align="middle" height="50px">
-            <text class="encabezado">IGUE</text> 
-            <text class="encabezado2"> <?php $view['slots']->output('rol') ?></text>    
+            <text class="encabezadoHeader">Sigue</text>    
         </a>
+        </div>
        <?php $logout = $view['router']->generate('si_sigue_logout'); ?>
     <?php if($logged): ?>
         <div id="logout">
             <a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >
-                <img src="<?php echo $view['assets']->getUrl('img/logout.png') ?>" height="30px" alt="salir">
+                <!--<img src="<?php echo $view['assets']->getUrl('img/logout.png') ?>" height="30px" alt="salir">-->
+                <p class="logoutHeader"><strong>Salir</strong></p>
             </a>
         </div>
     <?php endif; ?>

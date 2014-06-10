@@ -14,18 +14,17 @@
         echo $view['knp_menu']->render($item, array(), 'list'); */
     ?> 
 <div class="login">
-    <div class="mainCSS">
+    <!--<div class="mainCSS">-->
         <form method="post" id="main" action="login">
-            <label for="user" class="labelCorreo">Correo Electrónico:</label>
-            <input type="text" name="user" placeholder="Correo Electrónico" class='validate[required,custom[emailUCM]]'/>
-            <p class="ejemplo">Ej: xxxx@ucm.es</p>
-            <label for="password" class="labelContraseña">Contraseña:</label>
-            <input type="password" name="password" placeholder="Contraseña" class="validate[required]"/>             
-            <a href="<?php echo $view['router']->generate('si_sigue_recuperar');?>" title="Recuperar contraseña"> Recuperar Contraseña </a>
-            <br />
-            <input type="submit" value="Entrar" id="bEntrar" />
+            <div class="form-group">
+                <input type="text" name="user" placeholder="Correo Electrónico" class="colorGray form-control validate[required,custom[emailUCM]]"/>
+                <p class="ejemplo">Ej: xxxx@ucm.es</p>
+                <input type="password" name="password" placeholder="Contraseña" class="colorGray form-control validate[required]"/>             
+                <a href="<?php echo $view['router']->generate('si_sigue_recuperar');?>" style="color:#cccccc;" title="Recuperar contraseña"> Recuperar Contraseña </a>
+            </div>
+            <input type="submit" value="Entrar" id="bEntrar" class="signin btn btn-block"/>
         </form>
-    </div>
+    <!--</div>-->
 </div>
 <?php if($error==="error"): ?>
     <div id="tooltip_error"> 
