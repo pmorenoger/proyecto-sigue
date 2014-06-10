@@ -23,8 +23,11 @@
             <input type="hidden" name="nombre_antiguo" id="nombre_antiguo" value="" />
             <div class="form-group">
                 <h3>Detalles de Actividad en <strong><?php echo $asignatura->getNombre();?> </strong></h3>
+                <label class="labelSigue">Nombre</label>
                 <input type="text" id="nombre_nueva_actividad" name="nombre" value="" placeholder="Nombre" class="Centrar form-normal form-control"/>
+                <label class="labelSigue">Peso en la nota final(en %)</label>
                 <input type="text" style="width:40px;" id="peso_nueva_actividad" name="peso" value="" placeholder="Peso en nota final (en %)" class="Centrar form-normal form-control"/>      
+                <label class="labelSigue">Descripción</label>
                 <textarea cols="30" rows="4" id="descripcion_nueva_actividad" name="descripcion" value="" placeholder="Descripcion" class="Centrar form-normal form-control"></textarea>
             </div>
             <input type="submit" value="Crear" class=" left btn-20 btn-normal sigin btn btn-block"/>

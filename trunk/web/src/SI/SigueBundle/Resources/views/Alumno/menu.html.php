@@ -37,7 +37,9 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        
+        if (navigator.userAgent.indexOf('Firefox') === -1){
+            $(".labelSigue").addClass("hiddenStructure");
+        }
         <?php if (isset($selected)): ?>
            var s = <?php echo $selected; ?>;
            //$("#li_est_" + s).attr('href','javascript:void(0);');

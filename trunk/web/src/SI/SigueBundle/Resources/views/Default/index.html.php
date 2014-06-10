@@ -17,8 +17,10 @@
     <!--<div class="mainCSS">-->
         <form method="post" id="main" action="login">
             <div class="form-group">
+                <label class="labelLogin" for="user">Correo:</label>
                 <input type="text" name="user" placeholder="Correo Electrónico" class="colorGray form-control validate[required,custom[emailUCM]]"/>
                 <p class="ejemplo">Ej: xxxx@ucm.es</p>
+                <label class="labelLogin" for="password">Contraseña:</label>
                 <input type="password" name="password" placeholder="Contraseña" class="colorGray form-control validate[required]"/>             
                 <a href="<?php echo $view['router']->generate('si_sigue_recuperar');?>" style="color:#cccccc;" title="Recuperar contraseña"> Recuperar Contraseña </a>
             </div>
@@ -37,6 +39,9 @@
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
     $(document).ready(function(){
+        if (navigator.userAgent.indexOf('Firefox') === -1){
+            $(".labelLogin").addClass("hiddenStructure");
+        }
         $("#bEntrar").submit(fnOnSubmit);
         $("#main").validationEngine('attach',{relative: true,promptPosition: "bottomRight"});
         function fnOnSubmit(){

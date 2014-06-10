@@ -36,14 +36,15 @@
             Enviar este archivo: <input name="userfile" type="file" />
             <br />
             <br />
-            <input id="nombre_asignatura" type="text" name="nombre_asignatura" placeholder="Nombre de la asignatura" class="form-normal form-control"/>
-            <label for="curso" > Curso: </label>
+            <label class="labelSigue">Asignatura</label>
+            <input id="nombre_asignatura" type="text" name="nombre_asignatura" placeholder="Nombre de la asignatura" class="Centrar form-normal form-control"/>
+            <label for="curso"> Curso: </label>
             <select id="curso" name="curso" >
                 <option value="2012/2013" >2012/2013</option>
                 <option value="2013/2014" >2013/2014</option>
                 <option value="2014/2015" >2014/2015</option>                       
             </select>
-            <label for="grupo" > Grupo: </label>
+            <label for="grupo"> Grupo: </label>
             <select id="grupo" name="grupo" >
                 <option value="A" >A</option>
                 <option value="B" >B</option>
