@@ -107,7 +107,7 @@ body {
 	text-align: center;
 	margin-bottom:20px;
 	font-size:40pt;
-	color:#333;
+	color:#1DA8E9;
         font-family:'Open Sans', sans-serif;
 }
 
@@ -271,6 +271,14 @@ body {
     color: #FFF;
     margin: 0 auto;
     display: block !important;
+}
+
+input[type="text"], input[type="password"] {
+    border-radius: 0;
+    border: none;
+    margin-bottom: 10px;
+    color: #cccccc;
+    height: 38px;
 }
 
 .btn-20{

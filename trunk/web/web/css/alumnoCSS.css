@@ -40,14 +40,6 @@ a {text-decoration:none; color:#3e9c8f; font-family:'Open Sans', sans-serif; fon
         margin-top: 10px;
 }
 
-input[type="text"], input[type="password"] {
-    border-radius: 0;
-    border: none;
-    margin-bottom: 10px;
-    color: #cccccc;
-    height: 38px;
-}
-
 .btnQR{
     -moz-box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.40);
     -webkit-box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.40);
