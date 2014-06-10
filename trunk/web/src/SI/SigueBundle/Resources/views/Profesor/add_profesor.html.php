@@ -14,27 +14,29 @@
     <h3>Añadir Profesor </h3>
     <p>Rellene por cada asignatura los profesores que quiera añadir</p>
     <form enctype="multipart/form-data" action="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura_guardar');?>" method="POST">
-        <?php foreach ($asig_prof as $pares):?>
-        <fieldset> 
-            <legend><?php 
-                        $nombre_asignatura = $pares["asignatura"][0]->getNombre();
-                        $id_asignatura = $pares["asignatura"][0]->getId();
-                echo  $nombre_asignatura ; ?></legend>
-            <?php 
-                $arr_prof = $pares["profesores"]; ?>
-            <!--<input type="hidden" id="id_asignatura_<?php echo $id_asignatura;?>" name="id_asignatura_<?php echo $id_asignatura;?>" value="<?php echo $id_asignatura;?>"> -->
-            <select multiple name="idAsignatura_<?php echo $id_asignatura;?>[]">
-            <?php
-            foreach ($arr_prof as $profesor) :?>
-                <option type="checkbox" name="profesor_<?php echo $id_asignatura?>" id="profesor_<?php echo $id_asignatura."_".$profesor->getIdprofesor(); ?>" title="<?php echo $profesor->getCorreo() ?>" value="<?php echo $profesor->getIdprofesor() ?>">
-                 <?php echo $profesor->getNombre() ." ". $profesor->getApellidos() ?></option>
-              
-                
+        <div class="form-group">
+            <?php foreach ($asig_prof as $pares):?>
+            <fieldset> 
+                <legend><?php 
+                            $nombre_asignatura = $pares["asignatura"][0]->getNombre();
+                            $id_asignatura = $pares["asignatura"][0]->getId();
+                    echo  $nombre_asignatura ; ?></legend>
+                <?php 
+                    $arr_prof = $pares["profesores"]; ?>
+                <!--<input type="hidden" id="id_asignatura_<?php echo $id_asignatura;?>" name="id_asignatura_<?php echo $id_asignatura;?>" value="<?php echo $id_asignatura;?>"> -->
+                <select multiple name="idAsignatura_<?php echo $id_asignatura;?>[]">
+                <?php
+                foreach ($arr_prof as $profesor) :?>
+                    <option type="checkbox" name="profesor_<?php echo $id_asignatura?>" id="profesor_<?php echo $id_asignatura."_".$profesor->getIdprofesor(); ?>" title="<?php echo $profesor->getCorreo() ?>" value="<?php echo $profesor->getIdprofesor() ?>">
+                     <?php echo $profesor->getNombre() ." ". $profesor->getApellidos() ?></option>
+
+
+                <?php endforeach;?>
+                 </select>
+            </fieldset>        
             <?php endforeach;?>
-             </select>
-        </fieldset>        
-        <?php endforeach;?>
-        <input type="submit" value="Guardar">
+        </div>
+        <input type="submit" value="Guardar" class="btn-normal sigin btn btn-block">
     </form>
     
     
