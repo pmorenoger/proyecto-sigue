@@ -12,8 +12,10 @@
 <?php $view['slots']->start("center"); ?>
 <div class="perfil">
   <div id="add_alumno">
-    <h3>Añadir Alumno a <b><?php echo $asignatura->getNombre();?></b></h3>
-    <p>Rellene el formulario para agregar un alumno manualmente al sistema.</p>
+     <div class="mensaje">
+        <h3>Añadir Alumno a <b><?php echo $asignatura->getNombre();?></b></h3>
+        <p>Rellene el formulario para agregar un alumno manualmente al sistema.</p>
+    </div>
     <div class="formSigue">
         <form enctype="multipart/form-data" action="<?php echo $view['router']->generate('si_sigue_add_alumno_guardar', array("id_asignatura"=>$asignatura->getId()));?>" method="POST">
             <div class="form-group">

@@ -112,18 +112,24 @@ body {
 }
 
 .ejemplo {
-        font-size: 0.8em;
-        margin-top: 5px;
-        margin-bottom: 30px;
-        margin-left: 10px;
-        color: #FFF;
-        font-family:'Open Sans', sans-serif;
+    font-size: 0.8em;
+    margin-top: 5px;
+    margin-bottom: 30px;
+    margin-left: 10px;
+    color: #FFF;
+    font-family:'Open Sans', sans-serif;
 }
 
 .login{
     width: auto;
     background-color: #505050;
     padding: 40px 50px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
 
 .form-group {
@@ -197,25 +203,30 @@ body {
 
 /*** CUADROS Y MARCOS ***/
 .cuadro{
-    -moz-border-radius:3px; /* Firefox */ 
-    -webkit-border-radius:3px; /* Safari y Chrome */ 
+    -moz-border-radius:15px; /* Firefox */ 
+    -webkit-border-radius:15px; /* Safari y Chrome */ 
     border:1px solid #FFF;
     background-color: #FFF;
-    -moz-box-shadow: 1px 1px 10px #fff;
-    -webkit-box-shadow: 1px 1px 10px #fff;
+    -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
 
 .Marco{
-    border: #FFA500 2px solid;
+    text-align: center;
+    border: #948872 2px solid;
     margin: 7px;
+    -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
 
-.Marco p{
-    /*text-align: center;*/
-    text-indent:20px;
-    font-size: 10px;
-    font-family: Comic Sanz, "Helvetica Neue", Verdana, Sans-serif;
-    /*font-weight: bold;*/
+.width-80{
+    width: 80%;   
+}
+
+.width-50{
+    width: 50%;   
 }
 /*** ************ ***/
 
@@ -277,14 +288,55 @@ body {
 }
 /*** ************************ ***/
 
-h2{
-    font-size: 2.2em;
-    margin-bottom: 20px;
-    margin-left: 10px;
-    color: #000080;
+/*** CUADROS DE TEXTO ***/
+.mensaje{
+    font-family: 'Open Sans', Arial;
 }
 
+.mensaje h2{
+    font-size: 18px;
+    margin-bottom: 15px;
+    margin-left: 10px;
+    color: #65BD77;
+}
 
+.mensaje h4{
+    color: #1B1E24;
+    font-size: 14px;
+    margin: 10px 20px;
+}
+
+.mensaje p {
+    color: #909090;
+    font-size: 12px;
+    margin: 5px 50px;
+}
+/*** ************************ ***/
+
+/*** TABLA ACTIVIDADES ***/
+.tablaActividades{
+    width: 600px;
+    border: 1px solid #006dcc;
+    border-collapse: collapse;
+    text-align: center;
+    min-height: 380px;
+}
+
+.widthAuto{
+    width: auto !important;
+}
+
+.tablaActividades th, .tablaActividades td{
+    border: 1px solid #006dcc;
+}
+
+.tablaActividades th{
+    background-color: #006dcc;
+    color: #FFF;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #006dcc), color-stop(100%, #B0E0E6));
+    background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #006dcc), color-stop(100%, #B0E0E6));
+}
+/*** ***************** ***/
 
 root { 
     display: block;
@@ -403,27 +455,4 @@ a.nota_vacia{
 }
 .tabulado_derecha{
     margin-left:35%;
-}
-
-.tablaActividades{
-    width: 600px;
-    border: 1px solid #006dcc;
-    border-collapse: collapse;
-    text-align: center;
-    min-height: 380px;
-}
-
-.widthAuto{
-    width: auto !important;
-}
-
-.tablaActividades th, .tablaActividades td{
-    border: 1px solid #006dcc;
-}
-
-.tablaActividades th{
-    background-color: #006dcc;
-    color: #FFF;
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #006dcc), color-stop(100%, #B0E0E6));
-    background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #006dcc), color-stop(100%, #B0E0E6));
 }

@@ -11,7 +11,9 @@
 <?php $view['slots']->start("center"); ?>
    <div class="perfil">
    <div id="centro_tabla" class="ancho_horizontal">
-       <h2>Actividades de <?php echo $asignatura->getNombre(); ?></h2>
+       <div class="mensaje">
+            <h2>Actividades de <?php echo $asignatura->getNombre(); ?></h2>
+       </div>
 <!-- Formulario para crear una nueva actividad. -->
 <div>                        
     <div id="actividad_asignatura" class="hiddenStructure formSigue" >
@@ -29,7 +31,7 @@
             <input type="button" value="Cancelar" onclick="cancelar();return false;" class="right btn-20 btn-normal sigin btn btn-block"/>
         </form>
     </div> 
-    <div id="info" class="hiddenStructure">
+    <div id="info" class="hiddenStructure mensaje">
         <h3>Calificar</h3>
         <p>Para calificar, pulse sobre la nota para cambiarla individualmente. 
             También puede calificar todas las actividades de un alumno pulsando sobre el botón editar</p>

@@ -9,12 +9,16 @@
 
 <?php $view['slots']->start("center"); ?>
     <div class="perfil">
-        <div id="codQR">
+        <div>
             <?php if (isset($dir)): ?>
+            <div class="mensaje">
                 <h3>¡Activa tu aplicación Android!</h3>
                 <p>Lo único que tienes que hacer es descargarla y escanear este código.</p>
                 <p>¡Es la manera más simple de loguearse!</p>
+            </div>
+            <div id="codQR" class="Centrar">
                 <img src="<?php echo $dir; ?>" title="Qr con la info de tu login" />
+            </div>
              <?php endif; ?>
         </div>
         <div id="actividades" class="hiddenStructure">

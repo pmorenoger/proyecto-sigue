@@ -11,8 +11,10 @@
        <div class="perfil">
 <h3> Menú administración </h3>
 <div id="add_profesor">
-    <h3>Añadir Profesor </h3>
-    <p>Rellene por cada asignatura los profesores que quiera añadir</p>
+    <div class="mensaje">
+        <h3>Añadir Profesor </h3>
+        <p>Rellene por cada asignatura los profesores que quiera añadir</p>
+    </div>
     <form enctype="multipart/form-data" action="<?php echo $view['router']->generate('si_sigue_add_profesor_asignatura_guardar');?>" method="POST">
         <div class="form-group">
             <?php foreach ($asig_prof as $pares):?>

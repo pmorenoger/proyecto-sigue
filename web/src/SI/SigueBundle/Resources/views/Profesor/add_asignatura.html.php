@@ -56,8 +56,9 @@
         </div>
         <input type="submit" value="Enviar" class="btn-normal sigin btn btn-block"/>
     </form>
-<h3>Envíe un archivo Excel con la información de los alumnos y complete el formulario para añadir una asignatura.</h3>
-
+    <div class="mensaje">    
+        <h3>Envíe un archivo Excel con la información de los alumnos y complete el formulario para añadir una asignatura.</h3>
+    </div>
 </div>
 
 
