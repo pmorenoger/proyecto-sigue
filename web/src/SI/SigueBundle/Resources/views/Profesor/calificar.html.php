@@ -14,21 +14,19 @@
        <h2>Actividades de <?php echo $asignatura->getNombre(); ?></h2>
 <!-- Formulario para crear una nueva actividad. -->
 <div>                        
-    <div id="actividad_asignatura" class="hiddenStructure" >
+    <div id="actividad_asignatura" class="hiddenStructure formSigue" >
         <form id="factividad_form" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_actividad_profesor' );?>">
             <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
             <input type="hidden" name="nueva" id="nueva" value="si" />
             <input type="hidden" name="nombre_antiguo" id="nombre_antiguo" value="" />
-            <span>Detalles de Actividad en <h3><?php echo $asignatura->getNombre();?> </h3></span>
-            <label for="nombre_nueva_actividad">Nombre:</label>
-            <input type="text" id="nombre_nueva_actividad" name="nombre" value="" />
-            <label for="peso_nueva_actividad">Peso en nota final (en %):</label>
-            <input type="text" style="width:40px;" id="peso_nueva_actividad" name="peso" value="" />      
-            <label for="descripcion_nueva_actividad">Descripción:</label>
-            <textarea cols="30" rows="4" id="descripcion_nueva_actividad" name="descripcion" value=""></textarea>
-
-            <input type="submit" value="Crear" />
-            <input type="button" value="Cancelar" onclick="cancelar();return false;"
+            <div class="form-group">
+                <h3>Detalles de Actividad en <strong><?php echo $asignatura->getNombre();?> </strong></h3>
+                <input type="text" id="nombre_nueva_actividad" name="nombre" value="" placeholder="Nombre" class="Centrar form-normal form-control"/>
+                <input type="text" style="width:40px;" id="peso_nueva_actividad" name="peso" value="" placeholder="Peso en nota final (en %)" class="Centrar form-normal form-control"/>      
+                <textarea cols="30" rows="4" id="descripcion_nueva_actividad" name="descripcion" value="" placeholder="Descripcion" class="Centrar form-normal form-control"></textarea>
+            </div>
+            <input type="submit" value="Crear" class=" left btn-20 btn-normal sigin btn btn-block"/>
+            <input type="button" value="Cancelar" onclick="cancelar();return false;" class="right btn-20 btn-normal sigin btn btn-block"/>
         </form>
     </div> 
     <div id="info" class="hiddenStructure">

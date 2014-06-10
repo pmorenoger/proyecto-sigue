@@ -8,13 +8,15 @@
 <?php $view['slots']->start("center"); ?>
     <h2>Cambiar Password</h2>   
     <p>Si aún sigues con la contraseña predeterminada, te recomendamos que la cambies por una nueva.</p>
-      <form id="cambiar_pass" method="POST" action="<?php echo $view['router']->generate('si_sigue_cambiar_password_guardar');?>" >
-          <label for="password1">Nueva Contraseña </label>
-          <input type="password" id="password1" name="password"/>
-          <label for="password2">Repite Contraseña </label>
-          <input type="password" id="password2" name="password2"/>
-          <input type="submit" name="submit" id="submit" value="Guardar" onclick="CheckPassword();return false;"/>          
-      </form>
+    <div class="formSigue">
+    <form id="cambiar_pass" method="POST" action="<?php echo $view['router']->generate('si_sigue_cambiar_password_guardar');?>" >
+        <div class="form-group">
+            <input type="password" id="password1" name="password" placeholder="Nueva Contraseña" class="Centrar form-normal form-control"/>
+            <input type="password" id="password2" name="password2" placeholder="Repetir Contraseña" class="Centrar form-normal form-control"/>             
+        </div>
+        <input type="submit" name="submit" id="submit" value="Guardar" onclick="CheckPassword();return false;" class="btn-normal sigin btn btn-block"/>
+    </form>
+    </div>
 <?php if($exito === "true"): ?>
     <div id="tooltip_exito"> 
         <p>¡Contraseña cambiada con éxito!</p>

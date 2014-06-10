@@ -117,29 +117,27 @@
         </div>
         <?php if (count($asignaturas)>0) :?>
             <?php foreach ($asignaturas as $as): ?>
-            <div id="formRegistrar_<?php echo $as->getId(); ?>" class="hiddenStructure">
+            <div id="formRegistrar_<?php echo $as->getId(); ?>" class="hiddenStructure formSigue">
                 <form enctype="multipart/form-data" id="registrar_token_<?php echo $as->getId(); ?>" action="<?php echo $view['router']->generate('si_sigue_alumno_token',array("id"=>$alumno->getIdalumno(),"asig"=>$as->getId())); ?>" method="POST">
-                    <label for="token" class="labelToken">TOKEN: </label>
-                    <input type="text" name="codigo" placeholder='Código' class='validate[required]'/>
-                    <input type="submit" value="Registrar" id="bRegistrar_<?php echo $as->getId(); ?>" />
+                    <div class="form-group">
+                        <input type="text" name="codigo" placeholder='Inserte es código QR' class="Centrar form-normal form-control validate[required]"/>
+                    </div>
+                    <input type="submit" value="Registrar" id="bRegistrar_<?php echo $as->getId(); ?>" class="btn-normal sigin btn btn-block" />
                 </form>
             </div>
             <?php endforeach; ?>
         <?php endif; ?>
-        <div id="divCambiar" class="hiddenStructure">
+        <div id="divCambiar" class="hiddenStructure formSigue">
             <form method="post" id="mainCambiar" action="<?php echo $view['router']->generate('si_sigue_perfil_editar', array('id' => $alumno->getIdalumno())); ?>">
-                <label for="nueva_clave" class="labelContraseña">Nueva contraseña:</label>
-                <input type="password" id ="nueva_clave" name="nueva_clave" placeholder="Contraseña" class='validate[required,minSize[5]]'/>
-                <label for="verificar" class="labelContraseña">Repita contraseña:</label>
-                <input type="password" id="verificar" name="verificar" placeholder="Contraseña" class="validate[required,funcCall[fnVerificar],minSize[5]]"/>
-                <input type="submit" value="Cambiar" id="bCambiar" />
+                <input type="password" id ="nueva_clave" name="nueva_clave" placeholder="Nueva Contraseña" class='Centrar form-normal form-control validate[required,minSize[5]]'/>
+                <input type="password" id="verificar" name="verificar" placeholder="Repetir Contraseña" class="Centrar form-normal form-control validate[required,funcCall[fnVerificar],minSize[5]]"/>
+                <input type="submit" value="Cambiar" id="bCambiar" class="btn-normal sigin btn btn-block"/>
             </form>
         </div>
-        <div id="divCorreoAdicional" class="hiddenStructure">
+        <div id="divCorreoAdicional" class="hiddenStructure formSigue">
             <form method="post" id="mainCorreoAdicional" action="<?php echo $view['router']->generate('si_sigue_perfil_correoAdicional', array('id' => $alumno->getIdalumno())); ?>">
-                <label for="correo_adicional" class="labelCorreo">Correo Adicional:</label>
-                <input type="text" name="correo_adicional" placeholder="Correo Adicional" class='validate[required,custom[email]]'/>
-                <input type="submit" value="Añadir" id="bCorreoAdicional" />
+                <input type="text" name="correo_adicional" placeholder="Correo Adicional" class='Centrar form-normal form-control validate[required,custom[email]]'/>
+                <input type="submit" value="Añadir" id="bCorreoAdicional" class="btn-normal sigin btn btn-block"/>
             </form>
         </div>
         <?php if(isset($res)): ?>

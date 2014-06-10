@@ -12,19 +12,18 @@
 <?php $view['slots']->start("center"); ?>
 <div class="perfil">
   <div id="add_alumno">
-      <h3>Añadir Alumno a <b><?php echo $asignatura->getNombre();?></b></h3>
+    <h3>Añadir Alumno a <b><?php echo $asignatura->getNombre();?></b></h3>
     <p>Rellene el formulario para agregar un alumno manualmente al sistema.</p>
-    <form enctype="multipart/form-data" action="<?php echo $view['router']->generate('si_sigue_add_alumno_guardar', array("id_asignatura"=>$asignatura->getId()));?>" method="POST">
-        <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" name="nombre" />
-        <label for="apellidos">Apellidos</label>
-        <input type="text" id="apellidos" name="apellidos" />
-        <label for="correo">Correo</label>
-        <input type="text" id="correo" name="correo" />
-        
-        <input type="submit" value="Guardar">
-    </form>
-    
+    <div class="formSigue">
+        <form enctype="multipart/form-data" action="<?php echo $view['router']->generate('si_sigue_add_alumno_guardar', array("id_asignatura"=>$asignatura->getId()));?>" method="POST">
+            <div class="form-group">
+                <input type="text" id="nombre" name="nombre" placeholder="Nombre" class="Centrar form-normal form-control"/>
+                <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos" class="Centrar form-normal form-control"/>
+                <input type="text" id="correo" name="correo" placeholder="Correo Electrónico" class="Centrar form-normal form-control"/>
+            </div>
+            <input type="submit" value="Guardar" class="btn-normal sigin btn btn-block">
+        </form>
+    </div>
     
     
 </div>

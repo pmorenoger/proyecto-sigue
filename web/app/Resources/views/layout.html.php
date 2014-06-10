@@ -26,7 +26,6 @@
     <?php if($logged): ?>
         <div id="logout">
             <a href="<?php echo $logout;?>" title="Salir de la aplicación y volver al login" >
-                <!--<img src="<?php echo $view['assets']->getUrl('img/logout.png') ?>" height="30px" alt="salir">-->
                 <p class="logoutHeader"><strong>Salir</strong></p>
             </a>
         </div>
