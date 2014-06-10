@@ -79,6 +79,9 @@
   </div>
    <script type="text/javascript">
     $(document).ready(function(){
+        if (navigator.userAgent.indexOf('Firefox') === -1){
+            $(".labelSigue").addClass("hiddenStructure");
+        } 
            $("#accordion").accordion({
                heightStyle: "fill"
            });

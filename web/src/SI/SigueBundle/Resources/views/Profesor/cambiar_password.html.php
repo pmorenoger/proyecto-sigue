@@ -13,7 +13,9 @@
     <div class="formSigue">
     <form id="cambiar_pass" method="POST" action="<?php echo $view['router']->generate('si_sigue_cambiar_password_guardar');?>" >
         <div class="form-group">
+            <label class="labelSigue">Nueva Contraseña</label>
             <input type="password" id="password1" name="password" placeholder="Nueva Contraseña" class="Centrar form-normal form-control"/>
+            <label class="labelSigue">Repetir Contraseña</label>
             <input type="password" id="password2" name="password2" placeholder="Repetir Contraseña" class="Centrar form-normal form-control"/>             
         </div>
         <input type="submit" name="submit" id="submit" value="Guardar" onclick="CheckPassword();return false;" class="btn-normal sigin btn btn-block"/>

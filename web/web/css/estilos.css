@@ -133,6 +133,16 @@ body {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
 
+.labelLogin{
+    font-family: 'Lato', Helvetica, sans-serif;
+    font-size: 16px;
+    color: #FF8627;
+    font-weight: 300;
+    display: block;
+    margin: 5px auto;
+    position: relative;
+}
+
 .form-group {
     margin-bottom: 15px;
 }
@@ -264,6 +274,17 @@ body {
     height: 30px !important;
     color: #FFF !important;
     width: 60% !important;
+}
+
+.labelSigue{
+    font-family: 'Lato', Helvetica, sans-serif;
+    font-size: 16px;
+    color: #FF8627;
+    font-weight: 300;
+    display: block;
+    width: 60%;
+    margin: 5px auto;
+    position: relative;
 }
 
 .btn-normal{

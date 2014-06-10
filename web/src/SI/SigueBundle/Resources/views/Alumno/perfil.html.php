@@ -42,6 +42,7 @@
             <div id="formRegistrar_<?php echo $as->getId(); ?>" class="hiddenStructure formSigue">
                 <form enctype="multipart/form-data" id="registrar_token_<?php echo $as->getId(); ?>" action="<?php echo $view['router']->generate('si_sigue_alumno_token',array("id"=>$alumno->getIdalumno(),"asig"=>$as->getId())); ?>" method="POST">
                     <div class="form-group">
+                        <label class="labelSigue" for="user">Token</label>
                         <input type="text" name="codigo" placeholder='Inserte es código QR' class="Centrar form-normal form-control validate[required]"/>
                     </div>
                     <input type="submit" value="Registrar" id="bRegistrar_<?php echo $as->getId(); ?>" class="btn-normal sigin btn btn-block" />
@@ -51,14 +52,21 @@
         <?php endif; ?>
         <div id="divCambiar" class="hiddenStructure formSigue">
             <form method="post" id="mainCambiar" action="<?php echo $view['router']->generate('si_sigue_perfil_editar', array('id' => $alumno->getIdalumno())); ?>">
-                <input type="password" id ="nueva_clave" name="nueva_clave" placeholder="Nueva Contraseña" class='Centrar form-normal form-control validate[required,minSize[5]]'/>
-                <input type="password" id="verificar" name="verificar" placeholder="Repetir Contraseña" class="Centrar form-normal form-control validate[required,funcCall[fnVerificar],minSize[5]]"/>
+                <div class="form-group">
+                    <label class="labelSigue" for="user">Nueva Contraseña</label>
+                    <input type="password" id ="nueva_clave" name="nueva_clave" placeholder="Nueva Contraseña" class='Centrar form-normal form-control validate[required,minSize[5]]'/>
+                    <label class="labelSigue" for="user">Repetir Contraseña</label>
+                    <input type="password" id="verificar" name="verificar" placeholder="Repetir Contraseña" class="Centrar form-normal form-control validate[required,funcCall[fnVerificar],minSize[5]]"/>
+                </div>
                 <input type="submit" value="Cambiar" id="bCambiar" class="btn-normal sigin btn btn-block"/>
             </form>
         </div>
         <div id="divCorreoAdicional" class="hiddenStructure formSigue">
             <form method="post" id="mainCorreoAdicional" action="<?php echo $view['router']->generate('si_sigue_perfil_correoAdicional', array('id' => $alumno->getIdalumno())); ?>">
-                <input type="text" name="correo_adicional" placeholder="Correo Adicional" class='Centrar form-normal form-control validate[required,custom[email]]'/>
+                <div class="form-group">
+                    <label class="labelSigue" for="user">Correo Adicional</label>
+                    <input type="text" name="correo_adicional" placeholder="Correo Adicional" class='Centrar form-normal form-control validate[required,custom[email]]'/>
+                </div>
                 <input type="submit" value="Añadir" id="bCorreoAdicional" class="btn-normal sigin btn btn-block"/>
             </form>
         </div>
