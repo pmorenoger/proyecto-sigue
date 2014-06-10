@@ -6,8 +6,10 @@
             array('asignaturas' => $asignaturas, 'asignatura' => $asignatura )
         ); ?>
 <?php $view['slots']->start("center"); ?>
-    <h2>Cambiar Password</h2>   
-    <p>Si aún sigues con la contraseña predeterminada, te recomendamos que la cambies por una nueva.</p>
+    <div class="mensaje">
+        <h2>Cambiar Password</h2>   
+        <p>Si aún sigues con la contraseña predeterminada, te recomendamos que la cambies por una nueva.</p>
+    </div>
     <div class="formSigue">
     <form id="cambiar_pass" method="POST" action="<?php echo $view['router']->generate('si_sigue_cambiar_password_guardar');?>" >
         <div class="form-group">

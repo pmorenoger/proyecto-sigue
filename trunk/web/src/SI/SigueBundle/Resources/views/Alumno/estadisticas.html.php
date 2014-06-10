@@ -13,7 +13,7 @@
             <?php if (isset($est) and $est !== NULL): ?>
                 <?php if ($est['total'] > 0 and $est['num']>0): ?>
                 <p><a href="javascript:void(0);" onclick="mostrarGeneral();">Estadísticas generales</a></p>
-                <div id="general" class="hiddenStructure Marco">
+                <div id="general" class="hiddenStructure Marco mensaje Centrar width-80">
                     <p>Número total de TOKENS de esta asignatura es: <strong><?php echo $est['total'];?></strong></p>
                     <p>Tu número de TOKENS de esta asignatura es: <strong><?php echo $est['num'];?></strong></p>
                     <p>Los máximos TOKENS obtenidos de esta asignatura es: <strong><?php echo $est['max'];?></strong></p>
@@ -49,7 +49,9 @@
                         }
                 </script>
                 <?php else:?>
+                <div class="Marco mensaje Centrar width-80">
                     <p><strong>No tienes ningún token....PONTE LAS PILAS!!!</strong></p>
+                </div>
                 <?php endif;?>
             <?php endif;?>
 
@@ -90,7 +92,7 @@
             <?php endif; ?> 
             <?php if(isset($predicciones)): ?>
             <p><a href="javascript:void(0);" onclick="mostrarPredicciones();">Predicción de la nota</a></p>
-            <div id="prediccion" class="hiddenStructure Marco">                   
+            <div id="prediccion" class="hiddenStructure Marco mensaje Centrar width-80">                   
                 <p>Predicción de la nota de participación (a fecha de hoy) es:  <strong><?php echo $predicciones ;?></strong></p>
             </div>
             <?php endif; ?>

@@ -9,7 +9,7 @@
 
 <?php $view['slots']->start("center"); ?>
 <div class="perfil">
-<div class="encabezado3">    
+<div class="mensaje">    
     <h3>Estadísticas de <?php echo $asignatura->getNombre(). " - Grupo ".$asignatura->getGrupo() . " (". $asignatura->getCurso().") "; ?></h3>
 </div>
 <div id="generados-redimidos" class="Marco"></div>

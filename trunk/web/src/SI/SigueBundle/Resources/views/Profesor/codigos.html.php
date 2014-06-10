@@ -21,8 +21,6 @@
     </div>
 <?php endif; ?>
 
-
- 
 <?php if($exito ==="false"): ?>
      <div id="tooltip_exito"> 
         <p>¡Lo sentimos!</p>
@@ -30,25 +28,26 @@
     </div>
 <?php endif;?>
 
-            <div id="asignatura_<?php echo $asignatura->getId();?>" >
-                <form id="form_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_tokens_profesor' );?>">
-                    <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
-                    <span>Generar TOKENS para la asignatura <h3><?php echo $asignatura->getNombre();?> </h3></span>
-                    <label for="cantidad">Cantidad:</label>
-                    <select id="cantidad" name="cantidad">
-                        <option value="16">16</option>
-                        <option value="20">20</option>
-                        <option value="36">36</option>
-                        <option value="100">100</option>
-                    </select>  
-                    <input type="submit" value="Generar" />
-                </form>
-            </div>   
-  
-
+<div id="asignatura_<?php echo $asignatura->getId();?>" class="formSigue">
+    <form id="form_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_tokens_profesor' );?>">
+        <div class="form-group">
+            <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
+            <div class="mensaje">
+            <p>Generar TOKENS para la asignatura <strong><?php echo $asignatura->getNombre();?> </strong></p>
+            </div>
+            <label for="cantidad">Cantidad:</label>
+            <select id="cantidad" name="cantidad">
+                <option value="16">16</option>
+                <option value="20">20</option>
+                <option value="36">36</option>
+                <option value="100">100</option>
+            </select>  
+        </div>
+        <input type="submit" value="Generar" class="btn-normal sigin btn btn-block"/>
+    </form>
+</div>   
 </div>
 </div>
-   
 <?php $view['slots']->stop(); ?>
 
 <?php $view['slots']->start("javascripts"); ?>

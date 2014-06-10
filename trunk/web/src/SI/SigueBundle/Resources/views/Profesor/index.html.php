@@ -12,15 +12,14 @@
 <?php $view['slots']->start("center"); ?>
 <!-- AQUI IRAN LAS OPCIONES QUE TENGA EL PROFESOR -->
 <div class="perfil">
- 
-    <h2>¡BIENVENIDO!</h2>
-    
-    <h3>El menú:</h3>
-    <p>El menú de la izquierda tiene todas las opciones disponibles en la aplicación</p>
-    <h3>Activar aplicación</h3>
-    <p>Si aún no has activado la app Android, descárgala y logueate con el código QR que aparecerá después de clicar en el botón.</p>
-    
+    <div class="mensaje">
+        <h2>¡BIENVENIDO!</h2>
 
+        <h3>El menú:</h3>
+        <p>El menú de la izquierda tiene todas las opciones disponibles en la aplicación</p>
+        <h3>Activar aplicación</h3>
+        <p>Si aún no has activado la app Android, descárgala y logueate con el código QR que aparecerá después de clicar en el botón.</p>
+    </div>
 </div>  
 <?php $view['slots']->stop(); ?>
 

@@ -12,15 +12,14 @@
 <?php $view['slots']->start("center"); ?>
 <!-- AQUI IRAN LAS OPCIONES QUE TENGA EL PROFESOR -->
 <div class="perfil">
-    <h3>¡Activa tu aplicación Android!</h3>
-    <p>Lo único que tienes que hacer es descargarla y escanear este código.</p>
-    <p>¡Es la manera más simple de loguearse!</p>
- <div id="codQR">
-     <img id="qrimagen" src="<?php echo $dir; ?>" title="Qr con la info de tu login" />
-     
- </div>
- 
-
+    <div class="mensaje">
+        <h3>¡Activa tu aplicación Android!</h3>
+        <p>Lo único que tienes que hacer es descargarla y escanear este código.</p>
+        <p>¡Es la manera más simple de loguearse!</p>
+    </div>
+    <div id="codQR">
+        <img id="qrimagen" src="<?php echo $dir; ?>" title="Qr con la info de tu login" />
+    </div>
 </div>
    
 <?php $view['slots']->stop(); ?>

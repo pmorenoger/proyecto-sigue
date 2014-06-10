@@ -26,14 +26,11 @@
         <p>No se ha podido procesar la solicitud. Inténtelo de nuevo más tarde.</p>
     </div>
 <?php endif;?>
- 
- 
-   
        <form id="cambio_evaluacion_<?php echo $asignatura->getId();?>" method="POST" action="<?php echo $view['router']->generate('si_sigue_cambiar_metodo_evaluacion');?>">
-          
-           
            <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
-           <span>Método de Evaluación de <h3><?php echo $asignatura->getNombre();?> </h3></span> 
+           <div class="mensaje">
+            <h2>Método de Evaluación de <strong><?php echo $asignatura->getNombre();?> </strong></h2> 
+           </div>
            <div id="accordion-resizer2" class="ui-widget-content">
              <div id="accordion2">
            
@@ -158,7 +155,7 @@
 
 </div>
 </div>
-    <input type="submit" value="Cambiar" />
+    <input type="submit" value="Cambiar" class="btn-normal sigin btn btn-block"/>
        </form>
 </div>
    
