@@ -350,7 +350,7 @@ class AlumnoController extends Controller
         $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
         $num = $query->getNum();
         if ($num >= $limite) return 10;
-        return $num*10/16;
+        return $num*10/$limite;
         
     }
     
@@ -362,7 +362,9 @@ class AlumnoController extends Controller
                                         )->setParameter('asig',$asig);
         $numTokens = 0;
         if(count($queryNum->getResult())>0){
-            $numTokens = intval($queryNum->getResult()[0][1]);
+            $queryres = $queryNum->getResult();
+            $queryres1 = $queryres[0];
+            $numTokens = intval($queryres1[1]);
         }else{
             return 0;
         }
@@ -371,7 +373,10 @@ class AlumnoController extends Controller
                                     WHERE T.idAsignatura = :asig AND T.num >= :n'
                                     )->setParameter('asig',$asig)
                                      ->setParameter('n',$n);
-        $numAl = intval($queryN->getResult()[0][1]);
+        
+        $num = $queryN->getResult();
+        $num2 = $num[0];
+        $numAl = intval($num2[1]);
         
         $numX = $numTokens/$numAl;
         $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
