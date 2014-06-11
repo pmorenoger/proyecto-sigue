@@ -18,7 +18,7 @@
         <p>¡Es la manera más simple de loguearse!</p>
     </div>
     <div id="codQR">
-        <img id="qrimagen" src="<?php echo $dir; ?>" title="Qr con la info de tu login" />
+        <img id="qrimagen" class="imagenSigue" src="<?php echo $dir; ?>" title="Qr con la info de tu login" />
     </div>
 </div>
    
