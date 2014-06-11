@@ -1,4 +1,4 @@
-<?php $view->extend('::layout2.html.php') ?>
+<?php $view->extend('::layout.html.php') ?>
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
@@ -19,6 +19,7 @@
     <div id="actividad_asignatura" class="hiddenStructure formSigue" >
         <form id="factividad_form" method="POST" action="<?php echo $view['router']->generate('si_sigue_generar_actividad_profesor' );?>">
             <input type="hidden" name="id_asignatura" value="<?php echo $asignatura->getId();?>" />
+            <input type="hidden" id="eliminar" name="eliminar" value ="" />
             <input type="hidden" name="nueva" id="nueva" value="si" />
             <input type="hidden" name="nombre_antiguo" id="nombre_antiguo" value="" />
             <div class="form-group">
@@ -30,8 +31,9 @@
                 <label class="labelSigue">Descripción</label>
                 <textarea cols="30" rows="4" id="descripcion_nueva_actividad" name="descripcion" value="" placeholder="Descripcion" class="Centrar form-normal form-control"></textarea>
             </div>
-            <input type="submit" value="Crear" class=" left btn-20 btn-normal sigin btn btn-block"/>
-            <input type="button" value="Cancelar" onclick="cancelar();return false;" class="right btn-20 btn-normal sigin btn btn-block"/>
+            <input type="submit" value="Crear" class=" left2 btn-20 btn-normal sigin btn btn-block"/>
+            <input type="button" value="Cancelar" onclick="cancelar();return false;" class="left2 btn-20 btn-normal sigin btn btn-block"/>
+            <input type="button" value="Eliminar" class="confirm rigth2 eliminar btn-20 btn-normal sigin btn btn-block"/>
         </form>
     </div> 
     <div id="info" class="hiddenStructure mensaje">
@@ -53,13 +55,13 @@
     </div>
     
     <?php if($exito=== true): ?>
-    <div id="tooltip_exito"> 
+    <div id="tooltip_exito" class="mensaje"> 
         <p>¡Notificación enviada con éxito!</p>       
     </div>
     <?php endif; ?>
     
     
-    <div id="importar_div" class="hiddenStructure">
+    <div id="importar_div" class="hiddenStructure mensaje">
        
           <h3>Importar/Exportar</h3>
           <br />
@@ -79,12 +81,17 @@
             <fieldset>
                 <legend>Exportar</legend>
                 <p>Se recomienda exportar primero si no se tiene la plantilla incial.</p>
+                <select id="selector_tipo" name="selector_tipo">
+                    <option value="plantilla">Plantilla</option>
+                    <option value="campus">Formato CV</option>
+                    <option value="gea">Formato GEA</option>
+                </select>
                 <input type="button" id="exportar" name="exportar" value="Exportar"  />                 
             </fieldset>                                    
           </form>   
     </div>
     
-    <div id="dinamic_form" class="hiddenStructure">
+    <form id="dinamic_form" class="hiddenStructure" method="POST" action="#">
         <label for="nota">Nota</label>
         <span id="nota_dinamica">
             
@@ -93,11 +100,11 @@
             <span id="obs_dinamica">
             
             </span>
-    </div>
+    </form>
     
     <div id="formulario_oculto">
         <form id="form_oculto" name="form_oculto" method="POST" action="<?php echo $view['router']->generate('si_sigue_guardar_calificaciones', array("id_asignatura"=>$asignatura->getId()) );?>">            
-            <input type="button" id="actualizar" name="actualizar" class="hiddenStructure" value="Actualizar"/>
+            <input type="button" id="actualizar" name="actualizar" class="btn-20 btn-normal sigin btn btn-block hiddenStructure2" value="Actualizar"/>
             <div id="campos_ocultos" class="hiddenStructure">
                 
             </div>
@@ -106,15 +113,16 @@
     </div>
     
     <div id="calificador" class="tabla_horizontal">
+        <a href="javascript:void(0);" id="showinfo" title="+info">+info</a>
         <table id="tabla_actividades" class="tablaActividades widthAuto">
             
             <th>Nombre</th>
             <th>Apellidos</th>
             <?php foreach($actividades as $actividad):?>            
-            <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>" style="color:white !important;" onclick="editar_actividad(<?php echo "'".$actividad["nombre"]."','".$actividad["peso"]."','".$actividad["descripcion"]."'" ; ?>);"><?php echo $actividad["nombre"]; ?> (<?php echo $actividad["peso"] ; ?>)</a></th>            
+            <th><a href="#" title="<?php echo $actividad["descripcion"]; ?>" style="color:white !important;" onclick="editar_actividad(<?php echo "'".$actividad["nombre"]."','".$actividad["peso"]."','".$actividad["descripcion"]."'" ; ?>);"><?php echo $actividad["nombre"]; ?> (<?php echo ($actividad["peso"]*100)."%"; ?>)</a></th>            
             <?php endforeach; ?>
             <th>TOKENS</th>
-            <th>Nota TOKENS</th>
+            <th><a href="<?php echo $view['router']->generate('si_sigue_metodo_evaluacion', array("id_asignatura"=>$asignatura->getId()) );?>" title="Cambiar valor de los tokens." style="color:white;" >Nota TOKENS</a></th>
             <th>Nota Total</th>
             <th>Editar</th>
             <?php $ac_nota = 0; 
@@ -134,7 +142,7 @@
                         }
                         elseif($fila_actividad->getNota()<5){
                             $color="nota_rojo";
-                        }elseif($fila_actividad->getNota()<8){
+                        }elseif($fila_actividad->getNota()<7){
                             $color = "nota_naranja";
                         }else{
                             $color = "nota_verde";
@@ -160,8 +168,10 @@
                          $codigos = $codigos[0];
                     ?>
                      <td><?php echo $codigos->getNum() ; ?></td>
-                     <td><?php echo $fila["nota_tokens"];?></td>
-                     <td><?php echo $ac_nota; $ac_nota = 0;?></td>
+                     <td><?php $nota_tokens = $fila["nota_tokens"]; echo $nota_tokens ;?></td>
+                     <td><?php $ac_nota =  $ac_nota+$nota_tokens;if($ac_nota > 10){
+                         $ac_nota = 10;                         
+                     }echo $ac_nota; $ac_nota = 0;?></td>
                      <td><a href="<?php echo $view['router']->generate('si_sigue_calificar_actividad_profesor', array("id_asignatura" =>$asignatura->getId(), "id_alumno" => $fila["alumno"]->getIdAlumno()));?>" title="Editar los resultados del alumno <?php echo $fila["alumno"]->getNombre() . " " . $fila["alumno"]->getApellidos() ; ?>">Editar</a></td>
                 </tr>           
                 <?php $x++;?>
@@ -169,9 +179,7 @@
           
                                                 
         </table>
-       
-           
-                                       
+                                
     </div>
    
 </div>
@@ -184,18 +192,39 @@
 <script type="text/javascript">
  $(document).ready(function(){           
       mostrar_subopciones_asignatura(<?php echo $asignatura->getId();?>); 
+      $("#dinamic_form").validationEngine('attach',{relative: true,promptPosition: "bottomRight"});
  });
 
-
-    $( "#info" ).dialog({
-         autoOpen: false,
-         width: 500,
-         buttons: {
-            Ok: function() {
-          $( this ).dialog( "close" );
-        }
-    }
+    $("#showinfo").click(function(){
+         
+        $( "#info" ).dialog("open");
     });
+   $( "#info" ).dialog({
+            autoOpen: false,
+            width: 500,
+            buttons: {
+               Ok: function() {
+             $( this ).dialog( "close" );
+           }
+       }
+    });
+    $(".confirm").confirm({
+    text: "¿Seguro que quiere elimnar la actividad? Si hay notas subidas se perderán todas.",
+    title: "Confirmación requerida",
+    confirm: function(button) {
+       eliminar();
+    },
+    cancel: function(button) {
+       
+    },
+    confirmButton: "Si, estoy seguro",
+    cancelButton: "No",
+    //post: true
+});  
+  
+    
+    
+    
     $( "#importar_div" ).dialog({
          autoOpen: false,
          height: 500,
@@ -216,10 +245,10 @@
 
 
 function mostrar_tabla(){
-    $("#tabla_actividades").removeClass("hiddenStructure");
+    $("#calificador").removeClass("hiddenStructure");
 }
 function ocultar_tabla(){
-     $("#tabla_actividades").addClass("hiddenStructure");
+     $("#calificador").addClass("hiddenStructure");
 }
 
 function ocultar_todo(){
@@ -268,8 +297,13 @@ function cancelar(){
      $("#nueva").val("si");
      mostrar_tabla();
 }
-           
-           
+  
+
+  
+function eliminar(){
+   $("#eliminar").val("eliminar");
+   document.getElementById("factividad_form").submit(); 
+}           
            
 //Añade dinámicamente campos editables para las notas//
 function add(valor,valor2,id_asignatura,id_alumno,actividad, x,y) {
@@ -283,7 +317,13 @@ function add(valor,valor2,id_asignatura,id_alumno,actividad, x,y) {
     nota.setAttribute("name", "nota_"+id_asignatura+"_"+id_alumno+"_"+actividad);
     var actividad_remplazado = jq2(actividad);
     nota.setAttribute("id", "nota_"+id_asignatura+"_"+id_alumno+"_"+actividad_remplazado);
- 
+    nota.setAttribute("type", "number");
+    nota.setAttribute("min", "0");
+    nota.setAttribute("max", "10");
+    nota.setAttribute("step", "0.01");
+    // placeholder="Nota" class="Centrar form-normal form-control"
+    nota.setAttribute("placeholder", "Nota");
+    nota.setAttribute("class", "Centrar form-normal form-control validate[number,max[10]]");
     var foo = document.getElementById("nota_dinamica");
  
     //Append the element in page (in span).
@@ -294,10 +334,11 @@ function add(valor,valor2,id_asignatura,id_alumno,actividad, x,y) {
  
     //Assign different attributes to the element.
     obs.setAttribute("cols", "30");
-    obs.setAttribute("rows", "40");  
+    obs.setAttribute("rows", "50");  
     obs.setAttribute("name", "obs_"+id_asignatura+"_"+id_alumno+"_"+actividad);
     obs.setAttribute("id", "obs_"+id_asignatura+"_"+id_alumno+"_"+actividad_remplazado);
-   
+    obs.setAttribute("placeholder", "Observaciones");
+    obs.setAttribute("class", "Centrar form-text-area form-control");
     obs.value=valor2;
  
     var foo2 = document.getElementById("obs_dinamica");
@@ -317,12 +358,16 @@ function abrir_dialog(){
     $("#dinamic_form").dialog({  
         dialogClass: "no-close",
         width:400,
-        height:450,
+        height:450, 
+        open: function() {
+            $("#dinamic_form").validationEngine('attach',{relative: true,promptPosition: "bottomRight"});
+        },
          buttons: {
             Guardar: function() {
-                copiar_y_borrar();
+                if(copiar_y_borrar()){
                 mostrar_actualizar();
                 $( this ).dialog( "close" );
+            }
         },
         Cancelar:function(){
              borrar();   
@@ -339,8 +384,8 @@ function abrir_dialog(){
 
 
 function mostrar_actualizar(){
-    $("#actualizar").removeClass("hiddenStructure");
-    $("#actualizar").addClass("mostrarActualizar");
+    $("#actualizar").removeClass("hiddenStructure2");
+    //$("#actualizar").addClass("mostrarActualizar");
     
 
 }
@@ -363,6 +408,7 @@ function borrar_ocultos(id_nota, id_obs){
 function copiar_y_borrar(){
 //Cojo todo lo del formulario dinamico y lo copio en el formulario final.
 //Tengo que tener en cuenta lo de los repetidos.
+if(fnOnSubmit()){
 var nota = document.getElementById("nota_dinamica").children[0];
 nota.id = jq2(nota.id);
 
@@ -380,6 +426,9 @@ nota.id = "f_"+nota.id;
 obs.id = "f_"+obs.id;
 form_oculto.appendChild(nota);
 form_oculto.appendChild(obs);
+return true;
+}
+return false;
 }
 
 function jq( myid ) {
@@ -408,6 +457,14 @@ function editar_actividad(nombre,peso, descripcion){
     $("#nueva").val("no");
     nueva_actividad();
 }
-
+ function fnOnSubmit(){
+            var nota = document.getElementById("nota_dinamica").children[0];
+            console.log(nota.value);
+            if(isNaN(nota.value)|| nota.value == "" || nota.value<0 || nota.value > 10){ alert("La nota debe ser un número entre 0 y 10");return false;
+            }else{
+                return true;
+            }
+            
+            }
 </script>
 <?php $view['slots']->stop(); ?>

@@ -86,7 +86,7 @@
             <?php elseif ($res == 3): ?>
                 <div id="tooltip_exito">
                     <p>EL TOKEN ES INVÁLIDO</p>
-                    <p>Debes de ingresas un código registrado por el profesor y que no sea repetido. </p>
+                    <p>Debes ingresar un código generado por el profesor y que no sea repetido. </p>
                 </div>
             <?php elseif ($res == 4): ?>
                 <div id="tooltip_exito">
