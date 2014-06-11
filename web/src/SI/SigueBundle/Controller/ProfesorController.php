@@ -1745,7 +1745,7 @@ class ProfesorController extends Controller
         $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
         $num = $query->getNum();
         if ($num >= $limite) return 10 * $peso;
-        return ($num*10/16) *$peso;
+        return ($num*10/$limite) *$peso;
         
     }
     
