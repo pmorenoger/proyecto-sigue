@@ -343,6 +343,13 @@ input[type="text"], input[type="password"] {
 }
 /*** ************************ ***/
 
+/*** IMAGENES QR ***/
+.imagenSigue{
+    display: block;
+    margin: 0 auto;
+}
+/*** ****************** ***/
+
 /*** TABLA ACTIVIDADES ***/
 .tablaActividades{
     width: 600px;

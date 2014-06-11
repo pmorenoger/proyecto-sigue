@@ -17,7 +17,7 @@
                 <p>¡Es la manera más simple de loguearse!</p>
             </div>
             <div class="Centrar">
-                <img src="<?php echo $dir; ?>" title="Qr con la info de tu login" />
+                <img src="<?php echo $dir; ?>" class="imagenSigue" title="Qr con la info de tu login" />
             </div>
              <?php endif; ?>
         </div>
