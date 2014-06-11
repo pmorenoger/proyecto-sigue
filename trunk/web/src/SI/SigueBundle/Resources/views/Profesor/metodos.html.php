@@ -43,8 +43,7 @@
                    techo el 10 (y a partir de ahí los tokens adicionales no suben nota).<p>
            </div>
                 <a href="#" onclick="mostrar_info_opcion(1)" >+info </a>
-           <p>Parámetros configurables:<br />
-                    Valor de cada token</p>
+           <p>Parámetros configurables:</p>
            <?php $id_eval = $asignatura->getIdeval();  
                 $num_seleccionado = 0;
                if(is_null($id_eval)){
@@ -59,12 +58,12 @@
                $param1 = $paramsarr[1];
                $num_seleccionado = 0;
            }else{
-               $selected = ""; $param1 = ""; $param2 = "";
+               $selected = ""; $param1 = ""; $param2 = ""; $param3 = "";
            }  ?>
            
            <div class="form-group">
                 
-                <input type="number" step="0.01" min="0" id="valor_absoluto" name="valor_absoluto" value="<?php echo $param1; ?>" placeholder="Valor Absoluto" class="Centrar form-normal form-control"/>
+                <input type="number" step="0.01" min="0" id="valor_absoluto" name="valor_absoluto" value="<?php echo $param1; ?>" title="Valor Absoluto" placeholder="Valor Absoluto" class="Centrar form-normal form-control"/>
                 <label for="metodo1">Elegir Opción 1 </label>
                 <input type="radio" id="metodo1" name="metodo" value="1" <?php echo $selected; ?>/>
 
@@ -82,6 +81,7 @@
                Alternativamente, el profesor también optar por descartar las N mayores notas. Esto permite
                compensar los casos en los que hay un número reducido de alumnos con un número
                desproporcionado de tokens.</p>
+           <p> Debe además seleccionar un peso sobre la nota final.</p>
            </div>
 
             <?php if( $int_eval === 2){
@@ -96,15 +96,19 @@
                $params0 = $paramsarr[1];
                $param0 = explode("=", $params0);
                $param2 = $param0[1];
+               $params0 = $paramsarr[2];
+               $param0 = explode("=", $params0);
+               $param3 = $param0[1];
            }else{
-               $selected = ""; $param1 = ""; $param2 = "";
+               $selected = ""; $param1 = ""; $param2 = ""; $param3 = "";
            } ?>
                <a href="#" onclick="mostrar_info_opcion(2)" >+info </a>
            <p>Parámetros configurables:</p>
                  
-            <input type="text" id="margen_tolerancia" name="margen_tolerancia" value="<?php echo $param1; ?>" placeholder="Margen de tolerancia (en porcentaje)" class="Centrar form-normal form-control"/>           
-            <input type="text" id="num_notas_descartar" name="num_notas_descartar" value="<?php echo $param2; ?>" placeholder="Número de notas a descartar." class="Centrar form-normal form-control"/>           
-           <label for="metodo2"> Elegir Opción 2</label>
+            <input type="text" id="margen_tolerancia" name="margen_tolerancia" value="<?php echo $param1; ?>"  placeholder="Margen de tolerancia (en porcentaje)" title="Margen de tolerancia (en porcentaje)" class="Centrar form-normal form-control validate[number]"/>           
+            <input type="text" id="num_notas_descartar" name="num_notas_descartar" value="<?php echo $param2; ?>" placeholder="Número de notas a descartar." title="Número de notas a descartar." class="Centrar form-normal form-control validate[number]"/>           
+            <input type="text" id="peso_nota_final" name="peso_nota_final" value="<?php echo $param3; ?>" placeholder="Peso en la nota final %" title="Peso en la nota final %" class="Centrar form-normal form-control validate[number,max[100]]"/>           
+            <label for="metodo2"> Elegir Opción 2</label>
            <input type="radio" id="metodo2" name="metodo" value="2" <?php echo $selected; ?>/>
 
            </div>
@@ -118,6 +122,7 @@
            registrados y se divide entre el número de alumnos con al menos N tokens. Esto nos da el número
            de tokens necesarios para conseguir una puntuación X, y el resto de puntuaciones se calculan
            proporcionalmente. </p>    
+       <p> Debe además seleccionar un peso sobre la nota final.</p>
                  </div>  
 
            <?php if( $int_eval === 3){
@@ -132,13 +137,17 @@
                $params0 = $paramsarr[1];
                $param0 = explode("=", $params0);
                $param2 = $param0[1];
+               $params0 = $paramsarr[2];
+               $param0 = explode("=", $params0);
+               $param3 = $param0[1];
            }else{
-               $selected = ""; $param1 = ""; $param2 = "";
+               $selected = ""; $param1 = ""; $param2 = ""; $param3 = "";
            }  ?>
                <a href="#" onclick="mostrar_info_opcion(3)" >+info </a>
        <p> Parámetros configurables:</p>               
-           <input type="text" id="nota_referencia" name="nota_referencia"  value="<?php echo $param1; ?>" placeholder="Nota de referencia para la media de la clase (X)" class="Centrar form-normal form-control"/>   
-           <input type="text" id="minimo_tokens" name="minimo_tokens"  value="<?php echo $param2; ?>" placeholder="Mínimo de tokens para ser contabilizado (N)" class="Centrar form-normal form-control"/>                
+           <input type="text" id="nota_referencia" name="nota_referencia"  value="<?php echo $param1; ?>" placeholder="Nota de referencia para la media de la clase (X)" title="Nota de referencia para la media de la clase (X)" class="Centrar form-normal form-control validate[number]"/>   
+           <input type="text" id="minimo_tokens" name="minimo_tokens"  value="<?php echo $param2; ?>" placeholder="Mínimo de tokens para ser contabilizado (N)" title="Mínimo de tokens para ser contabilizado (N)" class="Centrar form-normal form-control validate[number]"/>                
+           <input type="text" id="peso_nota_final2" name="peso_nota_final2" value="<?php echo $param3; ?>" placeholder="Peso en la nota final %" title="Peso en la nota final %" class="Centrar form-normal form-control validate[number,max[100]]"/>           
            <label for="metodo3"> Elegir Opción 3</label>
            <input type="radio" id="metodo3" name="metodo" value="3" <?php echo $selected; ?>/>
           </div>

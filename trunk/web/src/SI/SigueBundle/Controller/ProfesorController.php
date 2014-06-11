@@ -445,12 +445,16 @@ class ProfesorController extends Controller
                 $params = $params . "margen_tolerancia=".$param1;
                 $param2 = $request->request->get('num_notas_descartar');
                 $params = $params . "##num_notas_descartar=".$param2;
+                $param3 = $request->request->get('peso_nota_final');
+                $params = $params . "##peso_nota_final=".$param3;
                 $cambio = true;
             }else  if($metodo_int === 3){
                 $param1 = $request->request->get('nota_referencia');
                 $params = $params . "nota_referencia=".$param1;
                 $param2 = $request->request->get('minimo_tokens');
-                $params = $params . "##minimo_tokens=".$param2;     
+                $params = $params . "##minimo_tokens=".$param2;
+                $param3 = $request->request->get('peso_nota_final2');
+                $params = $params . "##peso_nota_final=".$param3;
                 $cambio = true;
             }    
             if($cambio){
@@ -1675,7 +1679,7 @@ class ProfesorController extends Controller
                     $prediccion = self::prediccionNotaOpcion1($em,$id,$asig,$p[0]);
                 break;
             case 2: $p = self::getParametrosOpcion2($param);
-                    $prediccion = self::prediccionNotaOpcion2($em,$id,$asig,$p[0],$p[1]);
+                    $prediccion = self::prediccionNotaOpcion2($em,$id,$asig,$p[0],$p[1],$p[2]);
                 break;
             case 3: $p = self::getParametrosOpcion3($param);
                     $prediccion = self::prediccionNotaOpcion3($em,$id,$asig,$p[0],$p[1]);
@@ -1698,9 +1702,11 @@ class ProfesorController extends Controller
         $vars = explode("##",$param);
         parse_str($vars[0],$out1);
         parse_str($vars[1],$out2);
+        parse_str($vars[2],$out3);
         $p = array();
         $p[0] = floatval($out1['margen_tolerancia']);  
         $p[1] = floatval($out2['num_notas_descartar']);
+        $p[2] = floatval($out3['peso_nota_final'])/100;
         return $p;
     }
     
@@ -1708,9 +1714,11 @@ class ProfesorController extends Controller
         $vars = explode("##",$param);
         parse_str($vars[0],$out1);
         parse_str($vars[1],$out2);
+        //parse_str($vars[2],$out3);
         $p = array();
         $p[0] = floatval($out1['nota_referencia']);  
         $p[1] = floatval($out2['minimo_tokens']);
+        //$p[2] = floatval($out3['peso_nota_final'])/100;
         return $p;
     }
     
@@ -1722,7 +1730,7 @@ class ProfesorController extends Controller
         return $valor;
     }
     
-    private function prediccionNotaOpcion2($em,$id,$asig,$tolerancia,$descartes){
+    private function prediccionNotaOpcion2($em,$id,$asig,$tolerancia,$descartes,$peso){
         $queryMax = $em->createQuery(  'SELECT T
                                     FROM SISigueBundle:AsignaturaAlumno T
                                     WHERE T.idAsignatura = :asig
@@ -1736,8 +1744,8 @@ class ProfesorController extends Controller
         $limite = $max*$tolerancia/100;
         $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
         $num = $query->getNum();
-        if ($num >= $limite) return 10;
-        return $num*10/16;
+        if ($num >= $limite) return 10 * $peso;
+        return ($num*10/16) *$peso;
         
     }
     
@@ -1766,7 +1774,7 @@ class ProfesorController extends Controller
         $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
         $num = $query->getNum();
         if ($num == $numX) return $x;
-        return $num*$x/$numX;
+        return ($num*$x/$numX) ;
     }
     
     
