@@ -179,6 +179,15 @@
 
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
-    
+    $(document).ready(function(){
+        $("#accordion").accordion( "option", "active", 0);
+        <?php if (isset($selected)): ?>
+            var s = <?php echo $selected; ?>;
+            //$("#li_est_" + s).attr('href','javascript:void(0);');
+            $("#divInicio").addClass("hiddenStructure");
+            mostrarMenuAsignatura(s);            
+            $("#li_est_" + s).attr('onClick',"mostrarEstadisticas(" + s +");");
+        <?php endif; ?>  
+        });
 </script>
 <?php $view['slots']->stop(); ?>
