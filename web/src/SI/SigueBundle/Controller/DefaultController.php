@@ -157,10 +157,10 @@ class DefaultController extends Controller
         ->setTo($correo)
         ->setBody('<h3> ¡Bienvenido! </h3> <p>Ha sido añadido al sistema SIGUE de la ucm.<br /> 
             <p>Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0].'</p>
-                <a href="" title="Ir a Sigue">SIGUE </a> ','text/html' );
+                <a href="ssii2013.e-ucm.es" title="Ir a Sigue">SIGUE </a> ','text/html' );
         $this->get('mailer')->send($message);
                         
-       
+        $profesor->setCodigo($correo."#&".$pass_provisional);
         $em->persist($profesor);
         $em->flush();
         
@@ -199,7 +199,22 @@ class DefaultController extends Controller
         }if($exito != "false"){
             $pass_provisional = explode("@",$profesor->getCorreo());
             $pass_provisional[0] = $pass_provisional[0].rand(0,99);
-
+            
+            
+            
+            
+             $oldCod = $profesor->getCodigo(); 
+            $query = $em->createQuery(  "SELECT T
+                                        FROM SISigueBundle:Codigos T
+                                        WHERE T.codigo = :cod" )->setParameter('cod',$oldCod);
+            $list = $query->getResult();
+            if(!is_null($list) && count($list)== 1){
+                $codigo = $list[0];
+                $codigo->setCodigo($profesor->getCorreo()."#&".$pass_provisional[0]);
+                $em->persist($codigo);
+                $profesor->setCodigo($codigo->getCodigo());
+            }
+                            
             $hash = self::hashSSHA($pass_provisional[0]);
             $encrypted_password = $hash["encrypted"];
             $salt = $hash["salt"];

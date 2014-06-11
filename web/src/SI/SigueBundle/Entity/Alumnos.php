@@ -289,4 +289,65 @@ class Alumnos
         return $this->codigo_id;
     }
 
+    /**
+     * @var string
+     */
+    private $codigoId;
+
+    /**
+     * @var string
+     */
+    private $gcmcode;
+
+    /**
+     * @var string
+     */
+    private $alumnoscol;
+
+
+    /**
+     * Set gcmcode
+     *
+     * @param string $gcmcode
+     * @return Alumnos
+     */
+    public function setGcmcode($gcmcode)
+    {
+        $this->gcmcode = $gcmcode;
+    
+        return $this;
+    }
+
+    /**
+     * Get gcmcode
+     *
+     * @return string 
+     */
+    public function getGcmcode()
+    {
+        return $this->gcmcode;
+    }
+
+    /**
+     * Set alumnoscol
+     *
+     * @param string $alumnoscol
+     * @return Alumnos
+     */
+    public function setAlumnoscol($alumnoscol)
+    {
+        $this->alumnoscol = $alumnoscol;
+    
+        return $this;
+    }
+
+    /**
+     * Get alumnoscol
+     *
+     * @return string 
+     */
+    public function getAlumnoscol()
+    {
+        return $this->alumnoscol;
+    }
 }

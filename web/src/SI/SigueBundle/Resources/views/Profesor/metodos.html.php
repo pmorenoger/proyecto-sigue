@@ -35,8 +35,8 @@
              <div id="accordion2">
            
            <h3>Opción 1: Peso fijo para cada Token  </h3>
-           <div>
-           <div id="opcion1_texto" class="hiddenStructure">
+           <div class="mensaje">
+           <div id="opcion1_texto" class="hiddenStructure mensaje" >
            <p>El profesor decide que cada token entregado aporta una cantidad fija hacia la calificación final de
                    participación (p.e. 0,25). Con este algoritmo, los alumnos persiguen obtener (al menos) un número
                    fijo de tokens, conocido desde el principio de la asignatura. La nota de participación tiene como
@@ -46,7 +46,7 @@
            <p>Parámetros configurables:<br />
                     Valor de cada token</p>
            <?php $id_eval = $asignatura->getIdeval();  
-
+                $num_seleccionado = 0;
                if(is_null($id_eval)){
                   $int_eval = 0;
                }else{
@@ -57,18 +57,22 @@
                $params = $asignatura->getParameval();
                $paramsarr = explode("=", $params);
                $param1 = $paramsarr[1];
-
+               $num_seleccionado = 0;
            }else{
                $selected = ""; $param1 = ""; $param2 = "";
            }  ?>
-           <input type="text" id="valor_absoluto" name="valor_absoluto" value="<?php echo $param1; ?>"/>
-           <label for="metodo1">Elegir Opción 1 </label>
-           <input type="radio" id="metodo1" name="metodo" value="1" <?php echo $selected; ?>/>
-           </div>
+           
+           <div class="form-group">
+                
+                <input type="number" step="0.01" min="0" id="valor_absoluto" name="valor_absoluto" value="<?php echo $param1; ?>" placeholder="Valor Absoluto" class="Centrar form-normal form-control"/>
+                <label for="metodo1">Elegir Opción 1 </label>
+                <input type="radio" id="metodo1" name="metodo" value="1" <?php echo $selected; ?>/>
 
+           </div>
+            </div>
            <h3>Opción 2: Evaluación proporcional al mejor alumno   </h3>
-           <div>
-           <div id="opcion2_texto" class="hiddenStructure">
+           <div class="mensaje">
+           <div id="opcion2_texto" class="hiddenStructure mensaje">
            <p>
                En lugar de tener un valor fijo, el valor de cada token depende del número de tokens obtenido por el
                alumno con mejores resultados, con un margen de tolerancia configurable.
@@ -88,7 +92,7 @@
                $param0 = explode("=", $params0);
                $param1 = $param0[1];
 
-
+               $num_seleccionado = 1;
                $params0 = $paramsarr[1];
                $param0 = explode("=", $params0);
                $param2 = $param0[1];
@@ -97,20 +101,18 @@
            } ?>
                <a href="#" onclick="mostrar_info_opcion(2)" >+info </a>
            <p>Parámetros configurables:</p>
-           <ul>
-               <li> Margen de tolerancia (en porcentaje)</li>
-                <input type="text" id="margen_tolerancia" name="margen_tolerancia" value="<?php echo $param1; ?>"/>
-               <li> Número de notas a descartar.</li>
-                <input type="text" id="num_notas_descartar" name="num_notas_descartar" value="<?php echo $param2; ?>"/>
-           </ul>
+                 
+            <input type="text" id="margen_tolerancia" name="margen_tolerancia" value="<?php echo $param1; ?>" placeholder="Margen de tolerancia (en porcentaje)" class="Centrar form-normal form-control"/>           
+            <input type="text" id="num_notas_descartar" name="num_notas_descartar" value="<?php echo $param2; ?>" placeholder="Número de notas a descartar." class="Centrar form-normal form-control"/>           
            <label for="metodo2"> Elegir Opción 2</label>
            <input type="radio" id="metodo2" name="metodo" value="2" <?php echo $selected; ?>/>
 
            </div>
 
           <h3> Opción 3: Evaluación proporcional al número de tokens registrados </h3>
-          <div>
-          <div id="opcion3_texto" class="hiddenStructure">
+          
+          <div class="mensaje">
+          <div id="opcion3_texto" class="hiddenStructure mensaje" >
        <p>Como combinación de las anteriores, se puede hacer un algoritmo que calcule las notas en función
            del número de tokens registrados. Si se escoge este método, se calcula el número total de tokens
            registrados y se divide entre el número de alumnos con al menos N tokens. Esto nos da el número
@@ -126,7 +128,7 @@
                $param0 = explode("=", $params0);
                $param1 = $param0[1];
 
-
+               $num_seleccionado = 2; 
                $params0 = $paramsarr[1];
                $param0 = explode("=", $params0);
                $param2 = $param0[1];
@@ -134,16 +136,10 @@
                $selected = ""; $param1 = ""; $param2 = "";
            }  ?>
                <a href="#" onclick="mostrar_info_opcion(3)" >+info </a>
-       <p> Parámetros configurables:</p>
-       <ul> 
-           <li>Nota de referencia para la media de la clase (X)
-           <input type="text" id="nota_referencia" name="nota_referencia"  value="<?php echo $param1; ?>"/></li>
-           <li>Mínimo de tokens para ser contabilizado (N)
-           <input type="text" id="minimo_tokens" name="minimo_tokens"  value="<?php echo $param2; ?>"/>
-           </li>
-
-       </ul>
-            <label for="metodo3"> Elegir Opción 3</label>
+       <p> Parámetros configurables:</p>               
+           <input type="text" id="nota_referencia" name="nota_referencia"  value="<?php echo $param1; ?>" placeholder="Nota de referencia para la media de la clase (X)" class="Centrar form-normal form-control"/>   
+           <input type="text" id="minimo_tokens" name="minimo_tokens"  value="<?php echo $param2; ?>" placeholder="Mínimo de tokens para ser contabilizado (N)" class="Centrar form-normal form-control"/>                
+           <label for="metodo3"> Elegir Opción 3</label>
            <input type="radio" id="metodo3" name="metodo" value="3" <?php echo $selected; ?>/>
           </div>
 
@@ -199,43 +195,11 @@
                 ]
               });
               
-             
+            $("#accordion2").accordion( "option", "active", <?php echo $num_seleccionado?> ); 
           
        });
        
-       function qr(){
-            var id = '<?php if(isset($asignatura)){ echo $asignatura->getId();}?>';
-            if ($('#codQR').has('img').length){
-                ocultar_todo();
-                $("#nueva_asignatura").addClass("hiddenStructure");
-                $("#codQR").removeClass('hiddenStructure');
-            }else{
-                var cod = '<?php if(isset($cod)){ echo $cod; } else{ echo ""; };?>';
-                var url = '<?php echo "http://".$_SERVER['SERVER_NAME']. ""; ?>';
-                $.ajax({
-                    type:"GET",
-                    url: url + "/generadorQR.php",
-                    async: true,
-                    data: {
-                       codigo: cod 
-                    },
-                    dataType:"json",
-                    success: function(data) {
-                        if (data.status){
-                            //$("#actividades").addClass('hiddenStructure');
-                            //$('#divCambiar').addClass('hiddenStructure');
-                            //$('#divCorreoAdicional').addClass('hiddenStructure');
-                            ocultar_todo();
-                            $("#codQR").removeClass('hiddenStructure');
-                            $("#codQR").append("<img src='" + url + data.dir + "'>");
-                            //$("#bActivar").attr("disabled", "disabled");
-                        }else{
-                            $("#bActivar").attr("disabled", "disabled");
-                        }
-                     }
-                });
-            }
-        }
+       
        
        function formulario_metodo_evaluacion(id_asignatura){       
           ocultar_todo();

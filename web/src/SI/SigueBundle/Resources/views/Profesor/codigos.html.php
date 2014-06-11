@@ -15,15 +15,15 @@
  <div id="codQR"></div>
  
 <?php if($exito==="true2"): ?>
-    <div id="tooltip_exito"> 
-        <p>¡La lista de TOKENS ha sido creada!</p>
+    <div id="tooltip_exito" class="mensaje"> 
+        <h3>¡La lista de TOKENS ha sido creada!</h3>
         <p>Haga click <a href="descargar_pdf/<?php echo $ruta_pdf;?>" id="ruta_pdf">aquí</a> para descargar el pdf.</p>      
     </div>
 <?php endif; ?>
 
 <?php if($exito ==="false"): ?>
-     <div id="tooltip_exito"> 
-        <p>¡Lo sentimos!</p>
+     <div id="tooltip_exito" class="mensaje"> 
+        <h3>¡Lo sentimos!</h3>
         <p>No se ha podido procesar la solicitud. Inténtelo de nuevo más tarde.</p>
     </div>
 <?php endif;?>

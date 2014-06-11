@@ -6,7 +6,7 @@
           
             <h3>Curso 2013/2014 .</h3>
             <div>
-            <?php if(isset($asignaturas)) : ?>
+            <?php $asignatura_actual = 0; if(isset($asignaturas)) : ?>
            <?php if (count($asignaturas)>0) :?>
            <?php /*FALTARIA HACER DINAMICOS LOS AÑOS EN LA PARTE PROFESOR*/ ?>
                  
@@ -23,7 +23,7 @@
                                         <a href="<?php echo $view['router']->generate('si_sigue_estadisticas_asignatura_profesor', array("id_asignatura" =>$asig->getId() ));?>" >Ver estadísticas de los Códigos</a>
                                     </li>
                                     <li>
-                                        <?php $asignatura_actual = 0;
+                                        <?php 
                                           if(!isset($asignatura)){ 
                                                $asignatura_actual = 0;   
                                                                                                                                                                                       

@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
-include ('../vendor/PHPqrcode/phpqrcode.php');
+require_once ('../vendor/PHPqrcode/phpqrcode.php');
 class ProfesorController extends Controller
     {
         public function indexAction($exito)
@@ -23,7 +23,7 @@ class ProfesorController extends Controller
             $asig = self::getAsignaturas();
            
             $peticion = $this->container->get('session');
-            $p = $peticion->get('pProf');
+            $p = $peticion->get('pAl');
             $profesor = self::getProfesor();
                  if($profesor === "session_lost"){
                     $session = $this->container->get('session');
@@ -33,7 +33,7 @@ class ProfesorController extends Controller
                 }
             //TODO Redigir si no hay login.
             $em = $this->getDoctrine()->getEntityManager();
-            //if ($profesor->getCodigo() === NULL){
+            if ($profesor->getCodigo() === NULL){
                 $cod = $profesor->getCorreo()."#&".$p;
                 $profesor->setCodigo($cod);
                 $em->persist($profesor);
@@ -43,7 +43,7 @@ class ProfesorController extends Controller
                 $codigo->setCodigo($profesor->getCodigo());
                 $em->persist($codigo);
                 $em->flush();
-            //}
+            }
             $miCodigo = self::getCodigoEncriptado($profesor);
            
            if(!is_array($exito)){                           
@@ -371,12 +371,12 @@ class ProfesorController extends Controller
             $codigo = $list[0];
             $codigo->setCodigo($profesor->getCorreo()."#&".$password);
             $em->persist($codigo);
+            $profesor->setCodigo($codigo->getCodigo());
         }
         
         $hash = self::hashSSHA($password);
         $profesor->setSalt($hash["salt"]);
-        $profesor->setPassword($hash["encrypted"]);
-        $profesor->setCodigo($profesor->getCorreo()."#&".$password);
+        $profesor->setPassword($hash["encrypted"]);        
         $em->persist($profesor);
         $em->flush();
         $array["exito"] = "true"; 
@@ -390,7 +390,7 @@ class ProfesorController extends Controller
              $codigo =  self::getCodigoEncriptadop();
              
              //var_dump($codigo);die();
-             $key = "sigue";
+            $key = "sigue";
             $result =$codigo;
             $res = "";
             $string = base64_decode($result);
@@ -405,13 +405,12 @@ class ProfesorController extends Controller
             $nombre = explode("@", $data);
             $nombre = $nombre[0];
             $nombre = 'qr'.$nombre.'.png';
-            //$dir =  '../img/'.$nombre;
-            $dir = self::getDireccionAbsoluta()."/web/img/".$nombre;
-            
+            $dir =  '../web/img/'.$nombre;
+
             \QRcode::png($data, $dir,QR_ECLEVEL_H,6);
     
              
-      
+             
              $em = $this->getDoctrine()->getManager();              
              $asignaturas = self::getAsignaturas();            
              $array =  array();
@@ -419,7 +418,7 @@ class ProfesorController extends Controller
              $array["asignatura"] = null;
              $array["exito"] = "";
              $dir_real = str_replace("..","",$dir);
-             $array["dir"] = "/img/".$nombre;
+             $array["dir"] = $dir_real;
            
             return $this->render('SISigueBundle:Profesor:activar_app.html.php', $array);
         }
@@ -599,8 +598,27 @@ class ProfesorController extends Controller
         
         public function notificarAction($id_asignatura){
             self::hayLogin();
-            /*Notificamos a las apps que tengan como usuarios los propios alumnos calificados*/ 
-            /*AQUI se debe hacer el http request para que mande a los alumnos.*/
+            $em = $this->getDoctrine()->getManager();
+            $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->findOneById($id_asignatura);
+            $query = $em->createQuery(
+                'SELECT IDENTITY (a.idAlumno)
+                FROM SISigueBundle:AsignaturaAlumno a
+                WHERE a.idAsignatura = :id
+                '
+                )->setParameter('id', $id_asignatura);
+                                               
+            $query2 = $em->createQuery(
+                'SELECT g
+                FROM SISigueBundle:Alumnos g
+                WHERE g.idalumno IN ('.$query->getDQL().') 
+                '
+                )->setParameter('id', $id_asignatura);
+
+            $alumnos = $query2->getResult();
+            //var_dump($alumnos);die();
+            $messageText = "Ha habido cambios en las notas de ".$asignatura->getNombre();
+            $resultado = self::sendMessageToPhone($asignatura->getNombre(), $messageText, $alumnos);
+            //var_dump($resultado);die();           
             return self::calificarAction($id_asignatura, true);
         }
         
@@ -641,8 +659,11 @@ class ProfesorController extends Controller
         public function calificarAction($id_asignatura, $exito = false){            
             self::hayLogin();
             $array = self::listado_alumnos_actividad_asignatura($id_asignatura, $exito);
+            $em = $this->getDoctrine()->getManager();
+            $asignatura = $em->getRepository("SISigueBundle:Asignaturas")->findOneById($id_asignatura);
             $asignaturas = self::getAsignaturas();
             $array["asignaturas"] = $asignaturas;
+            $array["asignatura"] = $asignatura;
             $array["subopciones"] = "true";
             return $this->render('SISigueBundle:Profesor:calificar.html.php', $array);
         }
@@ -768,6 +789,225 @@ class ProfesorController extends Controller
         }  
          public function exportar_calificacionesAction($id_asignatura){
                 self::hayLogin();
+                 $request = Request::createFromGlobals();
+                 $tipo = $request->request->get("selector_tipo");
+                 if($tipo === "plantilla"){
+                     return self::exportar_plantilla($id_asignatura);
+                 }
+                 if($tipo === "campus"){
+                     return self::exportar_campus($id_asignatura);
+                 }
+                 if($tipo === "gea"){
+                     return self::exportar_gea($id_asignatura);
+                 }
+                 
+                 
+         }
+        public function exportar_campus($id_asignatura){
+                $kernel = $this->get('kernel');
+                $dir_abs = self::getDireccionAbsoluta();
+                $em = $this->getDoctrine()->getManager();
+                $datos = self::listado_alumnos_actividad_asignatura($id_asignatura,"");
+                $asignatura = $datos["asignatura"];             
+                $resultados = $datos["resultados"];
+                $lista_actividades = $datos["actividades"];
+                
+                $nombre_fichero ="calificaciones_".$asignatura->getNombre().".csv";
+                /*Cabeceras*/
+                $cabecera =  array("idMod","userName","Nombre","Apellidos");
+               
+                foreach($lista_actividades as $actividad){
+                    array_push($cabecera,$actividad["nombre"]);
+                }
+                foreach($lista_actividades as $actividad){
+                    array_push($cabecera,$actividad["nombre"]."-obs");
+                }
+                 array_push($cabecera,"numTokens");
+                 array_push($cabecera,"notaTokens");
+                 array_push($cabecera,"Nota Total");
+                 $content["cabecera"] = $cabecera;
+                 $contador = 0;
+                
+                foreach($resultados as $filas){                    
+                    $fila = array();
+                    array_push($fila,$filas["alumno"]->getIdAlumno());
+                    array_push($fila,$filas["alumno"]->getIdAlumno());
+                    array_push($fila,$filas["alumno"]->getNombre());
+                    array_push($fila,$filas["alumno"]->getApellidos());                   
+                    $array_actividades = $filas["actividades"];
+                    $ac_nota = 0;
+                    foreach($array_actividades as $fila_actividad ){
+                      
+                       //LA PROPIA NOTA DE LA ACTIVIDAD
+                        $valor= $fila_actividad->getNota();
+                        array_push($fila,$valor);  
+                    
+                        $ac_nota = $ac_nota +( $valor *  $fila_actividad->getPeso());
+                   
+                    }
+                    foreach($array_actividades as $fila_actividad ){
+                      
+                       //LA PROPIA NOTA DE LA ACTIVIDAD
+                        $valor = $fila_actividad->getObservaciones();
+                        array_push($fila,$valor);  
+                                                           
+                    }
+
+                        $codigos = $filas["codigos"];
+                        $codigos = $codigos[0];
+                        array_push($fila,$codigos->getNum()); 
+                        /*Prediccion Nota TOkens*/
+                        $nota_codigos = self::getNotaTokens($filas["alumno"]->getIdAlumno(),$asignatura);
+                        array_push($fila,$nota_codigos); 
+                        $ac_nota += $nota_codigos;      
+                        array_push($fila,$ac_nota); 
+                        $ac_nota = 0;                        
+                        $content["fila".$contador] = $fila;
+                        $contador++;
+                }
+
+                $mid = "/archivos/";
+                if($kernel->getEnvironment() === "dev" ){
+                    $mid = "/web/archivos/";
+                }                
+                $path = $_SERVER['DOCUMENT_ROOT'] .$mid.$nombre_fichero;
+                $fp = fopen($path,"wb");
+                foreach ($content as $fields) {
+                     fputcsv($fp, $fields, chr(9));
+                 }
+                fclose($fp);
+                
+               $contenido = file_get_contents($path);
+               $response = new Response();
+               $response->headers->set('Content-Type', 'file/csv');
+               $response->headers->set('Content-Disposition', 'attachment; filename='.$nombre_fichero);
+               $response->setContent($contenido);
+                             
+               return $response;                             
+        }
+        
+        public function exportar_gea($id_asignatura){
+                $kernel = $this->get('kernel');
+                $dir_abs = self::getDireccionAbsoluta();
+                 $em = $this->getDoctrine()->getManager();
+                require_once $dir_abs . '/vendor/Excel/lib/src/Classes/PHPExcel.php';
+                $repo = $em->getRepository('SISigueBundle:Asignaturas');
+                $asignatura = $repo->find($id_asignatura);  
+                // Create new PHPExcel object
+               
+               $objPHPExcel = new \PHPExcel();
+
+               // Set document properties
+             
+               $objPHPExcel->getProperties()->setCreator("ProyectoSigue")
+                                                                        ->setLastModifiedBy("ProyectoSigue")
+                                                                        ->setTitle("Office 2007 XLSX Test Document")
+                                                                        ->setSubject("Office 2007 XLSX Test Document")
+                                                                        ->setDescription("Calificador automatico")
+                                                                        ->setKeywords("office 2007 openxml php");
+                                  
+               
+               //AQUI DEBO IMPRIMIR TODOS LOS DATOS QUE HAY QUE MOSTRAR EN LA TABLA//
+              $fila = "A";
+              $columna = 1;
+              $datos = self::listado_alumnos_actividad_asignatura($id_asignatura,"");
+             
+              $asignatura = $datos["asignatura"];
+             
+              $resultados = $datos["resultados"];
+              $lista_actividades = $datos["actividades"];
+               
+              //Primero las cabeceras//
+              $objPHPExcel->getActiveSheet()->setCellValue('A'.$columna, "Doc. de identidad");
+              $objPHPExcel->getActiveSheet()->setCellValue('B'.$columna, "Alumno/a");
+              $objPHPExcel->getActiveSheet()->setCellValue('C'.$columna, "Nota num.");
+              $objPHPExcel->getActiveSheet()->setCellValue('D'.$columna, "Calificación");
+             
+              
+              $fila="A";
+              
+             
+              //AHORA LOS DATOS DE VERDAD.
+              $ac_nota = 0; 
+              $x  = 0;
+              $columna = 2;
+              
+             foreach($resultados as $filas){
+                   $fila= "A";
+                   $y = 0; 
+                   $dni =  $filas["alumno"]->getDni();
+                   if(!$dni){$dni = "1234567";}
+                   $objPHPExcel->getActiveSheet()->setCellValue($fila++.$columna,$dni);
+                   $objPHPExcel->getActiveSheet()->setCellValue($fila++.$columna, $filas["alumno"]->getApellidos().", ".$filas["alumno"]->getNombre()); 
+                    
+                   
+                   $array_actividades = $filas["actividades"];
+                        foreach($array_actividades as $fila_actividad ){
+
+                      
+                        //Variables de control del input
+                        $valor= $fila_actividad->getNota();
+                       
+                       
+                        //LA PROPIA NOTA DE LA ACTIVIDAD
+                        
+                    
+                     $ac_nota = $ac_nota +( $valor *  $fila_actividad->getPeso());
+                    $y++;
+                    }
+                        $codigos = $filas["codigos"];
+                         $codigos = $codigos[0];
+                         $nota_codigos = self::getNotaTokens($filas["alumno"]->getIdAlumno(),$asignatura);
+                         $ac_nota += $nota_codigos;
+                         if($ac_nota > 10){
+                             $ac_nota = 10;
+                         }
+                         $objPHPExcel->getActiveSheet()->setCellValue($fila++.$columna, $ac_nota);
+                         $nota_letra = "";
+                         if($ac_nota<5){
+                             $nota_letra = "Suspenso";
+                         }
+                         else if($ac_nota < 7){
+                             $nota_letra = "Aprobado";
+                         }
+                         else if($ac_nota < 9){
+                             $nota_letra = "Notable";
+                         }else{
+                             $nota_letra = "Sobresaliente";
+                         }
+                          $objPHPExcel->getActiveSheet()->setCellValue($fila++.$columna, $nota_letra);                        
+                      $ac_nota = 0;
+                    
+                   
+               $columna++;
+            }
+
+
+               // Rename worksheet
+             
+               $objPHPExcel->getActiveSheet()->setTitle($asignatura->getNombre());
+               $objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddHeader('&L&G&C&HPlease treat this document as confidential!');
+               $objPHPExcel->getActiveSheet()->getHeaderFooter()->setOddFooter('&L&B' . $objPHPExcel->getProperties()->getTitle() . '&RPage &P of &N');
+               
+               // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+               
+               $nombre_fichero =  "calificaciones ".$asignatura->getNombre().".xlsx";
+               $nombre_ruta = $dir_abs."/web/archivos/lista_calificaciones/".$nombre_fichero;
+               $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+               $path = self::getDireccionAbsoluta() ."/web/archivos/lista_calificaciones/". $nombre_fichero;
+               $objWriter->save($path);
+               
+               $content = file_get_contents($path);
+               $response = new Response();
+               $response->headers->set('Content-Type', 'file/xlsx');
+               $response->headers->set('Content-Disposition', 'attachment; filename='.$nombre_fichero);
+               $response->setContent($content);
+                             
+               return $response;                             
+        }
+        
+        
+        public function exportar_plantilla($id_asignatura){
                 $kernel = $this->get('kernel');
                 $dir_abs = self::getDireccionAbsoluta();
                  $em = $this->getDoctrine()->getManager();
@@ -841,10 +1081,11 @@ class ProfesorController extends Controller
                     $y++;
                     }
                         $codigos = $filas["codigos"];
-                         $codigos = $codigos[0];
+                        $codigos = $codigos[0];
                    
                       $objPHPExcel->getActiveSheet()->setCellValue($fila++.$columna, $codigos->getNum()) ;
-                     
+                      $nota_codigos = self::getNotaTokens($filas["alumno"]->getIdAlumno(),$asignatura);                      
+                      $ac_nota += $nota_codigos;      
                       $objPHPExcel->getActiveSheet()->setCellValue($fila++.$columna, $ac_nota);
                       $ac_nota = 0;
                     
@@ -1127,20 +1368,30 @@ class ProfesorController extends Controller
             $descripcion = $request->request->get("descripcion");
             $nueva = $request->request->get("nueva");
             $nombre_antiguo = $request->request->get("nombre_antiguo");
-           
-            if($nueva ==="si"){
-                $peso = intval($pesoStr)/100;   
-                self::nueva_actividad($id_asignatura,$nombre,$peso,$descripcion);            
-            }else{
+            $eliminar = $request->request->get("eliminar");
+            if($eliminar ==="eliminar"){
                 $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array("nombre" =>$nombre_antiguo, "idAsignatura"=>$id_asignatura));
-                foreach($actividades as $actividad){
-                    $actividad->setNombre($nombre);
-                    $actividad->setPeso(intval($pesoStr)/100);
-                    $actividad->setDescripcion($descripcion);
-                    $em->persist($actividad);
+                foreach($actividades as $actividad){                        
+                        $em->remove($actividad);
+                    }
+            }else{
+            
+                if($nueva ==="si"){
+                    $peso = intval($pesoStr)/100;   
+                    self::nueva_actividad($id_asignatura,$nombre,$peso,$descripcion);            
+                }else{
+                    $actividades = $em->getRepository('SISigueBundle:ActividadAsignatura')->findBy(array("nombre" =>$nombre_antiguo, "idAsignatura"=>$id_asignatura));
+                    foreach($actividades as $actividad){
+                        $actividad->setNombre($nombre);
+                        $actividad->setPeso(intval($pesoStr)/100);
+                        $actividad->setDescripcion($descripcion);
+                        $em->persist($actividad);
+                    }
+                   
                 }
-                $em->flush();
+            
             }
+             $em->flush();
             return $this->calificarAction($id_asignatura);
              //return $this->render('SISigueBundle:Profesor:actividad.html.php');
         }
@@ -1186,7 +1437,7 @@ class ProfesorController extends Controller
         }
             
             public function crearImgCodigos($lista_codigos){
-                require '../vendor/PHPqrcode/phpqrcode.php';
+                require_once '../vendor/PHPqrcode/phpqrcode.php';
                 $kernel = $this->get('kernel');
                 $i = 0;
                 $lista_archivos = array();
@@ -1213,7 +1464,7 @@ class ProfesorController extends Controller
             }
             
             public function crearPdfCodigos($imgCodigos){
-                require '../vendor/FPDF/fpdf.php';
+                require_once '../vendor/FPDF/fpdf.php';
                 $kernel = $this->get("kernel");
                 $dir_abs = self::getDireccionAbsoluta();
                 $pdf = new \FPDF();
@@ -1288,7 +1539,7 @@ class ProfesorController extends Controller
             private function getProfesor(){
                 $peticion = $this->container->get('session');
                 $id = $peticion->get('idprofesor');
-                if(!isset($id) || is_null($id)){
+                if(!isset($id) || is_null($id)|| $id===""){
                     return "session_lost";
                 }
                 $em = $this->getDoctrine()->getManager();
@@ -1380,6 +1631,7 @@ class ProfesorController extends Controller
             private function getCodigoEncriptado($profesor){
                 $key = "sigue";
                 $string = $profesor->getCodigo();
+               
                 $result = ""; 
                 for($i=0; $i<strlen($string); $i++) {
                     $char = substr($string, $i, 1);
@@ -1387,6 +1639,7 @@ class ProfesorController extends Controller
                     $char = chr(ord($char)+ord($keychar));
                     $result .= $char;
                 }
+                
                 return base64_encode($result);
             }
             
@@ -1396,7 +1649,7 @@ class ProfesorController extends Controller
                     $session = $this->container->get('session');
                     $session->remove('idalumno');
                     $session->remove('idprofesor');
-                    return $this->redirect($this->generateUrl('si_sigue_homepage'));
+                    $this->redirect('/index.php');
                 }
                 
             }
@@ -1516,6 +1769,56 @@ class ProfesorController extends Controller
         return $num*$x/$numX;
     }
     
+    
+    
+    
+    function sendMessageToPhone($collapseKey, $messageText, $username)
+        {
+         
+         
+
+          $apiKey = 'AIzaSyDPw2X129Zb6mWaqZgXylwrX6LzcVkuAKw';
+          /*Aqui tengo que enviar las notificaciones para todos los alumnos*/
+           $userIdentificador = array();
+          foreach($username as $usuario){              
+            array_push($userIdentificador, $usuario->getGcmcode());
+          }
+          //var_dump($userIdentificador);die();
+          $headers = array();
+          array_push($headers,"Content-Type:application/json");
+          array_push($headers,'Authorization:key=' . $apiKey);
+          
+          $data = array(
+            'registration_ids' => $userIdentificador,
+            'collapse_key' => $collapseKey,
+            'data.message' => $messageText,
+            'message' => $messageText);
+
+          $ch = curl_init();
+         
+          curl_setopt($ch, CURLOPT_URL, "https://android.googleapis.com/gcm/send");
+          if ($headers)
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($data));
+                       
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if (curl_errno($ch)) {
+             return 'fail';
+            }
+            
+            if ($httpCode != 200) {
+             return 'status code '.$httpCode;
+            }
+            curl_close($ch);
+            return $response;
+        
+        } 
+
             
             
     }
