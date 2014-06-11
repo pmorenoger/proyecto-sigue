@@ -40,18 +40,7 @@
         if (navigator.userAgent.indexOf('Firefox') === -1){
             $(".labelSigue").addClass("hiddenStructure");
         }
-        <?php if (isset($selected)): ?>
-           var s = <?php echo $selected; ?>;
-           //$("#li_est_" + s).attr('href','javascript:void(0);');
-           $("#divInicio").addClass("hiddenStructure");
-           mostrarMenuAsignatura(s);            
-           $("#li_est_" + s).attr('onClick',"mostrarEstadisticas(" + s +");");
-         <?php endif; ?>        
         
-        <?php if (isset($dir)): ?>
-            $("#divInicio").addClass("hiddenStructure");
-         <?php endif; ?>
-    
         $("#accordion").accordion({
             heightStyle: "fill"
         });
@@ -102,19 +91,25 @@
         var url = window.location.pathname;      
         var path_array = url.split('/');
         if(path_array[path_array.length-1] !== "activar_app" ){
-            $("#actividades").addClass('hiddenStructure');
-            $("div [id^='formRegistrar']").addClass("hiddenStructure");
-            $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
-            $('#divCambiar').addClass('hiddenStructure');
-            $('#divCorreoAdicional').addClass('hiddenStructure');
-            $("#codQR").removeClass('hiddenStructure');
+            mostrarQR();
             window.location = "<?php echo $view['router']->generate('si_sigue_alumno_activar_app');?> ";
+        }else{
+            mostrarQR();
         }
     }
     
     function fnVerificar(field, rules, i, options){
         if ($("#nueva_clave").val() !== $("#verificar").val())
             return "*Las contraseñas no coinciden.";
+    }
+    
+    function mostrarQR(){
+        $("#actividades").addClass('hiddenStructure');
+        $("div [id^='formRegistrar']").addClass("hiddenStructure");
+        $("#estadisticasAlumnoAsignatura").addClass("hiddenStructure");
+        $('#divCambiar').addClass('hiddenStructure');
+        $('#divCorreoAdicional').addClass('hiddenStructure');
+        $("#codQR").removeClass('hiddenStructure');
     }
     
     function mostrarActividades(){

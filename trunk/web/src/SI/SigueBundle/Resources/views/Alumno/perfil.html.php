@@ -103,6 +103,13 @@
 
 <?php $view['slots']->start("javascripts"); ?>
 <script type="text/javascript">
-    
+    $(document).ready(function(){
+        $("#accordion").accordion( "option", "active", 0);
+        <?php if (isset($selected)): ?>
+            var s = <?php echo $selected; ?>;
+            mostrarRegistrar(s);
+            mostrarMenuAsignatura(s); 
+        <?php endif; ?>  
+    });
 </script>
 <?php $view['slots']->stop(); ?>
