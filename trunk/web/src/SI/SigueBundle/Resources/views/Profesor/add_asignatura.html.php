@@ -1,4 +1,4 @@
-<?php $view->extend('::layout.html.php') ?>
+<?php $view->extend('::layout2.html.php') ?>
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 

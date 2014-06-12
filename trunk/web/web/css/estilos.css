@@ -319,6 +319,10 @@ input[type="text"], input[type="password"] {
     float: left;
     margin-left: 50px;
 }
+left3{
+    float: left;
+    margin-left: 40%;
+}
 
 .eliminar:hover {
     cursor: pointer;
@@ -518,5 +522,10 @@ a.nota_vacia{
     margin-left: 45%;
 }
 .tabulado_derecha{
-    margin-left:35%;
+    margin-left:80%;
+}
+
+.add_profesor{
+    height:450px;
+    
 }
