@@ -8,7 +8,7 @@ use SI\SigueBundle\Entity\AsignaturaCodigo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-include ('../vendor/PHPqrcode/phpqrcode.php');
+require_once ('../vendor/PHPqrcode/phpqrcode.php');
 
 class AlumnoController extends Controller
 {

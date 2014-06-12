@@ -102,7 +102,7 @@ class DefaultController extends Controller
                 return $this->redirect('inicio');
             }
         
-         return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => false));  
+         return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => ""));  
     }
     
     
@@ -166,11 +166,11 @@ class DefaultController extends Controller
         
         
         
-        return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => true)); 
+        return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => "true")); 
         
         }else{
             
-            return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => false));
+            return $this->render('SISigueBundle:Default:admin.html.php', array("exito" => "false"));
         }       
     }
     

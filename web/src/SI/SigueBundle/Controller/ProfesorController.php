@@ -176,7 +176,7 @@ class ProfesorController extends Controller
                     ->setTo($alumno->getCorreo())
                     ->setBody('<h3> ¡Bienvenido! </h3> <p>Ha sido añadido al sistema SIGUE de la ucm.<br /> 
             <p>Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0].'</p>
-                <a href="" title="Ir a Sigue">SIGUE </a> ', 'text/html' );
+                <a href="ssii2013.e-ucm.es" title="Ir a Sigue">SIGUE </a> ', 'text/html' );
                     $this->get('mailer')->send($message);
                         
                 }                
@@ -271,7 +271,7 @@ class ProfesorController extends Controller
                     ->setTo($alumno->getCorreo())
                     ->setBody('<h3> ¡Bienvenido! </h3> <p>Ha sido añadido al sistema SIGUE de la ucm.<br /> 
             <p>Su usuario es esta dirección de correo y su password es: '. $pass_provisional[0].'</p>
-                <a href="'.$_SERVER["SERVER_NAME"].'" title="Ir a Sigue">SIGUE </a> ', 'text/html' );
+                <a href="ssii2013.e-ucm.es" title="Ir a Sigue">SIGUE </a> ', 'text/html' );
                     $this->get('mailer')->send($message);
                         
                 }                
@@ -439,6 +439,8 @@ class ProfesorController extends Controller
             if($metodo_int === 1){
                 $param1 = $request->request->get('valor_absoluto');
                 $params = $params . "valor_absoluto=".$param1;
+                $param3 = $request->request->get('peso_nota_final1');
+                $params = $params . "##peso_nota_final=".$param3;
                 $cambio = true;
             }else if($metodo_int === 2){
                 $param1 = $request->request->get('margen_tolerancia');
@@ -622,8 +624,26 @@ class ProfesorController extends Controller
             //var_dump($alumnos);die();
             $messageText = "Ha habido cambios en las notas de ".$asignatura->getNombre();
             $resultado = self::sendMessageToPhone($asignatura->getNombre(), $messageText, $alumnos);
-            //var_dump($resultado);die();           
+            self::enviar_correo($id_asignatura);          
             return self::calificarAction($id_asignatura, true);
+        }
+        
+        private function enviar_correo($id_asignatura){
+             $em = $this->getDoctrine()->getManager();
+            $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->findOneById($id_asignatura);
+           $alumnos = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findByIdAsignatura($asignatura);
+           foreach($alumnos as $alumno){
+               $message = \Swift_Message::newInstance('ssl://smtp.gmail.com', 465)
+                    ->setSubject('Cambios en calificaciones')
+                    ->setFrom('admin@sigue.com')
+                    ->setTo($alumno->getIdAlumno()->getCorreo())
+                    ->setBody('<h3> '.$asignatura->getNombre(). '</h3> <p>Ha habido cambios en las calificaciones de la asignatura</p>
+                <a href="ssii2013.e-ucm.es" title="Ir a Sigue">SIGUE </a> ', 'text/html' );
+                    $this->get('mailer')->send($message);
+               
+           }
+           
+                                               
         }
         
         public function generar_tokensAction($id_asignatura, $ruta_pdf = ""){
@@ -1682,7 +1702,7 @@ class ProfesorController extends Controller
                     $prediccion = self::prediccionNotaOpcion2($em,$id,$asig,$p[0],$p[1],$p[2]);
                 break;
             case 3: $p = self::getParametrosOpcion3($param);
-                    $prediccion = self::prediccionNotaOpcion3($em,$id,$asig,$p[0],$p[1]);
+                    $prediccion = self::prediccionNotaOpcion3($em,$id,$asig,$p[0],$p[1],$p[2]);
                 break;
         }
         return number_format($prediccion,2);
@@ -1693,9 +1713,13 @@ class ProfesorController extends Controller
     }
     
     private function getParametrosOpcion1($param){
-        parse_str($param,$output);
-        $var = $output['valor_absoluto'];
-        return array (floatval($var));
+       $vars = explode("##",$param);
+        parse_str($vars[0],$out1);
+        parse_str($vars[1],$out2);       
+        $p = array();
+        $p[0] = floatval($out1['varor_absoluto']);  
+        $p[1] = floatval($out2['peso_nota_final']/100);     
+        return $p;
     }
     
     private function getParametrosOpcion2($param){
@@ -1714,20 +1738,20 @@ class ProfesorController extends Controller
         $vars = explode("##",$param);
         parse_str($vars[0],$out1);
         parse_str($vars[1],$out2);
-        //parse_str($vars[2],$out3);
+        parse_str($vars[2],$out3);
         $p = array();
         $p[0] = floatval($out1['nota_referencia']);  
         $p[1] = floatval($out2['minimo_tokens']);
-        //$p[2] = floatval($out3['peso_nota_final'])/100;
+        $p[2] = floatval($out3['peso_nota_final'])/100;
         return $p;
     }
     
-    private function prediccionNotaOpcion1($em,$id,$asig,$peso){
+    private function prediccionNotaOpcion1($em,$id,$asig,$peso,$peso_total){
         $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
         $num = $query->getNum();
         $valor = $num*$peso;
-        if ($valor > 10) return 10;
-        return $valor;
+        if ($valor > 10) return 10 *$peso_total;
+        return $valor *$peso_total;
     }
     
     private function prediccionNotaOpcion2($em,$id,$asig,$tolerancia,$descartes,$peso){
@@ -1749,7 +1773,7 @@ class ProfesorController extends Controller
         
     }
     
-    private function prediccionNotaOpcion3($em,$id,$asig,$n,$x){
+    private function prediccionNotaOpcion3($em,$id,$asig,$n,$x,$peso){
         $queryNum = $em->createQuery(  'SELECT COUNT (T)
                                         FROM SISigueBundle:Codigos T
                                         WHERE T.id = :asig
@@ -1773,8 +1797,8 @@ class ProfesorController extends Controller
         $numX = $numTokens/$numAl;
         $query = $em->getRepository('SISigueBundle:AsignaturaAlumno')->findOneBy(array('idAsignatura'=> $asig,'idAlumno'=>$id));
         $num = $query->getNum();
-        if ($num == $numX) return $x;
-        return ($num*$x/$numX) ;
+        if ($num == $numX) return $x *$peso;
+        return ($num*$x/$numX)*$peso ;
     }
     
     

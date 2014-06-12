@@ -1,4 +1,4 @@
-<?php $view->extend('::layout.html.php') ?>
+<?php $view->extend('::layout2.html.php') ?>
 
 <?php $view['slots']->set('rol', 'Profesor'); ?>
 
@@ -54,9 +54,20 @@
            if( $int_eval === 1){
                $selected = "checked";
                $params = $asignatura->getParameval();
-               $paramsarr = explode("=", $params);
-               $param1 = $paramsarr[1];
+               
+               $paramsarr = explode("##", $params);
+               /*Nota*/
+               $params0 = $paramsarr[0];
+               $param0 = explode("=", $params0);
+               $param1 = $param0[1];
+               /*Peso*/
+               $params0 = $paramsarr[1];
+               $param0 = explode("=", $params0);
+               $param2 = intval($param0[1]);
+               
+               
                $num_seleccionado = 0;
+                
            }else{
                $selected = ""; $param1 = ""; $param2 = ""; $param3 = "";
            }  ?>
@@ -64,6 +75,7 @@
            <div class="form-group">
                 
                 <input type="number" step="0.01" min="0" id="valor_absoluto" name="valor_absoluto" value="<?php echo $param1; ?>" title="Valor Absoluto" placeholder="Valor Absoluto" class="Centrar form-normal form-control"/>
+                <input type="text" id="peso_nota_final1" name="peso_nota_final1" value="<?php echo $param2; ?>" placeholder="Peso en la nota final %" title="Peso en la nota final %" class="Centrar form-normal form-control validate[number,max[100]]"/>           
                 <label for="metodo1">Elegir Opción 1 </label>
                 <input type="radio" id="metodo1" name="metodo" value="1" <?php echo $selected; ?>/>
 
@@ -96,9 +108,10 @@
                $params0 = $paramsarr[1];
                $param0 = explode("=", $params0);
                $param2 = $param0[1];
+               /*Peso*/
                $params0 = $paramsarr[2];
                $param0 = explode("=", $params0);
-               $param3 = $param0[1];
+               $param3 = intval($param0[1]);
            }else{
                $selected = ""; $param1 = ""; $param2 = ""; $param3 = "";
            } ?>

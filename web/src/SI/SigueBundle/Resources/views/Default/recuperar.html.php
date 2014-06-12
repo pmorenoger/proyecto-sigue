@@ -1,19 +1,22 @@
-<?php $view->extend('::layout.html.php') ?>
+<?php $view->extend('::layout3.html.php') ?>
 
 <?php $view['slots']->set('rol', 'Recuperar Contraseña'); ?>
 
 
 <?php $view['slots']->start("center"); ?>
-<div id="center" class="center">
-<h3> Recuperar Contraseña</h3>
+
+<div class="perfil">
+    <div class="mensaje">
+        <h2> Recuperar Contraseña</h2>
+    </div>
 <div id="add_profesor" >
    
     <p>Introduzca su correo ucm dado de alta en la aplicación.</p>
     <form enctype="multipart/form-data" action="<?php echo $view['router']->generate('si_sigue_recuperar_guardar');?>" method="POST">       
-        <label for="correo">Correo</label>
-        <input type="text" id="correo" name="correo" />
+        <label for="correo" class="labelSigue">Correo</label>
+        <input type="text" id="correo" name="correo" value="" placeholder="Correo" class="Centrar form-normal form-control"/>
         
-        <input type="submit" value="Guardar">
+        <input type="submit" value="Guardar" class=" left3 btn-20 btn-normal sigin btn btn-block"/>
         <a href="inicio" title="volver" class="tabulado_derecha">Volver </a>
     </form>
     
@@ -21,6 +24,7 @@
    
 </div>
 </div>
+ 
 <?php if($exito=== "true"): ?>
     <div id="tooltip_exito"> 
         <p>!Exito!</p>
