@@ -75,7 +75,7 @@
                     "alertText": "* Correo inválido"
                 },
                 "emailUCM":{
-                    "regex": /^[a-zA-Z0-9_\.\-]+\@((ucm|UCM)\.)(es)$/,
+                    "regex": /^([a-zA-Z]+)([a-zA-Z0-9_\.\-]*)\@([a-zA-Z]+\.)?((ucm|UCM)\.)(es)$/,
                     "alertText": "* Correo UCM inválido"
                 },
                 "integer": {
