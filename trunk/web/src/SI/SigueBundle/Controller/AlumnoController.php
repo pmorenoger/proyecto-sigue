@@ -44,6 +44,8 @@ class AlumnoController extends Controller
     }
     
     public function activarAppAction(){
+        self::isLogin();
+        
         $peticion = $this->container->get('session');
         $id = $peticion->get('idalumno');
         
@@ -90,7 +92,11 @@ class AlumnoController extends Controller
         }
     }
     
-    public function cambiarPasswordAction($id){
+    public function cambiarPasswordAction(){
+        self::isLogin();
+        
+        $peticion = $this->container->get('session');
+        $id = $peticion->get('idalumno');
         //$peticion = $this->getRequest()->getSession();
         $request = Request::createFromGlobals();
         $em = $this->getDoctrine()->getEntityManager();
@@ -126,8 +132,12 @@ class AlumnoController extends Controller
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' => 1));
     }
     
-    public function correoAdicionalAction($id){
+    public function correoAdicionalAction(){
         //$peticion = $this->getRequest()->getSession();
+        self::isLogin();
+        $peticion = $this->container->get('session');
+        $id = $peticion->get('idalumno');
+        
         $request = Request::createFromGlobals();
         $em = $this->getDoctrine()->getEntityManager();
         
@@ -148,16 +158,11 @@ class AlumnoController extends Controller
         return $this->render('SISigueBundle:Alumno:perfil.html.php',array('alumno' => $alumno,'asignaturas' => $asig,'actividades' => $actividades,'res' =>2));
     }
     
-    public function registrarAction($id,$asig){
-        //obtenenos el alumno y la asignatura con que realziaremos las diferentes opciones
-        $em = $this->getDoctrine()->getEntityManager();
-        $alumno = $em->getRepository('SISigueBundle:Alumnos')->find($id);
-        $asignatura = $em->getRepository('SISigueBundle:Asignaturas')->find($asig);
+    public function tokenAction($asig){
+        self::isLogin();
+        $peticion = $this->container->get('session');
+        $id = $peticion->get('idalumno');
         
-        return $this->render('SISigueBundle:Alumno:registrar.html.php',array('alumno' => $alumno,'asignatura'=>$asignatura,'res'=>0));
-    }
-    
-    public function tokenAction($id,$asig){
         $res = 0;
         $em = $this->getDoctrine()->getEntityManager();
         
@@ -217,7 +222,10 @@ class AlumnoController extends Controller
         return NULL;
     }
     
-    public function estadisticasAction($id,$asig){
+    public function estadisticasAction($asig){
+        self::isLogin();
+        $peticion = $this->container->get('session');
+        $id = $peticion->get('idalumno');
         $est = NULL;
         $estAlumnos = NULL;
         $em = $this->getDoctrine()->getEntityManager();
@@ -428,6 +436,16 @@ class AlumnoController extends Controller
         array_pop($dir_abs);
         $dir_abs = implode('/', $dir_abs);
         return $dir_abs;
+    }
+    
+    private function isLogin(){
+        $peticion = $this->container->get('session');
+        $id = $peticion->get('idalumno');
+        if(!isset($id) || is_null($id)|| $id===""){
+            $peticion->remove('idalumno');
+            $peticion->remove('idprofesor');
+            $this->redirect('/index.php');
+        }
     }
 }
 ?>
