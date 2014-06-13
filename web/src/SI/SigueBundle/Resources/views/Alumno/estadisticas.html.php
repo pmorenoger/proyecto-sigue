@@ -120,7 +120,7 @@
         <?php if (count($asignaturas)>0) :?>
             <?php foreach ($asignaturas as $as): ?>
             <div id="formRegistrar_<?php echo $as->getId(); ?>" class="hiddenStructure formSigue">
-                <form enctype="multipart/form-data" id="registrar_token_<?php echo $as->getId(); ?>" action="<?php echo $view['router']->generate('si_sigue_alumno_token',array("id"=>$alumno->getIdalumno(),"asig"=>$as->getId())); ?>" method="POST">
+                <form enctype="multipart/form-data" id="registrar_token_<?php echo $as->getId(); ?>" action="<?php echo $view['router']->generate('si_sigue_alumno_token',array("asig"=>$as->getId())); ?>" method="POST">
                     <div class="form-group">
                         <label class="labelSigue" for="user">Token</label>
                         <input type="text" name="codigo" placeholder='Inserte es código QR' class="Centrar form-normal form-control validate[required]"/>
@@ -131,7 +131,7 @@
             <?php endforeach; ?>
         <?php endif; ?>
         <div id="divCambiar" class="hiddenStructure formSigue">
-            <form method="post" id="mainCambiar" action="<?php echo $view['router']->generate('si_sigue_perfil_editar', array('id' => $alumno->getIdalumno())); ?>">
+            <form method="post" id="mainCambiar" action="<?php echo $view['router']->generate('si_sigue_perfil_editar'); ?>">
                 <div class="form-group">
                     <label class="labelSigue" for="user">Nueva Contraseña</label>
                     <input type="password" id ="nueva_clave" name="nueva_clave" placeholder="Nueva Contraseña" class='Centrar form-normal form-control validate[required,minSize[5]]'/>
@@ -142,7 +142,7 @@
             </form>
         </div>
         <div id="divCorreoAdicional" class="hiddenStructure formSigue">
-            <form method="post" id="mainCorreoAdicional" action="<?php echo $view['router']->generate('si_sigue_perfil_correoAdicional', array('id' => $alumno->getIdalumno())); ?>">
+            <form method="post" id="mainCorreoAdicional" action="<?php echo $view['router']->generate('si_sigue_perfil_correoAdicional'); ?>">
                 <div class="form-group">
                     <label class="labelSigue" for="user">Correo Adicional</label>
                     <input type="text" name="correo_adicional" placeholder="Correo Adicional" class='Centrar form-normal form-control validate[required,custom[email]]'/>
