@@ -14,7 +14,12 @@
 <div class="perfil">
     <div class="mensaje">
         <h3>¡Activa tu aplicación Android!</h3>
-        <p>Lo único que tienes que hacer es descargarla y escanear este código.</p>
+         <?php if($this->container->get('kernel')->getEnvironment() === "dev"){
+            $path = "/web/archivos/app/sigue.apk";            
+        }else{
+            $path = "/archivos/app/sigue.apk";
+        } ?>
+        <p>Lo único que tienes que hacer es <a href="<?php echo $path;?>" title="descarga nuestra App Android">descargarla</a> y escanear este código.</p>
         <p>¡Es la manera más simple de loguearse!</p>
     </div>
     <div id="codQR">
