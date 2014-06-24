@@ -23,7 +23,7 @@ class ProfesorController extends Controller
             $asig = self::getAsignaturas();
            
             $peticion = $this->container->get('session');
-            $p = $peticion->get('pAl');
+            $p = $peticion->get('pProf');
             $profesor = self::getProfesor();
                  if($profesor === "session_lost"){
                     $session = $this->container->get('session');
@@ -405,7 +405,7 @@ class ProfesorController extends Controller
             $nombre = explode("@", $data);
             $nombre = $nombre[0];
             $nombre = 'qr'.$nombre.'.png';
-            $dir =  '../web/img/'.$nombre;
+            $dir = self::getDireccionAbsoluta()."/web/img/".$nombre;
 
             \QRcode::png($data, $dir,QR_ECLEVEL_H,6);
     
@@ -417,7 +417,7 @@ class ProfesorController extends Controller
              $array["asignaturas"] = $asignaturas;
              $array["asignatura"] = null;
              $array["exito"] = "";
-             $dir_real = str_replace("..","",$dir);
+             $dir_real = "/img/".$nombre;
              $array["dir"] = $dir_real;
            
             return $this->render('SISigueBundle:Profesor:activar_app.html.php', $array);
