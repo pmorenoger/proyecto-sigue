@@ -1,5 +1,6 @@
 package com.example.sigue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,8 +13,10 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -22,11 +25,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnTouchListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -56,6 +62,8 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.example.sigue.library.DataBaseHandler;
 import com.example.sigue.library.UserFunctions;
+import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 
 
@@ -69,10 +77,12 @@ public class MenuPrincipal extends Activity {
 	StatisticListAdapter listAdapter1;
 	ExpandableListView expListView;
 	ExpandableListView statisticView;
+	private String[] MenuItems = {"Actividades"};
 	public static ArrayList<String> listDataHeader;
 	public static HashMap<String, ArrayList<String>> listDataChild;
 	public static HashMap<String, ArrayList<String>> listStatisticChild;
-	private static boolean change = false;
+	private static HashMap<String, ActividadesLista> listActividades;
+	private static String pesoTokens;
     
 
 	
@@ -142,10 +152,11 @@ public class MenuPrincipal extends Activity {
         	// get the listview
             expListView = (ExpandableListView) findViewById(R.id.lvExp);
             statisticView = (ExpandableListView) findViewById(R.id.lvSts);
+            registerForContextMenu(expListView);
             // preparing list data
-            if(!change){	
-            	prepareListData();
-            }
+           
+            prepareListData();
+         
      
             listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
             listAdapter1 = new StatisticListAdapter(this, listDataHeader, listStatisticChild);
@@ -153,7 +164,6 @@ public class MenuPrincipal extends Activity {
             // setting list adapter
             expListView.setAdapter(listAdapter);
             statisticView.setAdapter(listAdapter1);       
-        	
         	TabHost.TabSpec spec=tabs.newTabSpec("Mis Tokens");
         	spec.setContent(R.id.tab1);
         	spec.setIndicator(customFont);
@@ -183,9 +193,9 @@ public class MenuPrincipal extends Activity {
         	
         	
         	uid = usuario.get("uid");
-        	if(!change){
-        		new Asincrono2().execute(userFunction);   
-        	}
+        	
+        	new Asincrono2().execute(userFunction);   
+        
         	
         	}
              
@@ -215,35 +225,79 @@ private void prepareListData(JSONObject json) {
     listDataHeader = new ArrayList<String>();
     listDataChild = new HashMap<String, ArrayList<String>>();
     listStatisticChild = new HashMap<String, ArrayList<String>>();
+    listActividades = new HashMap<String, ActividadesLista>();
     ArrayList<String> tokens = new ArrayList<String>();
     ArrayList<String> statistics = new ArrayList<String>();
+    ActividadesLista actividades = new ActividadesLista();
     JSONArray asig = null;
     JSONArray tok = null;
     JSONObject sts = null;
     JSONObject aux = null;
+    JSONArray act = null;
     String aux1 = null;
-    try {
+    String notaTokens;
+    float prov;
+    try { 
 		 asig = json.getJSONArray("Asignaturas");
 		 int i = asig.length();
 		 for(int j=0;j<i;j++){
 			 aux = asig.getJSONObject(j).getJSONObject("Asignatura").getJSONObject("Datos");
 			 sts= asig.getJSONObject(j).getJSONObject("Asignatura").getJSONObject("Estadisticas");
 			 tok = asig.getJSONObject(j).getJSONObject("Asignatura").getJSONArray("Tokens");
+			 act = asig.getJSONObject(j).getJSONObject("Asignatura").getJSONArray("Actividades");
+			 notaTokens = asig.getJSONObject(j).getJSONObject("Asignatura").getString("notaTokens");
+			 pesoTokens = asig.getJSONObject(j).getJSONObject("Asignatura").getString("pesoTokens");
 			 aux1 = aux.getString("nombre")+"  grupo: " + aux.getString("grupo") + "   " + aux.getString("curso");
 			 listDataHeader.add(aux1);	 
 			 
-			 aux1 = sts.getString("MisTokens")+ "%&" + sts.getString("AllTokens") + "%&" + sts.getString("MaxTokens")
-					 + "%&" + sts.getString("LessTokens") + "%&" + sts.getString("EqualTokens") + "%&" + sts.getString("MoreTokens");
-			 statistics.add(aux1);
-			 listStatisticChild.put(listDataHeader.get(j), (ArrayList<String>)statistics.clone());
-			 statistics.clear();
+			 
 			 int k = tok.length();
 			 for(int z=0;z<k;z++){
 				 aux1 = tok.getJSONObject(z).getString("codigo")+ "   " + tok.getJSONObject(z).getString("fecha_alta");
 				 tokens.add(aux1);
 			 }
+			 if (k==0){
+				 tokens.add("Sin tokens");
+			 }
 			 listDataChild.put(listDataHeader.get(j),(ArrayList<String>) tokens.clone() );
 			 tokens.clear();
+			 
+			 k = act.length();
+			 String nombre;
+			 String descripcion;
+			 String nota;
+			 String peso;
+			 String observaciones;
+			 int id;
+			 Actividad act2;
+			 JSONObject actaux;
+			 for (int z=0;z<k;z++){
+				actaux = act.getJSONObject(z);
+				nombre = actaux.getString("Nombre");
+				descripcion = actaux.getString("Descripcion");
+				nota = actaux.getString("Nota");
+				peso = actaux.getString("Peso");
+				observaciones = actaux.getString("Observaciones");
+				id = actaux.getInt("id");
+				act2 = new Actividad(nombre,descripcion,nota,peso,observaciones,id);
+				actividades.add(act2);
+			 }
+			 
+			//aqui insertamos la actividad de los tokens. con su peso y su nota.
+			 nombre = "Nota Tokens.";
+			 descripcion = "Seguimiento del trabajo diario.";
+			 observaciones = "Sin observaciones";
+			 id = 0;
+			 act2 = new Actividad(nombre,descripcion,notaTokens,pesoTokens,observaciones,id);
+			 actividades.add(act2);
+			 listActividades.put(listDataHeader.get(j), (ActividadesLista) actividades.clone());
+			 actividades.clear();
+			 prov = calculaProv(listDataHeader.get(j));
+			 aux1 = sts.getString("MisTokens")+ "%&" + sts.getString("AllTokens") + "%&" + sts.getString("MaxTokens")
+					 + "%&" + sts.getString("LessTokens") + "%&" + sts.getString("EqualTokens") + "%&" + sts.getString("MoreTokens") + "%&" + prov;
+			 statistics.add(aux1);
+			 listStatisticChild.put(listDataHeader.get(j), (ArrayList<String>)statistics.clone());
+			 statistics.clear();
 		 }
 	} catch (NullPointerException e) {
 		// TODO Auto-generated catch block
@@ -263,13 +317,19 @@ private void prepareListData(JSONObject json) {
 private void prepareListData() {
     listDataHeader = new ArrayList<String>();
     listDataChild = new HashMap<String, ArrayList<String>>();
+    listStatisticChild = new HashMap<String, ArrayList<String>>();
    
     // Adding child data
     listDataHeader.add("Sin Datos");
 }
     
+public static void modActividades(int user, int pos, Actividad act){
+	String aux = listDataHeader.get(user);
+	listActividades.get(aux).set(pos, act);
+}
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+  public boolean onCreateOptionsMenu(Menu menu){
     	getMenuInflater().inflate(R.menu.menu,menu);
 		return true;
     	
@@ -278,7 +338,7 @@ private void prepareListData() {
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.Desvincular:
-               desvincular();
+               unregisterUser(this);
                break;
         case R.id.Escanear:
         	Intent intent = new Intent("com.example.sigue.SCAN");
@@ -292,18 +352,84 @@ private void prepareListData() {
         return true; /** true -> consumimos el item, no se propaga*/
 }
     
+ // Context Menu Creation
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) 
+    {
+        if (v.getId()==R.id.lvExp) 
+        {            
+            menu.setHeaderTitle("OPCIONES");
+            for (int i = 0; i< MenuItems.length; i++) 
+            {
+                menu.add(Menu.NONE, i, i, MenuItems[i]);
+            }
+      }
+    }
+    
+   // Context Menu Item Selection
+    @Override
+    public boolean onContextItemSelected(MenuItem item) 
+    {
+        ExpandableListView.ExpandableListContextMenuInfo info =(ExpandableListView.ExpandableListContextMenuInfo)item.getMenuInfo();
+        int posicion = expListView.getPackedPositionGroup(info.packedPosition);
+        //
+        // Getting the Id
+        int menuItemIndex = item.getItemId();
+        if (menuItemIndex==0){
+        	//creamos el intento y le pasamos la clase a mostrar
+            Intent intent=new Intent(this,ActividadesActivity.class);
+              Bundle contenedor=new Bundle();
+           //le cargamos al bundle un objeto parcelable que se almacenara
+              int user = expListView.getPackedPositionGroup(info.packedPosition);
+             //bajo la key "array" y contendrá nuestra lista de libros
+            contenedor.putParcelable("array",this.listActividades.get(listDataHeader.get(user)));
+              //cargamos el intento con el bundle
+            intent.putExtras(contenedor);
+            intent.putExtra("usuario", user);
+            intent.putExtra("profesor", false);
+            intent.putExtra("asignatura", listDataHeader.get(user));
+              //lanzamos el intento
+            startActivity(intent);
+            }
+            return true;
+        }
+    
+    public float calculaProv(String usr){
+    	float nota = 0;
+    	ActividadesLista act = listActividades.get(usr);
+    	int i = act.size();
+    	for (int j=0;j<i;j++){
+    		if((act.get(j).getNota()!="null")&&(act.get(j).getPeso()!="null")){
+    		nota = nota + Float.parseFloat(act.get(j).getNota())*Float.parseFloat(act.get(j).getPeso());
+    		}
+    	}
+		return nota;    	
+    }
+    
     private void desvincular(){
-    	 userFunction.logoutUser(getApplicationContext());
+    	
+    	DataBaseHandler db = new DataBaseHandler(getApplicationContext());
+    	
+    	HashMap<String,String> userdata = db.getUserDetails();
+    	
+    	 userFunction.logoutUser(getApplicationContext(), userdata.get("uid"));
 
          Intent login = new Intent(getApplicationContext(), MainActivity.class);
 
          login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-         startActivity(login);
          
-         change = false;
+         SharedPreferences prefs = getSharedPreferences(MainActivity.class.getSimpleName(),Context.MODE_PRIVATE);
+         
+         SharedPreferences.Editor editor = prefs.edit();
+         
+         editor.clear();
+         
+         editor.commit();
+         
+         //unregisterUser(getApplicationContext());
+         
+         startActivity(login);
 
-         DataBaseHandler db = new DataBaseHandler(this);
          db.resetTables();
          
          // Closing dashboard screen
@@ -311,6 +437,13 @@ private void prepareListData() {
          finish();
 
     }
+    
+    private void unregisterUser(Context context){
+    	
+    	 TareaUnregistroGCM tarea = new TareaUnregistroGCM();
+         tarea.execute();
+    	 }
+    
     private TextView makeTabIndicator(String text){
 
     	TextView tabView = new TextView(this);
@@ -343,13 +476,8 @@ private void prepareListData() {
 	            String formato = intent.getStringExtra("SCAN_RESULT_FORMAT");
 
 	            // Hacer algo con los datos obtenidos.
-	            try{
-	            String [] parametros = new String[2] ;
-	            	parametros[0] = contenido.substring(0, 15);
-	            	parametros[1] = contenido.substring(15);
-	            		
-	            	codigoQR = parametros[0];
-	            	codigoAsig = parametros[1];
+	            try{	
+	            	codigoQR = contenido;
 	            	DataBaseHandler db = new DataBaseHandler(this);
 	            	HashMap<String, String> usuario = db.getUserDetails();
 	            	uid = usuario.get("uid");
@@ -373,19 +501,47 @@ private void prepareListData() {
     
     private void refresh() {
 
-    	change = true;
-
-    	finish();
+    	//change = true;
+    	//listDataHeader=(ArrayList<String>) listDataHeaderPermanent.clone();
+		//listDataChild = (HashMap<String, ArrayList<String>>) listDataChildPermanent.clone();
+		listAdapter.clear();
+        listAdapter.addAll(listDataHeader,listDataChild);
+        listAdapter.notifyDataSetChanged();
+        listAdapter1.clear();
+        listAdapter1.addAll(listDataHeader,listStatisticChild);
+        listAdapter1.notifyDataSetChanged();
+    	/*finish();
 
     	Intent myIntent = new Intent(this, MenuPrincipal.class);
 
-    	startActivity(myIntent);
+    	startActivity(myIntent);*/
 
     	}
 
 
-	
-	
+
+    
+    
+    private class TareaUnregistroGCM extends AsyncTask<String,Integer,JSONObject>
+	{
+    	@Override
+        protected JSONObject doInBackground(String... params)
+    {
+    		GoogleCloudMessaging gcm;
+    		//final String regId = GCMRegistrar.getRegistrationId(context);
+        	
+                gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                desvincular();
+        	try {
+    			gcm.unregister();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+		return null;
+    		
+    }
+	}
 	
 private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
     	
@@ -405,7 +561,7 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
         }
         @Override
     	protected JSONObject doInBackground(UserFunctions... userfunction) {
-        	JSONObject json = userFunction.qrRegister(codigoQR, codigoAsig, uid);
+        	JSONObject json = userFunction.qrRegister(codigoQR, uid);
     		return json;
     	}
         
@@ -416,7 +572,7 @@ private class Asincrono1 extends AsyncTask<UserFunctions, Void, JSONObject> {
 		if (this.dialog.isShowing()) {
             this.dialog.dismiss();
         }
-
+		new Asincrono2().execute(userFunction);
         
 	    }
 	

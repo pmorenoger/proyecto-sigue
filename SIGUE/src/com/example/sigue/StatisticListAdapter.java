@@ -174,12 +174,13 @@ public class StatisticListAdapter extends BaseExpandableListAdapter {
         Segment segment3 = new Segment("por debajo: " + arrayEstadisticas[3], Integer.parseInt(arrayEstadisticas[3]));
         
 
-        SegmentFormatter segment1Format = new SegmentFormatter(Color.rgb(0, 200, 0));
-        SegmentFormatter segment2Format = new SegmentFormatter(Color.rgb(0, 0, 500));
-        SegmentFormatter segment3Format = new SegmentFormatter(Color.rgb(250, 200, 100));
+        SegmentFormatter segment1Format = new SegmentFormatter(Color.rgb(0, 51, 102));
+        SegmentFormatter segment2Format = new SegmentFormatter(Color.rgb(51, 102, 0));
+        SegmentFormatter segment3Format = new SegmentFormatter(Color.rgb(255, 102, 102));
         new SegmentFormatter();
         // Una vez definida la serie (datos y estilo), la añadimos al panel
         //mySimplePiePlot.addSeries(series1, series1Format);
+        mySimplePiePlot.clear();
         mySimplePiePlot.addSeries(segment1, segment1Format);
         if (Integer.parseInt(arrayEstadisticas[5])!=0){
         mySimplePiePlot.addSeries(segment2, segment2Format);
@@ -193,11 +194,11 @@ public class StatisticListAdapter extends BaseExpandableListAdapter {
         //mySimplePiePlot.addSeries(series2, new LineAndPointFormatter
 //(Color.rgb(0, 0, 200), Color.rgb(0, 0, 100), Color.rgb(150, 150, 190), null));
        
- 
+        TextView txtListChild0 = (TextView) view.findViewById(R.id.notaProv);
         TextView txtListChild1 = (TextView) view.findViewById(R.id.St1);
         TextView txtListChild2 = (TextView) view.findViewById(R.id.St2);
         TextView txtListChild3 = (TextView) view.findViewById(R.id.St3);
-        
+        txtListChild0.setText("Nota Provisional: "+arrayEstadisticas[6]);
         txtListChild1.setText("Numero de tokens: "+arrayEstadisticas[0]);
         txtListChild2.setText("Numero de tokens registrados: " + arrayEstadisticas[1]);
         txtListChild3.setText("Alumno con mas tokens: " + arrayEstadisticas[2]);
@@ -334,6 +335,17 @@ public class StatisticListAdapter extends BaseExpandableListAdapter {
  
         return convertView;
     }
+    
+    public void clear() {
+		_listDataHeader.clear();
+		_listDataChild.clear();
+	}
+
+	public void addAll(ArrayList<String> listDataHeader,
+			HashMap<String, ArrayList<String>> listDataChild) {
+		this._listDataHeader = listDataHeader;
+        this._listDataChild = listDataChild;
+	}
  
     @Override
     public boolean hasStableIds() {

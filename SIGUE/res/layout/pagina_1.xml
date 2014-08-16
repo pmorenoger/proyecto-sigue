@@ -5,6 +5,17 @@
     android:orientation="vertical"
     android:background ="#50FFFFFF" >
  
+    
+    <TextView
+        android:id="@+id/notaProv"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/St1"
+        android:textSize="22sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="15dp"        
+        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+    
     <TextView
         android:id="@+id/St1"
         android:layout_width="fill_parent"
