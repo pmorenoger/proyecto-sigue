@@ -154,7 +154,11 @@ public class MenuPrincipalProfesor extends Activity  {
 }
     
     private void desvincular(){
-    	 userFunction.logoutUser(getApplicationContext());
+    	DataBaseHandler db = new DataBaseHandler(getApplicationContext());
+    	
+    	HashMap<String,String> userdata = db.getUserDetails();
+    	
+    	 //userFunction.logoutUser(getApplicationContext(), userdata.get("uid"));
 
          Intent login = new Intent(getApplicationContext(), MainActivity.class);
 
@@ -164,7 +168,6 @@ public class MenuPrincipalProfesor extends Activity  {
          
          change = false;
          
-         DataBaseHandler db = new DataBaseHandler(this);
          db.resetTables();
 
          // Closing dashboard screen

@@ -84,9 +84,11 @@ public class AlumnosActivity extends Activity {
 	private static HashMap<String, ArrayList<String>> listDataChild;
 	private static HashMap<String, String> listDetalles;
 	private static HashMap<String, ActividadesLista> listActividades;
+	private static HashMap<String, String> listActividadTokens;
 	private static ArrayList<String> listDataHeaderPermanent;
 	private static HashMap<String, ArrayList<String>> listDataChildPermanent;
 	private static boolean change = false;
+	private static String pesoTokens;
 	UserFunctions userFunction;
 	private ViewFlipper vf;
 	private float init_x;
@@ -202,9 +204,11 @@ public class AlumnosActivity extends Activity {
 	    JSONArray tok = null;
 	    JSONArray act = null;
 	    JSONObject sts = null;
+	    JSONObject not = null;
 	    JSONObject aux = null;
 	    JSONObject details = null;
 	    String aux1 = null;
+	    String notaTokens;
 	    String aux2 = null;
 	    fechas.clear();
 	    registros.clear();
@@ -217,6 +221,8 @@ public class AlumnosActivity extends Activity {
 				 tok = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Tokens");
 				 act = asig.getJSONObject(j).getJSONObject("Alumno").getJSONArray("Actividades");
 				 details =asig.getJSONObject(j).getJSONObject("Alumno").getJSONObject("Details");
+				 notaTokens = asig.getJSONObject(j).getJSONObject("Alumno").getString("notaTokens");
+				 pesoTokens = asig.getJSONObject(j).getJSONObject("Alumno").getString("pesoTokens");
 				 aux1 = aux.getString("nombre")+" " + aux.getString("apellidos") + " DNI:" + aux.getString("dni");
 				 listDataHeader.add(aux1);	 
 				 aux2 = details.getString("correo")+ "#&" +details.getString("correoAdicional");
@@ -290,6 +296,14 @@ public class AlumnosActivity extends Activity {
 					act2 = new Actividad(nombre,descripcion,nota,peso,observaciones,id);
 					actividades.add(act2);
 				 }
+				 
+				 //aqui insertamos la actividad de los tokens. con su peso y su nota.
+				 nombre = "Nota Tokens.";
+				 descripcion = "Seguimiento del trabajo diario.";
+				 observaciones = "Sin observaciones";
+				 id = 0;
+				 act2 = new Actividad(nombre,descripcion,notaTokens,pesoTokens,observaciones,id);
+				 actividades.add(act2);
 				 listActividades.put(listDataHeader.get(j), (ActividadesLista) actividades.clone());
 				 actividades.clear();
 			 }
@@ -298,7 +312,8 @@ public class AlumnosActivity extends Activity {
 			 //aux1 = sts.getString("Redeemed")+ "%&" + sts.getString("NotRedeemed");
 			 //+ "%&" + sts.getString("LessTokens") + "%&" + sts.getString("EqualTokens") + "%&" + sts.getString("MoreTokens");
 			 statistics.add(sts.getString("Redeemed"));
-			 statistics.add(sts.getString("NotRedeemed"));
+			 statistics.add(sts.getString("NotRedeemed"));			
+			 
 			 //listStatisticChild.put(listDataHeader.get(j), (ArrayList<String>)statistics.clone());
 			 listDataHeaderPermanent = (ArrayList<String>) listDataHeader.clone();
 			 listDataChildPermanent = (HashMap<String, ArrayList<String>>) listDataChild.clone();
@@ -322,7 +337,7 @@ public class AlumnosActivity extends Activity {
 	    listDataChild = new HashMap<String, ArrayList<String>>();
 	    listDataHeaderPermanent = new ArrayList<String>();
 	    listDataChildPermanent = new HashMap<String, ArrayList<String>>();
-	   
+	    
 	    // Adding child data
 	    listDataHeader.add("Sin Datos");
 	}
@@ -360,8 +375,7 @@ public class AlumnosActivity extends Activity {
         listAdapter.notifyDataSetChanged();
         preparaGrafico(R.id.mySimplePiePlot3);
         
-        updatePlot();
-    	
+        updatePlot();    	
     	
     	preparaGraficoTiempo(R.id.fechasPlot);
     	 
@@ -450,11 +464,14 @@ public class AlumnosActivity extends Activity {
           Bundle contenedor=new Bundle();
        //le cargamos al bundle un objeto parcelable que se almacenara
           int user = expListView.getPackedPositionGroup(info.packedPosition);
+          String name = listDataHeader.get(user);
          //bajo la key "array" y contendrá nuestra lista de libros
-        contenedor.putParcelable("array",this.listActividades.get(listDataHeader.get(user)));
+        contenedor.putParcelable("array",this.listActividades.get(name));
           //cargamos el intento con el bundle
         intent.putExtras(contenedor);
         intent.putExtra("usuario", user);
+        intent.putExtra("profesor", true);
+        intent.putExtra("nombre",name);
           //lanzamos el intento
         startActivity(intent);}
         return true;
@@ -475,14 +492,15 @@ public class AlumnosActivity extends Activity {
         String usrDet = listDetalles.get(usr);
         String[] detalles = usrDet.split("#&");
         TextView titulo = (TextView) customDialog.findViewById(R.id.titulo);
-        titulo.setText("Detalles");
+        titulo.setText(usr);
         float nota = calculaProv(usr);
         TextView email = (TextView) customDialog.findViewById(R.id.email);
         email.setText("Email: "+detalles[0]);
         TextView altEmail = (TextView) customDialog.findViewById(R.id.altEmail);
         altEmail.setText("Email alternativo: "+detalles[1]);
         TextView notaProv = (TextView) customDialog.findViewById(R.id.notaProv);
-        notaProv.setText("Nota provisional: "+nota);
+        DecimalFormat df = new DecimalFormat("0.00");
+        notaProv.setText("Nota provisional: "+df.format(nota));
         
         ((Button) customDialog.findViewById(R.id.aceptar)).setOnClickListener(new OnClickListener() {
              
@@ -503,7 +521,9 @@ public class AlumnosActivity extends Activity {
     	ActividadesLista act = listActividades.get(usr);
     	int i = act.size();
     	for (int j=0;j<i;j++){
+    		if((act.get(j).getNota()!="null")&&(act.get(j).getPeso()!="null")){
     		nota = nota + Float.parseFloat(act.get(j).getNota())*Float.parseFloat(act.get(j).getPeso());
+    		}
     	}
 		return nota;    	
     }
@@ -541,7 +561,11 @@ public class AlumnosActivity extends Activity {
 }
     
     private void desvincular(){
-    	 userFunction.logoutUser(getApplicationContext());
+    	DataBaseHandler db = new DataBaseHandler(getApplicationContext());
+    	
+    	HashMap<String,String> userdata = db.getUserDetails();
+    	
+    	 //userFunction.logoutUser(getApplicationContext(), userdata.get("uid"));
 
          Intent login = new Intent(getApplicationContext(), MainActivity.class);
 
@@ -551,7 +575,6 @@ public class AlumnosActivity extends Activity {
          
          change = false;
          
-         DataBaseHandler db = new DataBaseHandler(this);
          db.resetTables();
 
          // Closing dashboard screen
@@ -579,12 +602,15 @@ private void seriesTiempo(){
  private void preparaGrafico(int id){
 	 mySimplePiePlot = (PieChart) vf.findViewById(id);
 	 mySimplePiePlot.clear();
-	 int totales = Integer.parseInt(statistics.get(1))+Integer.parseInt(statistics.get(0));
+	 if (statistics.size()!=0){
+	 float totales = Float.parseFloat(statistics.get(1))+Integer.parseInt(statistics.get(0));
 	 int redimidos;
 	 int noredimidos;
 	 if (totales != 0){
-		 redimidos = (Integer.parseInt(statistics.get(0))/totales)*100;
-		 noredimidos = (Integer.parseInt(statistics.get(1))/totales)*100;
+		 float a = Float.parseFloat(statistics.get(0));
+		 float b = Float.parseFloat(statistics.get(1));
+		 redimidos = Math.round((a/totales)*100);
+		 noredimidos = Math.round((b/totales)*100);
 	 }else{
 		 redimidos=0;
 		 noredimidos=0;
@@ -596,8 +622,8 @@ private void seriesTiempo(){
      //Segment segment3 = new Segment("por debajo: " + arrayEstadisticas[3], Integer.parseInt(arrayEstadisticas[3]));
      
 
-     SegmentFormatter segment1Format = new SegmentFormatter(Color.rgb(0, 200, 0));
-     SegmentFormatter segment2Format = new SegmentFormatter(Color.rgb(0, 0, 500));
+     SegmentFormatter segment1Format = new SegmentFormatter(Color.rgb(51, 102, 0));
+     SegmentFormatter segment2Format = new SegmentFormatter(Color.rgb(0, 51, 102));
      //SegmentFormatter segment3Format = new SegmentFormatter(Color.rgb(250, 200, 100));
      new SegmentFormatter();
      // Una vez definida la serie (datos y estilo), la añadimos al panel
@@ -609,6 +635,7 @@ private void seriesTiempo(){
      //if(Integer.parseInt(arrayEstadisticas[3])!= 0){
      //mySimplePiePlot.addSeries(segment3, segment3Format);
      //}
+	 }
  }
  
  private void preparaGraficoTiempo(int id){
@@ -633,17 +660,15 @@ private void seriesTiempo(){
      LineAndPointFormatter series1Format = new LineAndPointFormatter(
              Color.rgb(0, 100, 0),                   // line color
              Color.rgb(0, 100, 0),                   // point color
-             Color.rgb(100, 200, 0), null);                // fill color
+             Color.rgb(51, 102, 0), null);                // fill color
 
 
      // setup our line fill paint to be a slightly transparent gradient:
      Paint lineFill = new Paint();
      lineFill.setAlpha(200);
 
-     // ugly usage of LinearGradient. unfortunately there's no way to determine the actual size of
-     // a View from within onCreate.  one alternative is to specify a dimension in resources
-     // and use that accordingly.  at least then the values can be customized for the device type and orientation.
-     lineFill.setShader(new LinearGradient(0, 0, 200, 200, Color.WHITE, Color.GREEN, Shader.TileMode.CLAMP));
+     
+     lineFill.setShader(new LinearGradient(0, 0, 200, 200, Color.WHITE, Color.rgb(51, 102, 0), Shader.TileMode.CLAMP));
 
      LineAndPointFormatter formatter  =
              new LineAndPointFormatter(Color.rgb(0, 0,0), Color.BLUE, Color.RED, new PointLabelFormatter(Color.BLACK));
@@ -735,7 +760,6 @@ private void seriesTiempo(){
                 return false;
             }
         });
-        
         plot.setDomainValueFormat(new NumberFormat() {           
 
 			@Override
@@ -883,14 +907,14 @@ private class MyBarFormatter extends BarFormatter {
       * @return
       */
 	
-     public MyBarFormatter getFormatter(int index, XYSeries series) { 
-         if(selection != null &&
-                 selection.second == series && 
-                 selection.first == index) {
+     public MyBarFormatter getFormatter(int index, XYSeries series) {
+    	
+         if(selection != null && selection.second == series && selection.first == index) {
              return selectionFormatter;
          } else {
              return getFormatter(series);
          }
+    	 
      }
  }
  

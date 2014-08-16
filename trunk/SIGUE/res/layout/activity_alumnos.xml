@@ -30,7 +30,9 @@
                 <ExpandableListView
                 android:id="@+id/lvExp2"
                 android:layout_height="match_parent"
-                android:layout_width="match_parent"/>
+                android:layout_width="match_parent"
+                android:groupIndicator="@drawable/group_indicator"
+                android:indicatorRight="25dp"/>
                 
         </LinearLayout>
  

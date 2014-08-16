@@ -36,6 +36,7 @@ public class ActividadListAdapter extends BaseExpandableListAdapter {
     private ArrayList<Actividad> _listDataHeader;
     private int posicion;
     private int user;
+    private boolean profesor;
     Dialog customDialog = null;// header titles
     // child data in format of header title, child title
     //private HashMap<Actividad, String> _listDataChild;
@@ -44,10 +45,11 @@ public class ActividadListAdapter extends BaseExpandableListAdapter {
 
  
     public ActividadListAdapter(Context context, ArrayList<Actividad> listDataHeader,
-            int usuario) {
+            int usuario, boolean profesor) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this.user = usuario;
+        this.profesor = profesor;
         this.userFunction = new UserFunctions();
         
     }
@@ -104,14 +106,12 @@ public class ActividadListAdapter extends BaseExpandableListAdapter {
     public View getGroupView( int groupPosition, boolean isExpanded,
             View convertView, ViewGroup parent) {
         Actividad headerTitle = (Actividad) getGroup(groupPosition);
-        ViewHolder holder;
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.actividad_group, null);
         }
         
-        holder = new ViewHolder();
  
         TextView nombre = (TextView) convertView.findViewById(R.id.nombreAct);
         nombre.setTypeface(null, Typeface.BOLD);
@@ -124,7 +124,9 @@ public class ActividadListAdapter extends BaseExpandableListAdapter {
         nota.setTypeface(null, Typeface.BOLD);
         nota.setText("Nota: "+ headerTitle.getNota());
         
+        
         ImageView edit = (ImageView) convertView.findViewById(R.id.imageView1);
+        if(profesor && !(headerTitle.getNombre().equals("Nota Tokens."))){
         edit.setFocusable(false);
         edit.setTag(groupPosition);
         edit.setOnClickListener(new OnClickListener(){
@@ -136,6 +138,9 @@ public class ActividadListAdapter extends BaseExpandableListAdapter {
 			}
         
         });
+        }else{
+        	edit.setVisibility(View.INVISIBLE);
+        }
  
         return convertView;
     }
@@ -181,7 +186,7 @@ public class ActividadListAdapter extends BaseExpandableListAdapter {
 	        customDialog.setContentView(R.layout.dialog);
 	         
 	        TextView titulo = (TextView) customDialog.findViewById(R.id.titulo);
-	        titulo.setText("Modificar");
+	        titulo.setText("Modificar: "+_listDataHeader.get(posicion).getNombre());
 	         
 	        TextView nota = (TextView) customDialog.findViewById(R.id.nota);
 	        nota.setText("Nota:");
@@ -199,6 +204,8 @@ public class ActividadListAdapter extends BaseExpandableListAdapter {
 	            {
 	                customDialog.dismiss();	                
 	                String nota = ((EditText)customDialog.findViewById(R.id.et1)).getText().toString();
+	                try{
+	                Float.parseFloat(nota);
 	                if(nota==_listDataHeader.get(posicion).getNota()){
 	                	return;
 	                }else{
@@ -218,6 +225,9 @@ public class ActividadListAdapter extends BaseExpandableListAdapter {
 	                notifyDataSetChanged();
 	                
 	                new Asincrono1().execute(userFunction);
+	                }catch(Exception e){
+	                	Toast.makeText(_context, "La nota introducida no es un múmero.", Toast.LENGTH_LONG).show();
+	                }
 	            }
 	        });
 	         
