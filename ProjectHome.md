@@ -1,0 +1,2 @@
+El sistema se compone de dos aplicaciones web (para el profesor y el alumno) y de una aplicación móvil para el alumno. El objetivo es facilitar el seguimiento de la participación en clase, permitiendo al profesor entregar a los alumnos unos tokens que se van acumulando a lo largo del curso.
+Al final del curso, el sistema hace un recuento del número de tokens entregados a cada alumno y genera un listado con las calificaciones de participación de cada alumno.
